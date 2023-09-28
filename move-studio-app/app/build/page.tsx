@@ -6,7 +6,31 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import WalletSelector from "@/components/walletSelector";
 import Editor, { useMonaco } from '@monaco-editor/react';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { IndexedDb } from "../db/ProjectsDB";
+import { cn } from "@/lib/utils"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 const themes = {
   "NightOwl": {
@@ -691,9 +715,110 @@ const themes = {
   },
 }
 
+const frameworks = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+]
+
 export default function BuildPage () {
 
-  
+  const [projectList, setProjectList] = useState([]);
+  const [open, setOpen] = useState(false)
+  const [value, setValue] = useState("")
+
+  let indexedDb: IndexedDb;
+  useEffect(() => {
+    const startIndexDb = async () => {
+      indexedDb = new IndexedDb('test');
+      await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
+      
+      const existingUser = localStorage.getItem('user');
+      console.log('existingUser', existingUser);
+      if (!existingUser) {
+        console.log('setting user');
+        localStorage.setItem('user', 'true');
+        await indexedDb.putValue('projects', {
+          package: 'demoPackage',
+          dependencies: [
+            {name: 'demoPackage', address: '0x0'},
+            {name: 'Sui', address: '0x02'}
+          ],
+          modules: [
+            {
+              name: 'party', 
+              code: `module demoPackage::party {
+
+  // Libraries being used
+  use sui::object::{Self, UID};
+  use sui::transfer;
+  use sui::tx_context::TxContext;
+
+  // Object that can be deployed
+  struct Balloon has key {
+    id: UID,
+    popped: bool
+  }
+
+  // Deploy a new balloon
+  fun init(ctx: &mut TxContext) {
+    new_balloon(ctx);
+  }
+
+  public entry fun pop_balloon(balloon: &mut Balloon) {
+    balloon.popped = true;
+  }
+
+  public entry fun fill_up_balloon(ctx: &mut TxContext) {
+    new_balloon(ctx);
+  }
+
+  // Create a new balloon object and make it available to anyone
+  fun new_balloon(ctx: &mut TxContext) {
+    let balloon = Balloon{
+      id: object::new(ctx), 
+      popped: false
+    };
+    transfer::share_object(balloon);
+  }
+            
+  }`
+            }
+          ]
+        }); 
+        // startTutorial();
+      }
+         
+    }
+    startIndexDb().then(() => {
+      getProjects();
+    });
+  }, []);
+
+  const getProjects = async () => {
+    indexedDb = new IndexedDb('test');
+    await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
+    const allProjects = await indexedDb.getAllKeys('projects');
+    console.log('projectList', allProjects);
+    setProjectList(allProjects);
+  }
 
   const monaco = useMonaco();
 
@@ -822,8 +947,82 @@ export default function BuildPage () {
       </div>
       <Separator />
       <div className="max-w-screen-2xl grow w-full flex flex-row justify-around items-center">
-        <div>
-          options
+        <div className="m-4 rounded-2xl h-96 w-fit flex flex-col items-center justify-start gap-2">
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className="w-[200px] justify-between"
+              >
+                {value
+                  ? frameworks.find((framework) => framework.value === value)?.label
+                  : "Select framework..."}
+                <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0">
+              <Command>
+                <CommandInput placeholder="Search framework..." className="h-9" />
+                <CommandEmpty>No framework found.</CommandEmpty>
+                <CommandGroup>
+                  {frameworks.map((framework) => (
+                    <CommandItem
+                      key={framework.value}
+                      onSelect={(currentValue) => {
+                        setValue(currentValue === value ? "" : currentValue)
+                        setOpen(false)
+                      }}
+                    >
+                      {framework.label}
+                      <CheckIcon
+                        className={cn(
+                          "ml-auto h-4 w-4",
+                          value === framework.value ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          <div className="w-full flex flex-row items-center justify-center gap-4">
+            <Button variant="outline" className="h-8 rounded-xl">Compile</Button>
+            <Button variant="outline" className="h-8 rounded-xl">Test</Button>
+          </div>
+          <div className="w-full flex flex-row items-center justify-center gap-2">
+            <Button variant="outline" className="h-8 rounded-xl">Rename</Button>
+            <Button variant="outline" className="h-8 rounded-xl">Duplicate</Button>
+            <Button variant="outline" className="h-8 rounded-xl">Delete</Button>
+          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-center">MODULES</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="font-medium">INV001</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Dependency</TableHead>
+                <TableHead>Address</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="font-medium">Sui</TableCell>
+                <TableCell className="font-mono text-right">0x02</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </div>
         <div className="border-2 rounded-2xl overflow-hidden w-8/12 h-96">
           <Editor
