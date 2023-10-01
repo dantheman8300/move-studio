@@ -1,5 +1,5 @@
 import Editor, { useMonaco } from '@monaco-editor/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from '@/components/ui/separator';
 import { Cross2Icon } from '@radix-ui/react-icons';
@@ -724,7 +724,17 @@ const themes = {
   },
 }
 
-export default function CodeEditor() {
+export default function CodeEditor(
+  props: {
+    code: string;
+    setCode: (code: string, file: string) => void;
+    tabs: {path: string; name: string;}[];
+    removeTab: (tab: string) => void;
+    setActiveTab: (tab: string) => void;
+  }
+) {
+
+  const [activeTab, setActiveTab] = useState('')
 
   const monaco = useMonaco();
 
@@ -844,15 +854,26 @@ export default function CodeEditor() {
 
   return (
     <div className="rounded-lg overflow-hidden w-full h-full flex flex-col items-center justify-center border border-slate-600">
-      <Tabs className='w-full' defaultValue="password">
+      <Tabs className='w-full'>
         <TabsList className='w-full pl-6 justify-start rounded-none bg-slate-900'>
-          <TabsTrigger value="account" className='font-mono'>
-            suip-stakes.move
-          </TabsTrigger>
-          <TabsTrigger value="password" className='font-mono'>
-            test.move
-            <Cross2Icon className='w-3 h-3 ml-2' />
-          </TabsTrigger>
+          {
+            props.tabs.map((tab) => {
+              return (
+                <TabsTrigger 
+                  value={tab.path} 
+                  className='font-mono flex flex-row items-center justify-center gap-1'
+                  onClick={() => {
+                    console.log('selected', tab.path)
+                    setActiveTab(tab.path)
+                    props.setActiveTab(tab.path)
+                  }}
+                >
+                  {tab.name}
+                  <Cross2Icon className='w-3 h-3 ml-2' onClick={() => props.removeTab(tab.path)} />
+                </TabsTrigger>
+              )
+            })
+          }
         </TabsList>
       </Tabs>
       <Separator />
@@ -861,8 +882,8 @@ export default function CodeEditor() {
           height="100%" 
           width="100%" 
           language="sui-move"
-          defaultValue={demoCode} 
           theme={"NightOwl"}
+          value={props.code}
           onChange={handleEditorChange}
         />
       </div>

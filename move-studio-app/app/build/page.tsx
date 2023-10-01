@@ -135,6 +135,10 @@ export default function BuildPage () {
 
   const [showSidebar, setShowSidebar] = useState(true);
 
+  const [tabs, setTabs] = useState<{path: string; name: string;}[]>([])
+  const [activeTab, setActiveTab] = useState<string>('')
+  const [code, setCode] = useState<string>('')
+
   let indexedDb: IndexedDb;
   useEffect(() => {
     const startIndexDb = async () => {
@@ -154,12 +158,53 @@ export default function BuildPage () {
     getProjects();
   }, []);
 
+  useEffect(() => {
+    console.log('activeTab', activeTab);
+    if (activeTab !== '') {
+      const tab = tabs.find(tab => tab.path === activeTab);
+      if (tab) {
+        console.log('activeTab', tab)
+        const forks = tab.path.split('/').slice(1);
+        console.log('forks', forks)
+        let dir = demoPackage.files;
+        while (forks.length > 1) {
+          let fork = forks.shift();
+          console.log('fork', fork)
+          const searchedDir = dir.find(file => file.name === fork);
+          if (searchedDir == undefined) {
+            console.log('searchedDir', searchedDir)
+            break;
+          }
+          dir = searchedDir.children || [];
+        }
+        const file = dir.find(file => file.name === tab.name);
+
+        if (file) {
+          console.log('file', file);
+          setCode(file.content || '');
+        }
+      }
+    }
+  }, [activeTab])
+
   const getProjects = async () => {
     indexedDb = new IndexedDb('test');
     await indexedDb.createObjectStore(['projects'], {keyPath: 'name'});
     const allProjects = await indexedDb.getAllKeys('projects');
     console.log('projectList', allProjects);
     setProjectList(allProjects);
+  }
+
+  const addTab = (path: string, name: string) => {
+    const isAlreadyTab = tabs.find(tab => tab.path === path);
+    if (!isAlreadyTab) {
+      setTabs([...tabs, {path, name}])
+    }
+  }
+
+  const removeTab = (path: string) => {
+    const newTabs = tabs.filter(tab => tab.path !== path);
+    setTabs(newTabs);
   }
   
   return (
@@ -255,10 +300,14 @@ export default function BuildPage () {
         </div>
       </div>
       {
+        selectedProjectName != '' &&
         showSidebar &&
         <div className="grow w-full flex flex-row items-center justify-center">
           <div className="w-60 h-full">
-            <Sidebar selectProjectName={selectedProjectName} />
+            <Sidebar 
+              addTab={addTab}
+              selectProjectName={selectedProjectName} 
+            />
           </div>
           {/* <Separator 
             orientation="vertical" 
@@ -270,14 +319,27 @@ export default function BuildPage () {
             }} 
           /> */}
           <div className="grow h-full p-2">
-            <CodeEditor />
+            <CodeEditor 
+              code={code}
+              setCode={() => {}}
+              tabs={tabs}
+              removeTab={removeTab}
+              setActiveTab={setActiveTab}
+            />
           </div>
         </div>
       }
       {
+        selectedProjectName != '' &&
         !showSidebar && 
         <div className="grow w-full flex flex-row items-center justify-center p-2">
-          <CodeEditor />
+          <CodeEditor 
+            code={code}
+            setCode={() => {}}
+            tabs={tabs}
+            removeTab={removeTab}
+            setActiveTab={setActiveTab}
+          />
         </div>
       }
     </div>

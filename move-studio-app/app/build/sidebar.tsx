@@ -69,7 +69,8 @@ import Files from "./files";
 
 export default function Sidebar(
   props: {
-    selectProjectName: string
+    selectProjectName: string;
+    addTab: (path: string, name: string) => void;
   }
 ) {
 
@@ -110,7 +111,7 @@ export default function Sidebar(
             </div>
           </AccordionTrigger>
           <AccordionContent className="w-full h-fit max-h-96 overflow-y-auto">
-            <Files files={currentProject?.files || []} />
+            <Files files={currentProject?.files || []} addTab={props.addTab} />
           </AccordionContent>
         </AccordionItem>
         <Separator />

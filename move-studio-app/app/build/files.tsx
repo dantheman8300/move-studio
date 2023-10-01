@@ -11,16 +11,16 @@ import { Separator } from "@/components/ui/separator";
 import { IFile } from "../db/ProjectsDB";
 
 
-function createFileSystem(files: IFile[], path = ''): JSX.Element[]  {
+function createFileSystem(addTab: (path: string, name: string) => void, files: IFile[], path = ''): JSX.Element[]  {
   const fileSytem: JSX.Element[] = []
   files.forEach(file => {
     if (file.type === 'file') {
       fileSytem.push(
-        <FileComponent path={path} name={file.name}/>
+        <FileComponent path={path} name={file.name} addTab={addTab}/>
       )
     } else if (file.type === 'folder') {
       fileSytem.push(
-        <FolderComponent path={path} name={file.name} files={file.children || []}/>
+        <FolderComponent path={path} name={file.name} files={file.children || []} addTab={addTab}/>
       )
     }
   })
@@ -29,7 +29,8 @@ function createFileSystem(files: IFile[], path = ''): JSX.Element[]  {
 
 export default function Files(
   props: {
-    files: IFile[]
+    files: IFile[],
+    addTab: (path: string, name: string) => void;
   }
 ) {
 
@@ -61,7 +62,7 @@ export default function Files(
   return (
     <div>
       {
-        createFileSystem(contents)
+        createFileSystem(props.addTab, contents)
       }
     </div>
   )
@@ -71,6 +72,7 @@ function FileComponent(
   props: {
     path: string;
     name: string;
+    addTab: (path: string, name: string) => void;
   }
 ) {
   return (
@@ -81,6 +83,7 @@ function FileComponent(
           onClick={(event) => {
             event?.preventDefault()
             console.log(props.path + '/' + props.name)
+            props.addTab(props.path + '/' + props.name, props.name)
           }}
         >
           {
@@ -122,6 +125,7 @@ function FolderComponent(
     path: string;
     name: string;
     files: IFile[];
+    addTab: (path: string, name: string) => void;
   }
 ) {
 
@@ -171,7 +175,7 @@ function FolderComponent(
         <div className="pl-2 w-full font-mono flex flex-row justify-start gap-2 items-center">
           <Separator className={`h-${(8*props.files.length).toString()} border`} orientation="vertical" />
           {
-            createFileSystem(props.files, props.path + '/' + props.name)
+            createFileSystem(props.addTab, props.files, props.path + '/' + props.name)
           }
         </div>
       }
