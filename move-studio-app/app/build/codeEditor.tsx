@@ -727,14 +727,17 @@ const themes = {
 export default function CodeEditor(
   props: {
     code: string;
-    setCode: (code: string, file: string) => void;
+    setCode: (code: string) => void;
     tabs: {path: string; name: string;}[];
+    activeTab: string;
     removeTab: (tab: string) => void;
     setActiveTab: (tab: string) => void;
   }
 ) {
 
-  const [activeTab, setActiveTab] = useState('')
+  useEffect(() => {
+    console.log('code', props.code)
+  }, [props.code])
 
   const monaco = useMonaco();
 
@@ -849,7 +852,7 @@ export default function CodeEditor(
   const handleEditorChange = (value: any) => {
     console.log('code changed', value)
     // console.log('currentModule', props.currentModule)
-    // props.setCode(value, props.currentModule ? props.currentModule : '');
+    props.setCode(value);
   };
 
   return (
@@ -864,7 +867,6 @@ export default function CodeEditor(
                   className='font-mono flex flex-row items-center justify-center gap-1'
                   onClick={() => {
                     console.log('selected', tab.path)
-                    setActiveTab(tab.path)
                     props.setActiveTab(tab.path)
                   }}
                 >

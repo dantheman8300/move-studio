@@ -73,8 +73,8 @@ export class IndexedDb {
     console.log(`putValue, db`, this.db);
     const tx = this.db.transaction(tableName, 'readwrite');
     const store = tx.objectStore(tableName);
-    const result = await store.add(value);
-    console.log('put result:', result);
+    const result = await store.put(value);
+    // const result = await store.add(value);
     return result;
   }
 

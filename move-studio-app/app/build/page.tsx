@@ -199,12 +199,42 @@ export default function BuildPage () {
     const isAlreadyTab = tabs.find(tab => tab.path === path);
     if (!isAlreadyTab) {
       setTabs([...tabs, {path, name}])
+      setActiveTab(path);
     }
   }
 
   const removeTab = (path: string) => {
     const newTabs = tabs.filter(tab => tab.path !== path);
     setTabs(newTabs);
+    if (activeTab === path) {
+      setActiveTab('');
+      setCode('');
+    }
+  }
+
+  const updateCode = async (code: string) => {
+    setCode(code);
+    const tab = tabs.find(tab => tab.path === activeTab);
+    if (tab) {
+      const forks = tab.path.split('/').slice(1);
+      let dir = demoPackage.files;
+      while (forks.length > 1) {
+        let fork = forks.shift();
+        const searchedDir = dir.find(file => file.name === fork);
+        if (searchedDir == undefined) {
+          break;
+        }
+        dir = searchedDir.children || [];
+      }
+      const file = dir.find(file => file.name === tab.name);
+      if (file) {
+        file.content = code;
+        console.log('file', file);
+        indexedDb = new IndexedDb('test');
+        await indexedDb.createObjectStore(['projects'], {keyPath: 'name'});
+        await indexedDb.putValue('projects', demoPackage);
+      }
+    }
   }
   
   return (
@@ -321,8 +351,9 @@ export default function BuildPage () {
           <div className="grow h-full p-2">
             <CodeEditor 
               code={code}
-              setCode={() => {}}
+              setCode={updateCode}
               tabs={tabs}
+              activeTab={activeTab}
               removeTab={removeTab}
               setActiveTab={setActiveTab}
             />
@@ -335,8 +366,9 @@ export default function BuildPage () {
         <div className="grow w-full flex flex-row items-center justify-center p-2">
           <CodeEditor 
             code={code}
-            setCode={() => {}}
+            setCode={updateCode}
             tabs={tabs}
+            activeTab={activeTab}
             removeTab={removeTab}
             setActiveTab={setActiveTab}
           />
