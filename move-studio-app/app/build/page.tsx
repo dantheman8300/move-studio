@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import WalletSelector from "@/components/walletSelector";
 import Editor, { useMonaco } from '@monaco-editor/react';
 import { useEffect, useState } from "react";
-import { IndexedDb } from "../db/ProjectsDB";
+import { IProject, IndexedDb } from "../db/ProjectsDB";
 import { cn } from "@/lib/utils"
 import {
   Command,
@@ -45,60 +45,7 @@ import {
 } from "@/components/ui/sheet"
 import { set } from "date-fns";
 
-
-
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-]
-
-export default function BuildPage () {
-
-  const [projectList, setProjectList] = useState([]);
-  const [open, setOpen] = useState(false)
-  const [value, setValue] = useState("")
-
-  const [showSidebar, setShowSidebar] = useState(true);
-
-  let indexedDb: IndexedDb;
-  useEffect(() => {
-    const startIndexDb = async () => {
-      indexedDb = new IndexedDb('test');
-      await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
-      
-      const existingUser = localStorage.getItem('user');
-      console.log('existingUser', existingUser);
-      if (!existingUser) {
-        console.log('setting user');
-        localStorage.setItem('user', 'true');
-        await indexedDb.putValue('projects', {
-          package: 'demoPackage',
-          dependencies: [
-            {name: 'demoPackage', address: '0x0'},
-            {name: 'Sui', address: '0x02'}
-          ],
-          modules: [
-            {
-              name: 'party', 
-              code: `module demoPackage::party {
+const demoCode = `module demoPackage::party {
 
   // Libraries being used
   use sui::object::{Self, UID};
@@ -133,22 +80,83 @@ export default function BuildPage () {
     transfer::share_object(balloon);
   }
             
-  }`
-            }
-          ]
-        }); 
+}`
+
+const demoPackage: IProject = {
+  name: 'demoPackage',
+  files: [
+    {
+      type: 'folder',
+      name: 'sources',
+      children: [
+        {
+          type: 'file',
+          name: 'party.move', 
+          content: demoCode
+        }
+      ]
+    }, 
+    {
+      type: 'file',
+      name: 'move.toml', 
+      content: `test toml`
+    }
+  ]
+}
+
+const frameworks = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+]
+
+export default function BuildPage () {
+
+  const [projectList, setProjectList] = useState<string[]>([]);
+  const [open, setOpen] = useState(false)
+  const [selectedProjectName, setSelectedProjectName] = useState("")
+
+  const [showSidebar, setShowSidebar] = useState(true);
+
+  let indexedDb: IndexedDb;
+  useEffect(() => {
+    const startIndexDb = async () => {
+      indexedDb = new IndexedDb('test');
+      await indexedDb.createObjectStore(['projects'], {keyPath: 'name'});
+      
+      const existingUser = localStorage.getItem('user');
+      console.log('existingUser', existingUser);
+      if (true) {
+        console.log('setting user');
+        localStorage.setItem('user', 'true');
+        await indexedDb.putValue('projects', demoPackage); 
         // startTutorial();
       }
          
     }
-    startIndexDb().then(() => {
-      getProjects();
-    });
+    getProjects();
   }, []);
 
   const getProjects = async () => {
     indexedDb = new IndexedDb('test');
-    await indexedDb.createObjectStore(['projects'], {keyPath: 'package'});
+    await indexedDb.createObjectStore(['projects'], {keyPath: 'name'});
     const allProjects = await indexedDb.getAllKeys('projects');
     console.log('projectList', allProjects);
     setProjectList(allProjects);
@@ -185,8 +193,8 @@ export default function BuildPage () {
                 aria-expanded={open}
                 className="w-[200px] justify-between"
               >
-                {value
-                  ? frameworks.find((framework) => framework.value === value)?.label
+                {selectedProjectName
+                  ? selectedProjectName
                   : "Select project..."}
                 <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
@@ -196,23 +204,27 @@ export default function BuildPage () {
                 <CommandInput placeholder="Search project..." className="h-9" />
                 <CommandEmpty>No framework found.</CommandEmpty>
                 <CommandGroup>
-                  {frameworks.map((framework) => (
-                    <CommandItem
-                      key={framework.value}
-                      onSelect={(currentValue) => {
-                        setValue(currentValue === value ? "" : currentValue)
-                        setOpen(false)
-                      }}
-                    >
-                      {framework.label}
-                      <CheckIcon
-                        className={cn(
-                          "ml-auto h-4 w-4",
-                          value === framework.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
+                  {projectList.map((projectName) => {
+                    console.log('projectName', projectName)
+                    return (
+                      <CommandItem
+                        key={projectName}
+                        onSelect={() => {
+                          console.log('newName', projectName)
+                          setSelectedProjectName(projectName === selectedProjectName ? "" : projectName)
+                          setOpen(false)
+                        }}
+                      >
+                        {projectName}
+                        <CheckIcon
+                          className={cn(
+                            "ml-auto h-4 w-4",
+                            selectedProjectName === projectName ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                      </CommandItem>
+                    )
+                  })}
                 </CommandGroup>
               </Command>
             </PopoverContent>
@@ -246,7 +258,7 @@ export default function BuildPage () {
         showSidebar &&
         <div className="grow w-full flex flex-row items-center justify-center">
           <div className="w-60 h-full">
-            <Sidebar />
+            <Sidebar selectProjectName={selectedProjectName} />
           </div>
           {/* <Separator 
             orientation="vertical" 

@@ -1,5 +1,17 @@
 import {IDBPDatabase, openDB} from 'idb';
 
+export type IProject = {
+  name: string;
+  files: IFile[];
+}
+
+export type IFile = {
+  type: 'file' | 'folder';
+  name: string;
+  content?: string;
+  children?: IFile[];
+}
+
 export class IndexedDb {
   private database: string;
   private db: any;

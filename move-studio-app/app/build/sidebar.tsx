@@ -45,7 +45,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -64,12 +64,35 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
+import { IFile, IProject, IndexedDb } from "../db/ProjectsDB";
+import Files from "./files";
 
-export default function Sidebar() {
+export default function Sidebar(
+  props: {
+    selectProjectName: string
+  }
+) {
 
-  const [projectList, setProjectList] = useState([]);
-  const [open, setOpen] = useState(false)
-  const [value, setValue] = useState("")
+  const [currentProject, setCurrentProject] = useState<IProject | null>(null);
+
+  let indexedDb: IndexedDb;
+
+  useEffect(() => {
+    console.log("project name", props.selectProjectName);
+
+    getProjectData(props.selectProjectName).then((project) => {
+      setCurrentProject(project);
+    })
+  }, [props.selectProjectName])
+
+  const getProjectData = async (project: string) => {
+    indexedDb = new IndexedDb('test');
+    await indexedDb.createObjectStore(['projects'], {keyPath: 'name'});
+    const projectData = await indexedDb.getValue('projects', project);
+    return projectData;
+    // console.log('projectData', projectData);
+    // return projectData;
+  }
 
   return (
     <div className="pl-2 pr-1 py-2 w-full h-full flex flex-col items-center justify-start gap-1">
@@ -87,205 +110,7 @@ export default function Sidebar() {
             </div>
           </AccordionTrigger>
           <AccordionContent className="w-full h-fit max-h-96 overflow-y-auto">
-            <ContextMenu>
-              <ContextMenuTrigger>
-                <div className="px-1 w-full h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center">
-                  <FileBox className="mr-2 w-4 h-4"/>
-                  suip_stakes.move
-                </div>
-              </ContextMenuTrigger>
-              <ContextMenuContent className="bg-slate-900">
-                <ContextMenuItem>
-                  <Pencil className="mr-2 w-4 h-4"/> Rename
-                </ContextMenuItem>
-                <Separator />
-                <ContextMenuItem>
-                  <Eye className="mr-2 w-4 h-4"/> Open
-                </ContextMenuItem>
-                <Separator />
-                <ContextMenuItem>
-                  <CopyPlus className="mr-2 w-4 h-4"/> Duplicate
-                </ContextMenuItem>
-                <ContextMenuItem>
-                  <Download className="mr-2 w-4 h-4"/> Move
-                </ContextMenuItem>
-                <Separator />
-                <ContextMenuItem>
-                  <Trash2 className="mr-2 w-4 h-4"/> Delete
-                </ContextMenuItem>
-              </ContextMenuContent>
-            </ContextMenu>
-            <ContextMenu>
-              <ContextMenuTrigger>
-                <div className="px-1 w-full h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center">
-                  <FolderClosed className="mr-2 w-4 h-4"/>
-                  tests
-                </div>
-              </ContextMenuTrigger>
-              <ContextMenuContent className="bg-slate-900">
-                <ContextMenuItem>
-                  <Pencil className="mr-2 w-4 h-4"/> Rename
-                </ContextMenuItem>
-                <Separator />
-                <ContextMenuItem>
-                  <FilePlus className="mr-2 w-4 h-4"/> Add file 
-                </ContextMenuItem>
-                <ContextMenuItem>
-                  <FolderPlus className="mr-2 w-4 h-4"/> Add folder 
-                </ContextMenuItem>
-                <ContextMenuItem>
-                  <FoldVertical className="mr-2 w-4 h-4"/> Collaspe child folders 
-                </ContextMenuItem>
-                <Separator />
-                <ContextMenuItem>
-                  <Trash2 className="mr-2 w-4 h-4"/> Delete
-                </ContextMenuItem>
-              </ContextMenuContent>
-            </ContextMenu>
-            <ContextMenu>
-              <ContextMenuTrigger>
-                <div className="px-1 w-full h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center">
-                  <FolderOpen className="mr-2 w-4 h-4"/>
-                  sources
-                </div>
-              </ContextMenuTrigger>
-              <ContextMenuContent className="bg-slate-900">
-                <ContextMenuItem>
-                  <Pencil className="mr-2 w-4 h-4"/> Rename
-                </ContextMenuItem>
-                <Separator />
-                <ContextMenuItem>
-                  <FilePlus className="mr-2 w-4 h-4"/> Add file 
-                </ContextMenuItem>
-                <ContextMenuItem>
-                  <FolderPlus className="mr-2 w-4 h-4"/> Add folder 
-                </ContextMenuItem>
-                <ContextMenuItem>
-                  <FoldVertical className="mr-2 w-4 h-4"/> Collaspe child folders 
-                </ContextMenuItem>
-                <Separator />
-                <ContextMenuItem>
-                  <Trash2 className="mr-2 w-4 h-4"/> Delete
-                </ContextMenuItem>
-              </ContextMenuContent>
-            </ContextMenu>
-            <div className="pl-2 w-full font-mono flex flex-row justify-start gap-2 items-center">
-              <Separator className="h-24 border" orientation="vertical" />
-              <div>
-                <ContextMenu>
-                  <ContextMenuTrigger>
-                    <div className="px-1 w-full h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center">
-                      <FileBox className="mr-2 w-4 h-4"/>
-                      suip_stakes.move
-                    </div>
-                  </ContextMenuTrigger>
-                  <ContextMenuContent className="bg-slate-900">
-                    <ContextMenuItem>
-                      <Pencil className="mr-2 w-4 h-4"/> Rename
-                    </ContextMenuItem>
-                    <Separator />
-                    <ContextMenuItem>
-                      <Eye className="mr-2 w-4 h-4"/> Open
-                    </ContextMenuItem>
-                    <Separator />
-                    <ContextMenuItem>
-                      <CopyPlus className="mr-2 w-4 h-4"/> Duplicate
-                    </ContextMenuItem>
-                    <ContextMenuItem>
-                      <Download className="mr-2 w-4 h-4"/> Move
-                    </ContextMenuItem>
-                    <Separator />
-                    <ContextMenuItem>
-                      <Trash2 className="mr-2 w-4 h-4"/> Delete
-                    </ContextMenuItem>
-                  </ContextMenuContent>
-                </ContextMenu>
-                <ContextMenu>
-                  <ContextMenuTrigger>
-                    <div className="px-1 w-full h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center">
-                      <FileBox className="mr-2 w-4 h-4"/>
-                      suip_stakes.move
-                    </div>
-                  </ContextMenuTrigger>
-                  <ContextMenuContent className="bg-slate-900">
-                    <ContextMenuItem>
-                      <Pencil className="mr-2 w-4 h-4"/> Rename
-                    </ContextMenuItem>
-                    <Separator />
-                    <ContextMenuItem>
-                      <Eye className="mr-2 w-4 h-4"/> Open
-                    </ContextMenuItem>
-                    <Separator />
-                    <ContextMenuItem>
-                      <CopyPlus className="mr-2 w-4 h-4"/> Duplicate
-                    </ContextMenuItem>
-                    <ContextMenuItem>
-                      <Download className="mr-2 w-4 h-4"/> Move
-                    </ContextMenuItem>
-                    <Separator />
-                    <ContextMenuItem>
-                      <Trash2 className="mr-2 w-4 h-4"/> Delete
-                    </ContextMenuItem>
-                  </ContextMenuContent>
-                </ContextMenu>
-                <ContextMenu>
-                  <ContextMenuTrigger>
-                    <div className="px-1 w-full h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center">
-                      <FileBox className="mr-2 w-4 h-4"/>
-                      suip_stakes.move
-                    </div>
-                  </ContextMenuTrigger>
-                  <ContextMenuContent className="bg-slate-900">
-                    <ContextMenuItem>
-                      <Pencil className="mr-2 w-4 h-4"/> Rename
-                    </ContextMenuItem>
-                    <Separator />
-                    <ContextMenuItem>
-                      <Eye className="mr-2 w-4 h-4"/> Open
-                    </ContextMenuItem>
-                    <Separator />
-                    <ContextMenuItem>
-                      <CopyPlus className="mr-2 w-4 h-4"/> Duplicate
-                    </ContextMenuItem>
-                    <ContextMenuItem>
-                      <Download className="mr-2 w-4 h-4"/> Move
-                    </ContextMenuItem>
-                    <Separator />
-                    <ContextMenuItem>
-                      <Trash2 className="mr-2 w-4 h-4"/> Delete
-                    </ContextMenuItem>
-                  </ContextMenuContent>
-                </ContextMenu>
-              </div>
-            </div>
-            <ContextMenu>
-              <ContextMenuTrigger>
-                <div className="px-1 w-full h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center">
-                  <FileCog className="mr-2 w-4 h-4"/>
-                  move.toml
-                </div>
-              </ContextMenuTrigger>
-              <ContextMenuContent className="bg-slate-900">
-                <ContextMenuItem>
-                  <Pencil className="mr-2 w-4 h-4"/> Rename
-                </ContextMenuItem>
-                <Separator />
-                <ContextMenuItem>
-                  <Eye className="mr-2 w-4 h-4"/> Open
-                </ContextMenuItem>
-                <Separator />
-                <ContextMenuItem>
-                  <CopyPlus className="mr-2 w-4 h-4"/> Duplicate
-                </ContextMenuItem>
-                <ContextMenuItem>
-                  <Download className="mr-2 w-4 h-4"/> Move
-                </ContextMenuItem>
-                <Separator />
-                <ContextMenuItem>
-                  <Trash2 className="mr-2 w-4 h-4"/> Delete
-                </ContextMenuItem>
-              </ContextMenuContent>
-            </ContextMenu>
+            <Files files={currentProject?.files || []} />
           </AccordionContent>
         </AccordionItem>
         <Separator />
