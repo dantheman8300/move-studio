@@ -43,7 +43,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { set } from "date-fns";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "../db/db";
 
 const demoCode = `module demoPackage::party {
 
@@ -119,7 +120,10 @@ const demoPackage: IProject = {
 
 export default function BuildPage () {
 
-  const [projectList, setProjectList] = useState<string[]>([]);
+  const projectList = useLiveQuery(() => db.projects.toArray()) || [];
+  useEffect(() => {
+  }, [projectList])
+
   const [open, setOpen] = useState(false)
   const [selectedProjectName, setSelectedProjectName] = useState("")
 
@@ -128,26 +132,6 @@ export default function BuildPage () {
   const [tabs, setTabs] = useState<{path: string; name: string;}[]>([])
   const [activeTab, setActiveTab] = useState<string>('')
   const [code, setCode] = useState<string>('')
-
-  let indexedDb: IndexedDb;
-  useEffect(() => {
-    const startIndexDb = async () => {
-      indexedDb = new IndexedDb('test');
-      await indexedDb.createObjectStore(['projects'], {keyPath: 'name'});
-      
-      const existingUser = localStorage.getItem('user');
-      console.log('existingUser', existingUser);
-      if (true) {
-        console.log('setting user');
-        localStorage.setItem('user', 'true');
-        await indexedDb.putValue('projects', demoPackage); 
-        // startTutorial();
-      }
-         
-    }
-    startIndexDb();
-    getProjects();
-  }, []);
 
   useEffect(() => {
     console.log('activeTab', activeTab);
@@ -178,14 +162,6 @@ export default function BuildPage () {
     }
   }, [activeTab])
 
-  const getProjects = async () => {
-    indexedDb = new IndexedDb('test');
-    await indexedDb.createObjectStore(['projects'], {keyPath: 'name'});
-    const allProjects = await indexedDb.getAllKeys('projects');
-    console.log('projectList', allProjects);
-    setProjectList(allProjects);
-  }
-
   const addTab = (path: string, name: string) => {
     const isAlreadyTab = tabs.find(tab => tab.path === path);
     if (!isAlreadyTab) {
@@ -203,29 +179,41 @@ export default function BuildPage () {
     }
   }
 
-  const updateCode = async (code: string) => {
-    setCode(code);
-    const tab = tabs.find(tab => tab.path === activeTab);
-    if (tab) {
-      const forks = tab.path.split('/').slice(1);
-      let dir = demoPackage.files;
-      while (forks.length > 1) {
-        let fork = forks.shift();
-        const searchedDir = dir.find(file => file.name === fork);
-        if (searchedDir == undefined) {
-          break;
-        }
-        dir = searchedDir.children || [];
-      }
-      const file = dir.find(file => file.name === tab.name);
-      if (file) {
-        file.content = code;
-        console.log('file', file);
-        indexedDb = new IndexedDb('test');
-        await indexedDb.createObjectStore(['projects'], {keyPath: 'name'});
-        await indexedDb.putValue('projects', demoPackage);
-      }
+  const addProject = async () => {
+    let prompt = window.prompt('Enter project name');
+    if (prompt) {
+      await db.projects.add({name: prompt, files: []});
     }
+  }
+
+  const updateCode = async (newCode: string) => {
+    // setCode(newCode);
+    // const updateCodeInIndexedDb = async () => {
+    //   const tab = tabs.find(tab => tab.path === activeTab);
+    //   if (tab) {
+    //     const forks = tab.path.split('/').slice(1);
+    //     let dir = demoPackage.files;
+    //     while (forks.length > 1) {
+    //       let fork = forks.shift();
+    //       const searchedDir = dir.find(file => file.name === fork);
+    //       if (searchedDir == undefined) {
+    //         break;
+    //       }
+    //       dir = searchedDir.children || [];
+    //     }
+    //     const file = dir.find(file => file.name === tab.name);
+    //     if (file) {
+    //       file.content = newCode;
+    //       console.log('file', file);
+    //       indexedDb = new IndexedDb('test');
+    //       await indexedDb.createObjectStore(['projects'], {keyPath: 'name'});
+    //       await indexedDb.putValue('projects', demoPackage);
+    //     }
+    //   }
+    // }
+
+    // await updateCodeInIndexedDb();
+    // // await getProjects();
   }
   
   return (
@@ -251,50 +239,54 @@ export default function BuildPage () {
         </div>
         <TypographyH2>Move Studio</TypographyH2>
         <div className="flex flex-row justify-around gap-2">
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={open}
-                className="w-[200px] justify-between"
-              >
-                {selectedProjectName
-                  ? selectedProjectName
-                  : "Select project..."}
-                <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
-              <Command>
-                <CommandInput placeholder="Search project..." className="h-9" />
-                <CommandEmpty>No framework found.</CommandEmpty>
-                <CommandGroup>
-                  {projectList.map((projectName) => {
-                    console.log('projectName', projectName)
-                    return (
-                      <CommandItem
-                        key={projectName}
-                        onSelect={() => {
-                          console.log('newName', projectName)
-                          setSelectedProjectName(projectName === selectedProjectName ? "" : projectName)
-                          setOpen(false)
-                        }}
-                      >
-                        {projectName}
-                        <CheckIcon
-                          className={cn(
-                            "ml-auto h-4 w-4",
-                            selectedProjectName === projectName ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                      </CommandItem>
-                    )
-                  })}
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
+          {
+            projectList.length > 0 &&
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  className="w-[200px] justify-between"
+                >
+                  {selectedProjectName
+                    ? selectedProjectName
+                    : "Select project..."}
+                  <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[200px] p-0">
+                <Command>
+                  <CommandInput placeholder="Search project..." className="h-9" />
+                  <CommandGroup>
+                      {
+                        projectList.map((projectName) => {
+                        console.log('projectName', projectName)
+                        return (
+                          <CommandItem
+                            key={projectName.name}
+                            onSelect={() => {
+                              console.log('newName', projectName)
+                              setSelectedProjectName(projectName.name === selectedProjectName ? "" : projectName.name)
+                              setOpen(false)
+                            }}
+                          >
+                            {projectName.name}
+                            <CheckIcon
+                              className={cn(
+                                "ml-auto h-4 w-4",
+                                selectedProjectName === projectName.name ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        )
+                      })}
+                    </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          }
+          <Button onClick={addProject}>New project</Button>
           <Sheet>
             <SheetTrigger>
               <Avatar>
@@ -327,7 +319,7 @@ export default function BuildPage () {
           <div className="w-60 h-full">
             <Sidebar 
               addTab={addTab}
-              selectProjectName={selectedProjectName} 
+              selectedProjectName={selectedProjectName} 
             />
           </div>
           {/* <Separator 

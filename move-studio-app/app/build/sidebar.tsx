@@ -67,35 +67,63 @@ import {
 import { IFile, IProject, IndexedDb } from "../db/ProjectsDB";
 import Files from "./files";
 import { useToast } from "@/components/ui/use-toast";
+import { db } from "../db/db";
+import { useLiveQuery } from "dexie-react-hooks";
 
 export default function Sidebar(
   props: {
-    selectProjectName: string;
+    selectedProjectName: string;
     addTab: (path: string, name: string) => void;
   }
 ) {
 
   const { toast } = useToast();
 
-  const [currentProject, setCurrentProject] = useState<IProject | null>(null);
+  const currentProject = useLiveQuery(() => db.projects.get(props.selectedProjectName));
 
   let indexedDb: IndexedDb;
 
-  useEffect(() => {
-    console.log("project name", props.selectProjectName);
+  // useEffect(() => {
+  //   console.log("project name", props.selectedProjectName);
 
-    getProjectData(props.selectProjectName).then((project) => {
-      setCurrentProject(project);
-    })
-  }, [props.selectProjectName])
 
-  const getProjectData = async (project: string) => {
-    indexedDb = new IndexedDb('test');
-    await indexedDb.createObjectStore(['projects'], {keyPath: 'name'});
-    const projectData = await indexedDb.getValue('projects', project);
-    return projectData;
-    // console.log('projectData', projectData);
-    // return projectData;
+  // }, [props.selectedProjectName])
+
+  // const getProjectData = async (project: string) => {
+  //   const projectData = await db.projects.get(project);
+  //   return projectData || {name: '', files: []};
+  // }
+
+  const deleteProject = async () => {
+    let confirm = window.confirm('Are you sure you want to delete this project?');
+    if (confirm) {
+      await db.projects.delete(props.selectedProjectName);
+      window.location.reload();
+    }
+  }
+
+  const addFile = async () => {
+    let fileName = prompt('Enter file name');
+    if (fileName) {
+      let file: IFile = {
+        type: 'file',
+        name: fileName,
+        content: ''
+      }
+      await db.projects.update(props.selectedProjectName, {files: [...currentProject?.files || [], file]});
+    }
+  }
+
+  const addFolder = async () => {
+    let folderName = prompt('Enter folder name');
+    if (folderName) {
+      let folder: IFile = {
+        type: 'folder',
+        name: folderName,
+        children: []
+      }
+      await db.projects.update(props.selectedProjectName, {files: [...currentProject?.files || [], folder]});
+    }
   }
 
   const compileProject = async () => {
@@ -139,14 +167,14 @@ export default function Sidebar(
             <div className="w-full flex flex-row items-center justify-between">
               Files
               <div className="flex flex-row gap-1 items-end justify-center">
-                <FilePlus className="w-4 h-4 hover:bg-accent rounded" />
-                <FolderPlus className="w-4 h-4 hover:bg-accent rounded" />
+                <FilePlus className="w-4 h-4 hover:bg-accent rounded" onClick={addFile}/>
+                <FolderPlus className="w-4 h-4 hover:bg-accent rounded" onClick={addFolder} />
                 <MoreVertical className="w-4 h-4 hover:bg-accent rounded" />
               </div>
             </div>
           </AccordionTrigger>
           <AccordionContent className="w-full h-fit max-h-96 overflow-y-auto">
-            <Files files={currentProject?.files || []} addTab={props.addTab} />
+            <Files projectName={props.selectedProjectName} files={currentProject?.files || []} addTab={props.addTab} />
           </AccordionContent>
         </AccordionItem>
         <Separator />
@@ -174,7 +202,7 @@ export default function Sidebar(
               <Button variant="outline">
                 <CopyPlus className="mr-2 w-4 h-4"/> Duplicate project
               </Button>
-              <Button variant="destructive">
+              <Button variant="destructive" onClick={deleteProject}>
                 <Trash2 className="mr-2 w-4 h-4"/> Delete project
               </Button>
             </div>

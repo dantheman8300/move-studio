@@ -44,6 +44,8 @@
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
     "date-fns": "^2.30.0",
+    "dexie": "^3.2.4",
+    "dexie-react-hooks": "^1.1.6",
     "idb": "^7.1.1",
     "lucide-react": "^0.279.0",
     "monaco-themes": "^0.4.4",
