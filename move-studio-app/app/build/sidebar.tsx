@@ -56,7 +56,7 @@ import {
 } from "@/components/ui/accordion"
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { ChevronRightSquare, CopyPlus, Download, Eye, FileBox, FileCog, FilePlus, FlaskConical, FoldVertical, FolderClosed, FolderEdit, FolderOpen, FolderPlus, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { ChevronRightSquare, CopyPlus, Download, Eye, FileBox, FileCog, FilePlus, FlaskConical, FoldVertical, FolderClosed, FolderEdit, FolderOpen, FolderPlus, Loader2, MoreVertical, PackageCheck, Pencil, Trash2 } from "lucide-react";
 
 import {
   ContextMenu,
@@ -66,6 +66,7 @@ import {
 } from "@/components/ui/context-menu"
 import { IFile, IProject, IndexedDb } from "../db/ProjectsDB";
 import Files from "./files";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Sidebar(
   props: {
@@ -73,6 +74,8 @@ export default function Sidebar(
     addTab: (path: string, name: string) => void;
   }
 ) {
+
+  const { toast } = useToast();
 
   const [currentProject, setCurrentProject] = useState<IProject | null>(null);
 
@@ -93,6 +96,38 @@ export default function Sidebar(
     return projectData;
     // console.log('projectData', projectData);
     // return projectData;
+  }
+
+  const compileProject = async () => {
+    console.log('compile project');
+    
+    toast({
+      description: <div className="flex flex-row gap-2 items-center justify-start">
+        <Loader2 className="w-6 h-6 animate-spin" />
+        Compiling...
+      </div>,
+    })
+
+    const response = await fetch(
+      'http://localhost:80/compile',
+      {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(currentProject)
+      }
+    )
+
+    const data = await response.json();
+    console.log('data', data);
+
+    toast({
+      description: <div className="flex flex-row gap-2 items-center justify-start">
+        <PackageCheck className="w-6 h-6" />
+        Project compiled successfully
+      </div>,
+    })
   }
 
   return (
@@ -119,7 +154,7 @@ export default function Sidebar(
           <AccordionTrigger>Tools</AccordionTrigger>
           <AccordionContent >
             <div className="flex flex-col gap-1">
-              <Button variant="outline" className="">
+              <Button variant="outline" className="" onClick={compileProject}>
                 <ChevronRightSquare className="mr-2 w-4 h-4" /> Compile
               </Button>
               <Button variant="outline">

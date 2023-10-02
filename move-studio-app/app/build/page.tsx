@@ -82,6 +82,19 @@ const demoCode = `module demoPackage::party {
             
 }`
 
+const demoToml = `
+[package]
+name = "demoPackage"
+version = "0.0.1"
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "testnet" }
+
+[addresses]
+Sui = "0x02"
+demoPackage = "0x0"
+`
+
 const demoPackage: IProject = {
   name: 'demoPackage',
   files: [
@@ -99,33 +112,10 @@ const demoPackage: IProject = {
     {
       type: 'file',
       name: 'move.toml', 
-      content: `test toml`
+      content: demoToml
     }
   ]
 }
-
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-]
 
 export default function BuildPage () {
 
@@ -155,6 +145,7 @@ export default function BuildPage () {
       }
          
     }
+    startIndexDb();
     getProjects();
   }, []);
 
