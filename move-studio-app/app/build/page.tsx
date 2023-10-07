@@ -45,6 +45,7 @@ import {
 } from "@/components/ui/sheet"
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/db";
+import { set } from "date-fns";
 
 const demoCode = `module demoPackage::party {
 
@@ -133,6 +134,11 @@ export default function BuildPage () {
   const [activeTab, setActiveTab] = useState<string>('')
 
   const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    setTabs([]);
+    setActiveTab('');
+  }, [selectedProjectName])
 
   const addTab = (path: string, name: string) => {
     const isAlreadyTab = tabs.find(tab => tab.path === path);

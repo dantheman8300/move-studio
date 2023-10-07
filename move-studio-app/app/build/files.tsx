@@ -61,7 +61,7 @@ export default function Files(
     const merged = [...sortedFolders, ...sortedFiles]
     // Set the contents
     return merged || [];
-  });
+  }, [props.projectName]);
 
   return (
     <div>
@@ -174,7 +174,7 @@ function FolderComponent(
     // console.log('current folder', currentFolder)
     // console.log('length', currentFolder.length)
     return currentFolder || [];
-  })
+  }, [props.path, props.name])
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 

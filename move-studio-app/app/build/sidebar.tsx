@@ -80,7 +80,7 @@ export default function Sidebar(
 
   const { toast } = useToast();
 
-  const currentProject = useLiveQuery(() => db.projects.get(props.selectedProjectName));
+  const currentProject = useLiveQuery(() => db.projects.get(props.selectedProjectName), [props.selectedProjectName]);
 
   const deleteProject = async () => {
     let confirm = window.confirm('Are you sure you want to delete this project?');
@@ -203,6 +203,20 @@ export default function Sidebar(
     }
   }
 
+  const renameProject = async () => {
+    let projectName = prompt('Enter new project name');
+    if (projectName) {
+      await db.projects.update(props.selectedProjectName, {name: projectName});
+      window.location.reload();
+    }
+  }
+
+  const duplicateProject = async () => {
+    let projectName = prompt('Entry duplicate project name');
+    if (projectName) {
+      await db.projects.add({name: projectName, files: currentProject?.files || []});
+    }
+  }
 
   return (
     <div className="pl-2 pr-1 py-2 w-full h-full flex flex-col items-center justify-start gap-1">
@@ -242,10 +256,10 @@ export default function Sidebar(
           <AccordionTrigger>Settings</AccordionTrigger>
           <AccordionContent>
             <div className="flex flex-col gap-1">
-              <Button variant="outline" className="">
+              <Button variant="outline" className="" onClick={renameProject}>
                 <FolderEdit className="mr-2 w-4 h-4" /> Rename project
               </Button>
-              <Button variant="outline">
+              <Button variant="outline" onClick={duplicateProject}>
                 <CopyPlus className="mr-2 w-4 h-4"/> Duplicate project
               </Button>
               <Button variant="destructive" onClick={deleteProject}>
