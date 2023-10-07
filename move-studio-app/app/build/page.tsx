@@ -167,6 +167,8 @@ export default function BuildPage () {
     if (!isAlreadyTab) {
       setTabs([...tabs, {path, name}])
       setActiveTab(path);
+    } else {
+      setActiveTab(path);
     }
   }
 
@@ -311,8 +313,7 @@ export default function BuildPage () {
           /> */}
           <div className="grow h-full p-2">
             <CodeEditor 
-              code={code}
-              setCode={updateCode}
+              projectName={selectedProjectName}
               tabs={tabs}
               activeTab={activeTab}
               removeTab={removeTab}
@@ -326,8 +327,7 @@ export default function BuildPage () {
         !showSidebar && 
         <div className="grow w-full flex flex-row items-center justify-center p-2">
           <CodeEditor 
-            code={code}
-            setCode={updateCode}
+            projectName={selectedProjectName}
             tabs={tabs}
             activeTab={activeTab}
             removeTab={removeTab}

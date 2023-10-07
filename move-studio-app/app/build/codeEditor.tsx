@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from '@/components/ui/separator';
 import { Cross2Icon } from '@radix-ui/react-icons';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '../db/db';
+import { IProject } from '../db/ProjectsDB';
 
 const demoCode = `module demoPackage::party {
 
@@ -726,8 +729,6 @@ const themes = {
 
 export default function CodeEditor(
   props: {
-    code: string;
-    setCode: (code: string) => void;
     tabs: {path: string; name: string;}[];
     activeTab: string;
     removeTab: (tab: string) => void;
@@ -735,9 +736,23 @@ export default function CodeEditor(
   }
 ) {
 
-  useEffect(() => {
-    console.log('code', props.code)
-  }, [props.code])
+  const code = useLiveQuery(async () => {
+    if (props.activeTab != '') {
+      const forks = props.activeTab.split('/');
+      const project = await db.projects.get(forks.shift() || '');
+      let files = project?.files || [];
+      while (forks.length > 1) {
+        let fork = forks.shift();
+        const searchedDir = files.find(file => file.name === fork);
+        if (searchedDir == undefined) {
+          break;
+        }
+        files = searchedDir.children || [];
+      }
+      const file = files.find(file => file.name === forks[0]);
+      return file?.content || '';
+    }
+  }, [props.activeTab])
 
   const monaco = useMonaco();
 
@@ -849,23 +864,42 @@ export default function CodeEditor(
     }
   }, [monaco]);
 
-  const handleEditorChange = (value: any) => {
-    console.log('code changed', value)
-    // console.log('currentModule', props.currentModule)
-    props.setCode(value);
-  };
+  const handleCodeChange = async (value: string | undefined) => {
+    if (props.activeTab != '') {
+      const forks = props.activeTab.split('/');
+      const project = await db.projects.get(forks.shift() || '');
+      let files = project?.files || [];
+      while (forks.length > 1) {
+        let fork = forks.shift();
+        const searchedDir = files.find(file => file.name === fork);
+        if (searchedDir == undefined) {
+          break;
+        }
+        files = searchedDir.children || [];
+      }
+      const file = files.find(file => file.name === forks[0]);
+      if (file != undefined) {
+        file.content = value || '';
+        await db.projects.put(project || {} as IProject);
+      }
+    }
+  }
 
   return (
     <div className="rounded-lg overflow-hidden w-full h-full flex flex-col items-center justify-center border border-slate-600">
       {
         props.tabs.length > 0 &&
         <>
-          <Tabs className='w-full'>
+          <Tabs 
+            className='w-full'
+            activationMode='manual'
+          >
           <TabsList className='w-full pl-6 justify-start rounded-none bg-slate-900'>
             {
               props.tabs.map((tab) => {
                 return (
                   <TabsTrigger 
+                    data-state={props.activeTab === tab.path ? 'active' : 'inactive'}
                     value={tab.path} 
                     className='font-mono flex flex-row items-center justify-center gap-1'
                     onClick={() => {
@@ -874,7 +908,14 @@ export default function CodeEditor(
                     }}
                   >
                     {tab.name}
-                    <Cross2Icon className='w-3 h-3 ml-2' onClick={() => props.removeTab(tab.path)} />
+                    <Cross2Icon 
+                      className='w-3 h-3 ml-2' 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        props.removeTab(tab.path);
+
+                      }} 
+                    />
                   </TabsTrigger>
                 )
               })
@@ -883,14 +924,17 @@ export default function CodeEditor(
         </Tabs>
         <Separator />
         <div className=" w-full h-full grow">
-          <Editor
-            height="100%" 
-            width="100%" 
-            language="sui-move"
-            theme={"NightOwl"}
-            value={props.code}
-            onChange={handleEditorChange}
-          />
+          {
+            props.activeTab != '' &&
+            <Editor
+              height="100%" 
+              width="100%" 
+              language="sui-move"
+              theme={"NightOwl"}
+              value={code}
+              onChange={handleCodeChange}
+            />
+          }
         </div>
       </>
       }
