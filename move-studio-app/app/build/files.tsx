@@ -33,39 +33,40 @@ function createFileSystem(addTab: (path: string, name: string) => void, files: I
 export default function Files(
   props: {
     projectName: string;
-    files: IFile[],
     addTab: (path: string, name: string) => void;
   }
 ) {
 
-  const [contents, setContents] = useState<IFile[]>([])
+  const contents = useLiveQuery(async () => {
+    const project = await db.projects.get(props.projectName)
+    if (!project) return [];
+    const files = project.files;
 
-  useEffect(() => {
-    // Sort the files 
+    // Sort the files
     // All files with type folder should be at the top of the list and sorted alphabetically
     // All files with type file should be at the bottom of the list and sorted alphabetically
-    const files: IFile[] = []
     const folders: IFile[] = []
-    props.files.forEach(file => {
+    const filesArray: IFile[] = []
+    files.forEach(file => {
       if (file.type === 'folder') {
         folders.push(file)
       } else {
-        files.push(file)
+        filesArray.push(file)
       }
     })
     // Sort the files and folders by name individually
-    const sortedFiles = files.sort((a, b) => a.name.localeCompare(b.name))
+    const sortedFiles = filesArray.sort((a, b) => a.name.localeCompare(b.name))
     const sortedFolders = folders.sort((a, b) => a.name.localeCompare(b.name))
     // Merge the sorted files and folders
     const merged = [...sortedFolders, ...sortedFiles]
     // Set the contents
-    setContents(merged)
-
-  }, [props])
+    return merged || [];
+  });
 
   return (
     <div>
       {
+        contents &&
         createFileSystem(props.addTab, contents, props.projectName)
       }
     </div>
@@ -170,8 +171,8 @@ function FolderComponent(
       currentFolder = currentFolder.find(file => file.name === forks[0])?.children as IFile[];
       forks.shift();
     }
-    console.log('current folder', currentFolder)
-    console.log('length', currentFolder.length)
+    // console.log('current folder', currentFolder)
+    // console.log('length', currentFolder.length)
     return currentFolder || [];
   })
 
@@ -202,6 +203,72 @@ function FolderComponent(
     }
   }
 
+  const addFolder = async () => {
+    let folderName = prompt('Enter folder name');
+    let forks = (props.path + '/' + props.name).split('/');
+    console.log(forks)
+    let projectName = forks.shift();
+    let project = await db.projects.get(projectName || '');
+    if (!project) return;
+    console.log('project', project)
+    let currentFolder = project.files as IFile[];
+    while (forks.length > 0) {
+      console.log('current folder', currentFolder)
+      currentFolder = currentFolder.find(file => file.name === forks[0])?.children as IFile[];
+      forks.shift();
+    }
+    if (folderName) {
+      let folder: IFile = {
+        type: 'folder',
+        name: folderName,
+        children: []
+      }
+      currentFolder.push(folder);
+      await db.projects.put(project);
+    }
+  }
+
+  const deleteFolder = async () => {
+    let forks = (props.path + '/' + props.name).split('/');
+    console.log(forks)
+    let projectName = forks.shift();
+    let project = await db.projects.get(projectName || '');
+    if (!project) return;
+    console.log('project', project)
+    let currentFolder = project.files as IFile[];
+    while (forks.length > 1) {
+      console.log('current folder', currentFolder)
+      currentFolder = currentFolder.find(file => file.name === forks[0])?.children as IFile[];
+      forks.shift();
+    }
+    const folderIndex = currentFolder.findIndex(file => file.name === forks[0]);
+    currentFolder.splice(folderIndex, 1);
+    console.log('current folder', currentFolder)
+    console.log('project', project)
+    await db.projects.put(project);
+  }
+
+  const renameFolder = async () => {
+    let newName = prompt('Enter new name');
+    let forks = (props.path + '/' + props.name).split('/');
+    console.log(forks)
+    let projectName = forks.shift();
+    let project = await db.projects.get(projectName || '');
+    if (!project) return;
+    console.log('project', project)
+    let currentFolder = project.files as IFile[];
+    while (forks.length > 1) {
+      console.log('current folder', currentFolder)
+      currentFolder = currentFolder.find(file => file.name === forks[0])?.children as IFile[];
+      forks.shift();
+    }
+    const folderIndex = currentFolder.findIndex(file => file.name === forks[0]);
+    currentFolder[folderIndex].name = newName || '';
+    console.log('current folder', currentFolder)
+    console.log('project', project)
+    await db.projects.put(project);
+  }
+
   return (
     <div>
       <ContextMenu>
@@ -222,21 +289,21 @@ function FolderComponent(
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent className="bg-slate-900">
-          <ContextMenuItem>
+          <ContextMenuItem onClick={renameFolder}>
             <Pencil className="mr-2 w-4 h-4"/> Rename
           </ContextMenuItem>
           <Separator />
           <ContextMenuItem onClick={addFile}>
             <FilePlus className="mr-2 w-4 h-4"/> Add file 
           </ContextMenuItem>
-          <ContextMenuItem>
+          <ContextMenuItem onClick={addFolder}>
             <FolderPlus className="mr-2 w-4 h-4"/> Add folder 
           </ContextMenuItem>
-          <ContextMenuItem>
+          {/* <ContextMenuItem>
             <FoldVertical className="mr-2 w-4 h-4"/> Collaspe child folders 
-          </ContextMenuItem>
+          </ContextMenuItem> */}
           <Separator />
-          <ContextMenuItem>
+          <ContextMenuItem onClick={deleteFolder}>
             <Trash2 className="mr-2 w-4 h-4"/> Delete
           </ContextMenuItem>
         </ContextMenuContent>
@@ -246,7 +313,7 @@ function FolderComponent(
         files.length > 0 &&
         isOpen &&
         <div className="pl-2 w-full font-mono flex flex-row justify-start gap-2 items-center">
-          <Separator className={`h-${(8 * files.length)} border`} orientation="vertical" />
+          {/* <Separator className={`h-${(8 * files.length)} border`} orientation="vertical" /> */}
           <div>
             {
               createFileSystem(props.addTab, files, props.path + '/' + props.name)
