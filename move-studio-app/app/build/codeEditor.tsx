@@ -890,7 +890,7 @@ export default function CodeEditor(
   }
 
   return (
-    <div className="w-full h-full max-h-max flex flex-col items-center justify-center border-slate-600 gap-2">
+    <div className="w-full h-full max-h-max flex flex-col items-center justify-start border-slate-600 gap-2">
       {
         props.tabs.length > 0 &&
         <div className='flex flex-col rounded-lg overflow-hidden border w-full grow'>
@@ -946,7 +946,7 @@ export default function CodeEditor(
         props.error != '' &&
         <div className='overflow-hidden w-full flex flex-col border rounded-lg bg-[#011627]'>
           <div className='w-full h-8 bg-slate-900 flex flex-row items-center justify-center ps-8 text-sm font-mono text-muted-foreground'>
-            Compilation Log
+            Terminal Log
             <Cross2Icon
               className='ml-2 w-4 h-4 text-red-500 cursor-pointer hover:text-red-600'
               onClick={() => props.clearError()}
@@ -954,7 +954,7 @@ export default function CodeEditor(
           </div>
           <Separator />
           <div className='flex flex-row justify-between items-start w-full'>
-            <div className='p-1 w-full max-h-80 flex flex-row justify-start items-start overflow-y-scroll'>
+            <div className='p-1 w-full max-w-6xl max-h-80 flex flex-row justify-start items-start overflow-scroll'>
               <Ansi className='whitespace-pre text-xs'>
                 {props.error}
               </Ansi>
