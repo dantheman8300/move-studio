@@ -81,19 +81,6 @@ export default function Sidebar(
 
   const currentProject = useLiveQuery(() => db.projects.get(props.selectedProjectName));
 
-  let indexedDb: IndexedDb;
-
-  // useEffect(() => {
-  //   console.log("project name", props.selectedProjectName);
-
-
-  // }, [props.selectedProjectName])
-
-  // const getProjectData = async (project: string) => {
-  //   const projectData = await db.projects.get(project);
-  //   return projectData || {name: '', files: []};
-  // }
-
   const deleteProject = async () => {
     let confirm = window.confirm('Are you sure you want to delete this project?');
     if (confirm) {
@@ -169,7 +156,7 @@ export default function Sidebar(
               <div className="flex flex-row gap-1 items-end justify-center">
                 <FilePlus className="w-4 h-4 hover:bg-accent rounded" onClick={addFile}/>
                 <FolderPlus className="w-4 h-4 hover:bg-accent rounded" onClick={addFolder} />
-                <MoreVertical className="w-4 h-4 hover:bg-accent rounded" />
+                {/* <MoreVertical className="w-4 h-4 hover:bg-accent rounded" /> */}
               </div>
             </div>
           </AccordionTrigger>
