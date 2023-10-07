@@ -127,7 +127,13 @@ function FileComponent(
           <Pencil className="mr-2 w-4 h-4"/> Rename
         </ContextMenuItem>
         <Separator />
-        <ContextMenuItem>
+        <ContextMenuItem
+          onClick={(event) => {
+            event?.preventDefault()
+            console.log(props.path + '/' + props.name)
+            props.addTab(props.path + '/' + props.name, props.name)
+          }}
+        >
           <Eye className="mr-2 w-4 h-4"/> Open
         </ContextMenuItem>
         <Separator />
