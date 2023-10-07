@@ -220,7 +220,7 @@ export default function Sidebar(
             </div>
           </AccordionTrigger>
           <AccordionContent className="w-full h-fit max-h-96 overflow-y-auto">
-            <Files projectName={props.selectedProjectName} files={currentProject?.files || []} addTab={props.addTab} />
+            <Files projectName={props.selectedProjectName} addTab={props.addTab} />
           </AccordionContent>
         </AccordionItem>
         <Separator />
