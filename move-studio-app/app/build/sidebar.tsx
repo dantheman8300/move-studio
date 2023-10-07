@@ -56,7 +56,7 @@ import {
 } from "@/components/ui/accordion"
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { ChevronRightSquare, CopyPlus, Download, Eye, FileBox, FileCog, FilePlus, FlaskConical, FoldVertical, FolderClosed, FolderEdit, FolderOpen, FolderPlus, Loader2, MoreVertical, PackageCheck, Pencil, Trash2 } from "lucide-react";
+import { ChevronRightSquare, CopyPlus, Download, Eye, FileBox, FileCog, FilePlus, FlaskConical, FoldVertical, FolderClosed, FolderEdit, FolderOpen, FolderPlus, Loader2, MoreVertical, PackageCheck, PackageX, Pencil, Trash2 } from "lucide-react";
 
 import {
   ContextMenu,
@@ -74,6 +74,7 @@ export default function Sidebar(
   props: {
     selectedProjectName: string;
     addTab: (path: string, name: string) => void;
+    setError: (error: string) => void;
   }
 ) {
 
@@ -116,6 +117,8 @@ export default function Sidebar(
   const compileProject = async () => {
     console.log('compile project');
     
+    props.setError('');
+
     toast({
       description: <div className="flex flex-row gap-2 items-center justify-start">
         <Loader2 className="w-6 h-6 animate-spin" />
@@ -132,17 +135,26 @@ export default function Sidebar(
         },
         body: JSON.stringify(currentProject)
       }
-    )
+    );
 
     const data = await response.json();
-    console.log('data', data);
-
-    toast({
-      description: <div className="flex flex-row gap-2 items-center justify-start">
-        <PackageCheck className="w-6 h-6" />
-        Project compiled successfully
-      </div>,
-    })
+    
+    if (data.error) {
+      props.setError(data.errorMessage);
+      toast({
+        description: <div className="flex flex-row gap-2 items-center justify-start">
+          <PackageX className="w-6 h-6" />
+          Project compilation failed
+        </div>,
+      })
+    } else {
+      toast({
+        description: <div className="flex flex-row gap-2 items-center justify-start">
+          <PackageCheck className="w-6 h-6" />
+          Project compiled successfully
+        </div>,
+      })
+    }
   }
 
   return (

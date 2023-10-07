@@ -4,6 +4,12 @@ import * as fs from 'fs';
 
 const TEMP_DIR = `${__dirname}/../temp-packages`;
 
+type CompileResult = {
+  error: boolean;
+  errorMessage?: string;
+  compiledModules?: string[];
+}
+
 /*
   Takes a IProject object and sets up the project in the file system under 
   the TEMP_DIR directory. 
@@ -35,7 +41,7 @@ function createProjectInFileSystem(files: IFile[], path = '') {
   Takes a IProject object and compiles it. Returns a string of the compiled 
   project. 
 */
-export async function compile(project: IProject): Promise<string | string[]> {
+export async function compile(project: IProject): Promise<CompileResult> {
 
   // Create project in file system
   createProjectInFileSystem(project.files, `${TEMP_DIR}/${project.name}`);
@@ -55,18 +61,24 @@ export async function compile(project: IProject): Promise<string | string[]> {
     fs.rmdirSync(projectPath, { recursive: true });
 
 
-    return compiledModules as unknown as string[];
+    return {
+      error: false,
+      compiledModules: compiledModules as unknown as string[]
+    }
 
   } catch (error: any) {
-    console.log('error', error)
-    const errorMessage = error.stdout;
+    console.log('error', error.stderr)
+    const errorMessage = error.stderr;
 
     // Check error message for update needed message - TODO
 
     // Remove the temporary project directory
-    // fs.rmdirSync(projectPath, { recursive: true });
+    fs.rmdirSync(projectPath, { recursive: true });
     
 
-    return errorMessage as string;
+    return {
+      error: true,
+      errorMessage
+    }
   }
 }

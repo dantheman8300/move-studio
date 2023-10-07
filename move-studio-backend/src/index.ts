@@ -34,15 +34,10 @@ app.get('/', (_req, res) => {
 app.post('/compile', async (req, res) => {
   const project = req.body;
 
-  // console.log(project);
-  console.log('compiling project...')
-
-  console.log(project)
-
   // Call compile function
   const compileResult = await compile(project);
 
-  console.log(compileResult)
+  console.log('compileResult', compileResult)
 
   res.send(compileResult);
 

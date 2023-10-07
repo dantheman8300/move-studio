@@ -6,6 +6,8 @@ import { Cross2Icon } from '@radix-ui/react-icons';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
 import { IProject } from '../db/ProjectsDB';
+import Ansi from "ansi-to-react";
+import { Button } from '@/components/ui/button';
 
 const demoCode = `module demoPackage::party {
 
@@ -733,6 +735,8 @@ export default function CodeEditor(
     activeTab: string;
     removeTab: (tab: string) => void;
     setActiveTab: (tab: string) => void;
+    error: string;
+    clearError: () => void;
   }
 ) {
 
@@ -886,57 +890,77 @@ export default function CodeEditor(
   }
 
   return (
-    <div className="rounded-lg overflow-hidden w-full h-full flex flex-col items-center justify-center border border-slate-600">
+    <div className="w-full h-full max-h-max flex flex-col items-center justify-center border-slate-600 gap-2">
       {
         props.tabs.length > 0 &&
-        <>
+        <div className='flex flex-col rounded-lg overflow-hidden border w-full grow'>
           <Tabs 
             className='w-full'
             activationMode='manual'
           >
-          <TabsList className='w-full pl-6 justify-start rounded-none bg-slate-900'>
-            {
-              props.tabs.map((tab) => {
-                return (
-                  <TabsTrigger 
-                    data-state={props.activeTab === tab.path ? 'active' : 'inactive'}
-                    value={tab.path} 
-                    className='font-mono flex flex-row items-center justify-center gap-1'
-                    onClick={() => {
-                      console.log('selected', tab.path)
-                      props.setActiveTab(tab.path)
-                    }}
-                  >
-                    {tab.name}
-                    <Cross2Icon 
-                      className='w-3 h-3 ml-2' 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        props.removeTab(tab.path);
+            <TabsList className='w-full pl-6 justify-start rounded-none bg-slate-900'>
+              {
+                props.tabs.map((tab) => {
+                  return (
+                    <TabsTrigger 
+                      data-state={props.activeTab === tab.path ? 'active' : 'inactive'}
+                      value={tab.path} 
+                      className='font-mono flex flex-row items-center justify-center gap-1'
+                      onClick={() => {
+                        console.log('selected', tab.path)
+                        props.setActiveTab(tab.path)
+                      }}
+                    >
+                      {tab.name}
+                      <Cross2Icon 
+                        className='w-3 h-3 ml-2' 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          props.removeTab(tab.path);
 
-                      }} 
-                    />
-                  </TabsTrigger>
-                )
-              })
-            }
-          </TabsList>
-        </Tabs>
-        <Separator />
-        <div className=" w-full h-full grow">
+                        }} 
+                      />
+                    </TabsTrigger>
+                  )
+                })
+              }
+            </TabsList>
+          </Tabs>
+          <Separator />
           {
             props.activeTab != '' &&
-            <Editor
-              height="100%" 
-              width="100%" 
-              language="sui-move"
-              theme={"NightOwl"}
-              value={code}
-              onChange={handleCodeChange}
-            />
+            <div className="grow w-full">
+              <Editor
+                height= {props.error != '' ? "99.9%" : "100%"}
+                width="100%" 
+                language="sui-move"
+                theme={"NightOwl"}
+                value={code}
+                onChange={handleCodeChange}
+              />
+            </div>
           }
         </div>
-      </>
+      }
+      {
+        props.error != '' &&
+        <div className='overflow-hidden max-h-80 w-full flex flex-col border rounded-lg bg-[#011627]'>
+          <div className='w-full h-8 bg-slate-900 flex flex-row items-center justify-center ps-8 text-sm font-mono text-muted-foreground'>
+            Compilation Log
+            <Cross2Icon
+              className='ml-2 w-4 h-4 text-red-500 cursor-pointer hover:text-red-600'
+              onClick={() => props.clearError()}
+            />
+          </div>
+          <Separator />
+          <div className='flex flex-row justify-between items-start w-full'>
+            <div className='p-1 w-full flex flex-row justify-start items-start overflow-y-scroll'>
+              <Ansi className='whitespace-pre text-xs'>
+                {props.error}
+              </Ansi>
+            </div>
+          </div>
+        </div>
       }
     </div>
   )

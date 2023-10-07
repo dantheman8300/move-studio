@@ -131,36 +131,8 @@ export default function BuildPage () {
 
   const [tabs, setTabs] = useState<{path: string; name: string;}[]>([])
   const [activeTab, setActiveTab] = useState<string>('')
-  const [code, setCode] = useState<string>('')
 
-  useEffect(() => {
-    console.log('activeTab', activeTab);
-    if (activeTab !== '') {
-      const tab = tabs.find(tab => tab.path === activeTab);
-      if (tab) {
-        console.log('activeTab', tab)
-        const forks = tab.path.split('/').slice(1);
-        console.log('forks', forks)
-        let dir = demoPackage.files;
-        while (forks.length > 1) {
-          let fork = forks.shift();
-          console.log('fork', fork)
-          const searchedDir = dir.find(file => file.name === fork);
-          if (searchedDir == undefined) {
-            console.log('searchedDir', searchedDir)
-            break;
-          }
-          dir = searchedDir.children || [];
-        }
-        const file = dir.find(file => file.name === tab.name);
-
-        if (file) {
-          console.log('file', file);
-          setCode(file.content || '');
-        }
-      }
-    }
-  }, [activeTab])
+  const [error, setError] = useState<string>('');
 
   const addTab = (path: string, name: string) => {
     const isAlreadyTab = tabs.find(tab => tab.path === path);
@@ -177,7 +149,6 @@ export default function BuildPage () {
     setTabs(newTabs);
     if (activeTab === path) {
       setActiveTab('');
-      setCode('');
     }
   }
 
@@ -188,34 +159,8 @@ export default function BuildPage () {
     }
   }
 
-  const updateCode = async (newCode: string) => {
-    // setCode(newCode);
-    // const updateCodeInIndexedDb = async () => {
-    //   const tab = tabs.find(tab => tab.path === activeTab);
-    //   if (tab) {
-    //     const forks = tab.path.split('/').slice(1);
-    //     let dir = demoPackage.files;
-    //     while (forks.length > 1) {
-    //       let fork = forks.shift();
-    //       const searchedDir = dir.find(file => file.name === fork);
-    //       if (searchedDir == undefined) {
-    //         break;
-    //       }
-    //       dir = searchedDir.children || [];
-    //     }
-    //     const file = dir.find(file => file.name === tab.name);
-    //     if (file) {
-    //       file.content = newCode;
-    //       console.log('file', file);
-    //       indexedDb = new IndexedDb('test');
-    //       await indexedDb.createObjectStore(['projects'], {keyPath: 'name'});
-    //       await indexedDb.putValue('projects', demoPackage);
-    //     }
-    //   }
-    // }
-
-    // await updateCodeInIndexedDb();
-    // // await getProjects();
+  const clearError = () => {
+    setError('');
   }
   
   return (
@@ -300,6 +245,7 @@ export default function BuildPage () {
             <Sidebar 
               addTab={addTab}
               selectedProjectName={selectedProjectName} 
+              setError={setError}
             />
           </div>
           {/* <Separator 
@@ -313,11 +259,12 @@ export default function BuildPage () {
           /> */}
           <div className="grow h-full p-2">
             <CodeEditor 
-              projectName={selectedProjectName}
               tabs={tabs}
               activeTab={activeTab}
               removeTab={removeTab}
               setActiveTab={setActiveTab}
+              error={error}
+              clearError={clearError}
             />
           </div>
         </div>
@@ -327,11 +274,12 @@ export default function BuildPage () {
         !showSidebar && 
         <div className="grow w-full flex flex-row items-center justify-center p-2">
           <CodeEditor 
-            projectName={selectedProjectName}
             tabs={tabs}
             activeTab={activeTab}
             removeTab={removeTab}
             setActiveTab={setActiveTab}
+            error={error}
+            clearError={clearError}
           />
         </div>
       }
