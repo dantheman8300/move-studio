@@ -1,6 +1,6 @@
 import cors from 'cors';
 import express from 'express';
-import { compile } from './build';
+import { compile, test } from './build';
 
 const app = express();
 const portHttp = 80;
@@ -40,6 +40,18 @@ app.post('/compile', async (req, res) => {
   console.log('compileResult', compileResult)
 
   res.send(compileResult);
+
+});
+
+app.post('/test', async (req, res) => {
+  const project = req.body;
+
+  // Call compile function
+  const testResult = await test(project);
+
+  console.log('testResult', testResult)
+
+  res.send(testResult);
 
 });
 
