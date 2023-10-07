@@ -67,8 +67,7 @@ export async function compile(project: IProject): Promise<CompileResult> {
     }
 
   } catch (error: any) {
-    console.log('error', error.stderr)
-    const errorMessage = error.stderr;
+    console.log('error', error)
 
     // Check error message for update needed message - TODO
 
@@ -76,9 +75,16 @@ export async function compile(project: IProject): Promise<CompileResult> {
     fs.rmdirSync(projectPath, { recursive: true });
     
 
-    return {
-      error: true,
-      errorMessage
+    if (error.stderr != '') {
+      return {
+        error: true,
+        errorMessage: error.stderr
+      }
+    } else {
+      return {
+        error: true,
+        errorMessage: error.stdout
+      }
     }
   }
 }
