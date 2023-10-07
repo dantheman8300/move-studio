@@ -131,7 +131,12 @@ export async function test(project: IProject): Promise<TestResult> {
     // Remove the temporary project directory
     fs.rmdirSync(projectPath, { recursive: true });
     
-
+    if ((error.stdout as string).startsWith('Failed to build Move modules')) {
+      return {
+        error: true,
+        errorMessage: error.stderr
+      }
+    }
     return {
       error: true,
       errorMessage: error.stdout
