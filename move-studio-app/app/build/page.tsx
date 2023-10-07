@@ -287,28 +287,6 @@ export default function BuildPage () {
             </Popover>
           }
           <Button onClick={addProject}>New project</Button>
-          <Sheet>
-            <SheetTrigger>
-              <Avatar>
-                <AvatarImage src="https://avatars.githubusercontent.com/u/71237296?v=4" />
-                <AvatarFallback>Dan</AvatarFallback>
-              </Avatar>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <div className="flex flex-row items-center justify-start">
-                  <Avatar>
-                    <AvatarImage src="https://avatars.githubusercontent.com/u/71237296?v=4" />
-                    <AvatarFallback>Dan</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col ml-2">
-                    <div>DanTheMan8300</div>
-                    <div>Dan</div>
-                  </div>
-                </div>
-              </SheetHeader>
-            </SheetContent>
-          </Sheet>
           {/* <WalletSelector isTxnInProgress={false} /> */}
         </div>
       </div>
