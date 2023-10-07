@@ -857,38 +857,43 @@ export default function CodeEditor(
 
   return (
     <div className="rounded-lg overflow-hidden w-full h-full flex flex-col items-center justify-center border border-slate-600">
-      <Tabs className='w-full'>
-        <TabsList className='w-full pl-6 justify-start rounded-none bg-slate-900'>
-          {
-            props.tabs.map((tab) => {
-              return (
-                <TabsTrigger 
-                  value={tab.path} 
-                  className='font-mono flex flex-row items-center justify-center gap-1'
-                  onClick={() => {
-                    console.log('selected', tab.path)
-                    props.setActiveTab(tab.path)
-                  }}
-                >
-                  {tab.name}
-                  <Cross2Icon className='w-3 h-3 ml-2' onClick={() => props.removeTab(tab.path)} />
-                </TabsTrigger>
-              )
-            })
-          }
-        </TabsList>
-      </Tabs>
-      <Separator />
-      <div className=" w-full h-full grow">
-        <Editor
-          height="100%" 
-          width="100%" 
-          language="sui-move"
-          theme={"NightOwl"}
-          value={props.code}
-          onChange={handleEditorChange}
-        />
-      </div>
+      {
+        props.tabs.length > 0 &&
+        <>
+          <Tabs className='w-full'>
+          <TabsList className='w-full pl-6 justify-start rounded-none bg-slate-900'>
+            {
+              props.tabs.map((tab) => {
+                return (
+                  <TabsTrigger 
+                    value={tab.path} 
+                    className='font-mono flex flex-row items-center justify-center gap-1'
+                    onClick={() => {
+                      console.log('selected', tab.path)
+                      props.setActiveTab(tab.path)
+                    }}
+                  >
+                    {tab.name}
+                    <Cross2Icon className='w-3 h-3 ml-2' onClick={() => props.removeTab(tab.path)} />
+                  </TabsTrigger>
+                )
+              })
+            }
+          </TabsList>
+        </Tabs>
+        <Separator />
+        <div className=" w-full h-full grow">
+          <Editor
+            height="100%" 
+            width="100%" 
+            language="sui-move"
+            theme={"NightOwl"}
+            value={props.code}
+            onChange={handleEditorChange}
+          />
+        </div>
+      </>
+      }
     </div>
   )
 }
