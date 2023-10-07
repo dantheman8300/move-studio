@@ -23,7 +23,7 @@ function createFileSystem(addTab: (path: string, name: string) => void, files: I
       )
     } else if (file.type === 'folder') {
       fileSytem.push(
-        <FolderComponent path={path} name={file.name} files={file.children || []} addTab={addTab}/>
+        <FolderComponent path={path} name={file.name} addTab={addTab}/>
       )
     }
   })
