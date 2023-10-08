@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import { compile, test } from './build';
+import { getObjectDetails, getPackageDetails, getTransactionDetails } from './object';
 
 const app = express();
 const portHttp = 80;
@@ -40,7 +41,6 @@ app.post('/compile', async (req, res) => {
   console.log('compileResult', compileResult)
 
   res.send(compileResult);
-
 });
 
 app.post('/test', async (req, res) => {
@@ -52,7 +52,36 @@ app.post('/test', async (req, res) => {
   console.log('testResult', testResult)
 
   res.send(testResult);
+});
 
+app.post('./object-details', async (req, res) => {
+  const objectId = req.body.objectId;
+  const rpc = req.body.rpc;
+
+  // Call compile function
+  const objectDetails = await getObjectDetails(objectId, rpc);
+
+  res.send(objectDetails);
+});
+
+app.post('./package-details', async (req, res) => {
+  const packageId = req.body.packageId;
+  const rpc = req.body.rpc;
+
+  // Call compile function
+  const packageDetails = await getPackageDetails(packageId, rpc);
+
+  res.send(packageDetails);
+});
+
+app.post('./transaction-details', async (req, res) => {
+  const transactionDigest = req.body.transactionDigest;
+  const rpc = req.body.rpc;
+
+  // Call compile function
+  const transactionDetails = await getTransactionDetails(transactionDigest, rpc);
+
+  res.send(transactionDetails);
 });
 
 app.listen(process.env.PORT || portHttp, () => {

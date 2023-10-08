@@ -7,7 +7,7 @@ const TEMP_DIR = `${__dirname}/../temp-packages`;
 type CompileResult = {
   error: boolean;
   errorMessage?: string;
-  compiledModules?: string[];
+  compileResults?: {modules: string[], dependencies: string[], digest: number[]};
 }
 
 type TestResult = {
@@ -56,12 +56,12 @@ export async function compile(project: IProject): Promise<CompileResult> {
   const projectPath = `${TEMP_DIR}/${project.name}`;
   
   try {
-    const compiledModules = execSync(
+    const compileResults = execSync(
       `sui move build --dump-bytecode-as-base64 --path ${projectPath}`,
       { encoding: 'utf-8'}
     );
 
-    console.log("compiledModules", compiledModules);
+    console.log("compileResults", compileResults);
 
     // Remove the temporary project directory
     fs.rmdirSync(projectPath, { recursive: true });
@@ -69,7 +69,7 @@ export async function compile(project: IProject): Promise<CompileResult> {
 
     return {
       error: false,
-      compiledModules: compiledModules as unknown as string[]
+      compileResults: JSON.parse(compileResults)
     }
 
   } catch (error: any) {
