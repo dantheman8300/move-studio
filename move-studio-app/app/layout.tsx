@@ -18,12 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-          <WalletProvider>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {children}  
-            <Toaster />
-        </ThemeProvider>
-          </WalletProvider>
+        <WalletProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              {children}  
+              <Toaster />
+          </ThemeProvider>
+        </WalletProvider>
       </body>
     </html>
   )
