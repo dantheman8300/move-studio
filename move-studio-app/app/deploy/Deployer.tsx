@@ -21,7 +21,7 @@ import { ExternalLink, GaugeCircle, PackageCheck, PackageX } from "lucide-react"
 
 export default function Deployer(
   props: {
-    addToDigests: (newDigests: {digestId: string, type: 'package' | 'object'}[]) => void
+    addToDigests: (newDigests: {digestId: string, type: 'package' | 'object', name: string}[]) => void
   }
 ) {
 
@@ -120,15 +120,17 @@ export default function Deployer(
 
       console.log(publishTxn.objectChanges)
 
-      const newDigests = [] as {digestId: string, type: 'package' | 'object'}[];
+      const newDigests = [] as {digestId: string, type: 'package' | 'object', name: string}[];
       for (let objectChange of publishTxn.objectChanges || []) {
         if (objectChange.type === 'published') {
           newDigests.push({
+            name: selectedProjectName,
             digestId: objectChange.packageId,
             type: 'package'
           });
         } else if (objectChange.type === 'created') {
           newDigests.push({
+            name: selectedProjectName,
             digestId: objectChange.objectId,
             type: 'object'
           });

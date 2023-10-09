@@ -50,6 +50,7 @@ import 'reactflow/dist/style.css';
 import Deployer from "./Deployer";
 import ObjectCard from "./ObjectCard";
 import PackageCard from "./PackageCard";
+import PackageWindow from "./PackageWindow";
 
 const initialNodes = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
@@ -59,10 +60,27 @@ const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
 
 export default function DeployPage () {
 
-  const [digests, setDigests] = useState<{digestId: string, type: 'package' | 'object'}[]>([]);
+  const [packageDigests, setPackageDigests] = useState<{digestId: string, name: string}[]>([]);
+  const [objectDigests, setObjectDigests] = useState<{digestId: string, name: string}[]>([]);
 
-  const addToDigests = (newDigests: {digestId: string, type: 'package' | 'object'}[]) => {
-    setDigests([...digests, ...newDigests]);
+  useEffect(() => {
+    setPackageDigests(
+      [
+        {
+          name: 'Sui core', 
+          digestId: '0x02'
+        }
+      ]
+    )
+  }, [])
+
+  const addToDigests = (newDigests: {digestId: string, type: 'package' | 'object', name: string}[]) => {
+
+    const newPackageDigests = newDigests.filter((newDigest) => newDigest.type === 'package');
+    const newObjectDigests = newDigests.filter((newDigest) => newDigest.type === 'object');
+
+    setPackageDigests([...packageDigests, ...newPackageDigests]);
+    setObjectDigests([...objectDigests, ...newObjectDigests]);
   }
   
   return (
@@ -119,8 +137,17 @@ export default function DeployPage () {
           </Sheet> */}
         </div>
       </div>
-      <div className="grow w-full flex flex-row justify-center items-center flex-wrap px-3">
-        {
+      <div className="grow w-full flex flex-col justify-start items-start gap-2 p-2">
+        <div className="border w-full h-fit rounded-lg overflow-hidden">
+          {
+            packageDigests.length > 0 &&
+            <PackageWindow packages={packageDigests} />
+          }
+        </div>
+        <div className="border w-full grow rounded-lg overflow-hidden">
+
+        </div>
+        {/* {
           digests.map((digest, index) => {
             if (digest.type === 'package') {
               return (
@@ -132,7 +159,7 @@ export default function DeployPage () {
               )
             }
           })
-        }
+        } */}
       </div>
     </div>
   )

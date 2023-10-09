@@ -220,7 +220,7 @@ export default function Sidebar(
 
   return (
     <div className="pl-2 pr-1 py-2 w-full h-full flex flex-col items-center justify-start gap-1">
-      <Input className="bg-slate-900 h-8" type="text" placeholder="Search..." />
+      <Input className="bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring" type="text" placeholder="Search..." />
       <Accordion type="multiple" className="w-full grow">
         <AccordionItem value="item-1" className="w-full">
           <AccordionTrigger className="w-full">

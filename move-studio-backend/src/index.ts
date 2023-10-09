@@ -54,7 +54,7 @@ app.post('/test', async (req, res) => {
   res.send(testResult);
 });
 
-app.post('./object-details', async (req, res) => {
+app.post('/object-details', async (req, res) => {
   const objectId = req.body.objectId;
   const rpc = req.body.rpc;
 
@@ -64,7 +64,7 @@ app.post('./object-details', async (req, res) => {
   res.send(objectDetails);
 });
 
-app.post('./package-details', async (req, res) => {
+app.post('/package-details', async (req, res) => {
   const packageId = req.body.packageId;
   const rpc = req.body.rpc;
 
@@ -74,7 +74,7 @@ app.post('./package-details', async (req, res) => {
   res.send(packageDetails);
 });
 
-app.post('./transaction-details', async (req, res) => {
+app.post('/transaction-details', async (req, res) => {
   const transactionDigest = req.body.transactionDigest;
   const rpc = req.body.rpc;
 
