@@ -901,17 +901,6 @@ export default function CodeEditor(
               {
                 props.tabs.length == 0 &&
                 <div/>
-                // <TabsTrigger 
-                //   data-state={props.activeTab === '' ? 'active' : 'inactive'}
-                //   value={''} 
-                //   className='font-mono flex flex-row items-center justify-center gap-1'
-                //   onClick={() => {
-                //     console.log('selected', '')
-                //     props.setActiveTab('')
-                //   }}
-                // >
-                //   Welcome
-                // </TabsTrigger>
               }
               {
                 props.tabs.map((tab) => {
