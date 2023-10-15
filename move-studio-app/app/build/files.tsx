@@ -161,6 +161,12 @@ function FolderComponent(
   }
 ) {
 
+  const [fileBarHeight, setFileBarHeight] = useState<number>(0);
+  useEffect(() => {
+    console.log('file bar height', fileBarHeight)
+    console.log(`h-[${fileBarHeight}px] border rounded-full w-[2.5px]`)
+  }, [fileBarHeight])
+
   const files = useLiveQuery(async () => {
     const project = await db.projects.get(props.path.split('/')[0])
     if (!project) return [];
@@ -171,8 +177,11 @@ function FolderComponent(
       currentFolder = currentFolder.find(file => file.name === forks[0])?.children as IFile[];
       forks.shift();
     }
-    // console.log('current folder', currentFolder)
-    // console.log('length', currentFolder.length)
+
+    if (currentFolder) {
+      setFileBarHeight(30 * currentFolder.length);
+    }
+
     return currentFolder || [];
   }, [props.path, props.name])
 
@@ -313,8 +322,8 @@ function FolderComponent(
         files.length > 0 &&
         isOpen &&
         <div className="pl-2 w-full font-mono flex flex-row justify-start gap-2 items-center">
-          {/* <Separator className={`h-${(8 * files.length)} border`} orientation="vertical" /> */}
-          <div>
+          <Separator className={`h-[${fileBarHeight.toString()}px] border rounded-full w-[2.5px]`} orientation="vertical"/>
+          <div className="w-full">
             {
               createFileSystem(props.addTab, files, props.path + '/' + props.name)
             }
