@@ -135,6 +135,8 @@ export default function BuildPage () {
 
   const [error, setError] = useState<string>('');
 
+  const [sidebarWidth, setSidebarWidth] = useState<number>(200);
+
   useEffect(() => {
     setTabs([]);
     setActiveTab('');
@@ -172,7 +174,7 @@ export default function BuildPage () {
   return (
     <div className="h-screen w-full max-w-screen flex flex-col items-center dark:bg-slate-950">
       <div className="flex w-full lg:flex-row flex-col justify-between items-center my-2 px-3">
-        <div>
+        {/* <div>
           {
             showSidebar && 
             <PanelLeftClose 
@@ -189,8 +191,18 @@ export default function BuildPage () {
               }}
             />
           }
+        </div> */}
+        <div className="flex flex-row gap-6 justify-center items-baseline">
+          <TypographyH2>Move Studio</TypographyH2>
+          <div className="flex flex-row gap-4 ">
+            <div className="font-normal">
+              Build
+            </div>
+            <div className="">
+              Deploy
+            </div>
+          </div>
         </div>
-        <TypographyH2>Move Studio</TypographyH2>
         <div className="flex flex-row justify-around gap-2">
           {
             projectList.length > 0 &&
@@ -246,24 +258,52 @@ export default function BuildPage () {
       {
         selectedProjectName != '' &&
         showSidebar &&
-        <div className="grow w-full flex flex-row items-center justify-center">
-          <div className="w-60 h-full">
-            <Sidebar 
-              addTab={addTab}
-              selectedProjectName={selectedProjectName} 
-              setError={setError}
-            />
+        <div className="grow w-full flex flex-row items-center justify-start">
+          <div 
+            className={`h-full flex flex-row items-center justify-end min-w-[20px]`}
+            style={{"width": `${sidebarWidth}px`}}
+          >
+            {
+              sidebarWidth > 0 &&
+              <Sidebar 
+                addTab={addTab}
+                selectedProjectName={selectedProjectName} 
+                setError={setError}
+              />
+            }
+            <div
+              className="hover:cursor-col-resize h-full flex flex-row items-center justify-center "
+              draggable
+              onDragStart={(e) => {
+                const blankCanvas: any = document.createElement('canvas');
+                e.dataTransfer?.setDragImage( blankCanvas, 0, 0);
+                document.body?.appendChild( blankCanvas);
+              }}
+              onDrag={(e) => {
+                if (e.clientX > 150) {
+                  setSidebarWidth(e.clientX);
+                } else if (e.clientX > 0){
+                  setSidebarWidth(0);
+                }
+              }} 
+              onDragEnd={(e) => {
+                if (e.clientX > 150) {
+                  setSidebarWidth(e.clientX);
+                } else {
+                  setSidebarWidth(0);
+                }
+              }}
+            >
+              <Separator 
+                orientation="vertical" 
+                className="h-8 w-1 rounded"
+              />
+            </div>
           </div>
-          {/* <Separator 
-            orientation="vertical" 
-            className="h-8 w-1 rounded hover:cursor-col-resize"
-            onDrag={() => {
-              // Resize the sidebar based on the dragging of the separator
-              console.log('dragging');
-              
-            }} 
-          /> */}
-          <div className="grow h-full p-2">
+          <div 
+            className="h-full p-2"
+            style={{width: `calc(100% - ${sidebarWidth}px)`}}
+          >
             <CodeEditor 
               tabs={tabs}
               activeTab={activeTab}
@@ -273,20 +313,6 @@ export default function BuildPage () {
               clearError={clearError}
             />
           </div>
-        </div>
-      }
-      {
-        selectedProjectName != '' &&
-        !showSidebar && 
-        <div className="grow w-full flex flex-row items-center justify-center p-2">
-          <CodeEditor 
-            tabs={tabs}
-            activeTab={activeTab}
-            removeTab={removeTab}
-            setActiveTab={setActiveTab}
-            error={error}
-            clearError={clearError}
-          />
         </div>
       }
     </div>
