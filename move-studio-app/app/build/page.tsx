@@ -205,7 +205,6 @@ export default function BuildPage () {
         </div>
         <div className="flex flex-row justify-around gap-2">
           {
-            projectList.length > 0 &&
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -213,6 +212,7 @@ export default function BuildPage () {
                   role="combobox"
                   aria-expanded={open}
                   className="w-[200px] justify-between"
+                  disabled={projectList.length === 0}
                 >
                   {selectedProjectName
                     ? selectedProjectName
@@ -251,7 +251,7 @@ export default function BuildPage () {
               </PopoverContent>
             </Popover>
           }
-          <Button onClick={addProject}>New project</Button>
+          <Button className="p-3" variant="secondary" onClick={addProject}>New project</Button>
           {/* <WalletSelector isTxnInProgress={false} /> */}
         </div>
       </div>
