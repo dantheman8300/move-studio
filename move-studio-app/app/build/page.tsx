@@ -136,6 +136,13 @@ export default function BuildPage () {
   const [error, setError] = useState<string>('');
 
   const [sidebarWidth, setSidebarWidth] = useState<number>(200);
+  useEffect(() => {
+    // retrieve sidebar width from local storage
+    const sidebarWidth = localStorage.getItem('sidebarWidth');
+    if (sidebarWidth) {
+      setSidebarWidth(parseInt(sidebarWidth));
+    }
+  }, []);
 
   useEffect(() => {
     setTabs([]);
@@ -289,8 +296,10 @@ export default function BuildPage () {
               onDragEnd={(e) => {
                 if (e.clientX > 150) {
                   setSidebarWidth(e.clientX);
+                  localStorage.setItem('sidebarWidth', e.clientX.toString());
                 } else {
                   setSidebarWidth(0);
+                  localStorage.setItem('sidebarWidth', '0');
                 }
               }}
             >
