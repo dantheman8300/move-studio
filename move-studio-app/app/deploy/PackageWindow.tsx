@@ -81,7 +81,7 @@ export default function PackageWindow(
   }
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full bg-[#011627]">
       <Tabs 
         className='w-full'
         activationMode='manual'
@@ -158,7 +158,7 @@ export default function PackageWindow(
                   Object.keys(activeTab.data[selectedModule].structs).map((structName: any, index: number) => {
                     const structData = activeTab.data[selectedModule].structs[structName];
                     return (
-                      <AccordionItem value={index.toString()} className="my-2 px-2 w-full bg-[#011627] rounded-lg overflow-hidden">
+                      <AccordionItem value={index.toString()} className="my-2 px-2 w-full bg-slate-700 rounded-lg overflow-hidden">
                         <AccordionTrigger className="w-full font-mono">{structName}</AccordionTrigger>
                         <AccordionContent className="w-full">
                           <StructCard data={structData} />
@@ -193,7 +193,7 @@ export default function PackageWindow(
                     console.log('functionData', functionData)
                     if (functionData.isEntry) {
                       return (
-                        <AccordionItem value={index.toString()} className="my-2 px-2 w-full bg-[#011627] rounded-lg overflow-hidden font-mono">
+                        <AccordionItem value={index.toString()} className="my-2 px-2 w-full bg-slate-700 rounded-lg overflow-hidden font-mono">
                           <AccordionTrigger className="w-full">{functionName}</AccordionTrigger>
                           <AccordionContent className="w-full">
                             <FunctionCard data={functionData} />

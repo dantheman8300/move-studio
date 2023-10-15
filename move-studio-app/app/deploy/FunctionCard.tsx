@@ -42,27 +42,27 @@ export default function FunctionCard(
     setParameters(parametersEmpty);
   }, [props.data])
 
-  // const executeFunction = async () => {
-  //   if (!wallet.connected) return
+  const executeFunction = async () => {
+    if (!wallet.connected) return
 
-  //   const tx = new TransactionBlock();
-  //   const packageObjectId = "0xXXX";
-  //   tx.moveCall({
-  //     target: `${packageObjectId}::nft::mint`,
-  //     arguments: [tx.pure("Example NFT")],
-  //   });
+    const tx = new TransactionBlock();
+    const packageObjectId = "0xXXX";
+    tx.moveCall({
+      target: `${packageObjectId}::nft::mint`,
+      arguments: [tx.pure("Example NFT")],
+    });
     
-  //   try {
-  //     // execute the programmable transaction
-  //     const resData = await wallet.signAndExecuteTransactionBlock({
-  //       transactionBlock: tx
-  //     });
-  //     console.log('nft minted successfully!', resData);
-  //     // alert('Congrats! your nft is minted!')
-  //   } catch (e) {
-  //     console.error('nft mint failed', e);
-  //   }
-  // }
+    try {
+      // execute the programmable transaction
+      const resData = await wallet.signAndExecuteTransactionBlock({
+        transactionBlock: tx,
+      } as any);
+      console.log('nft minted successfully!', resData);
+      // alert('Congrats! your nft is minted!')
+    } catch (e) {
+      console.error('nft mint failed', e);
+    }
+  }
 
   return (
     <div className="flex flex-col items-center justify-start w-full p-4 gap-2">
@@ -150,7 +150,7 @@ export default function FunctionCard(
           })
         }
       </div>
-      <Button className="w-full py-4">
+      <Button className="w-full py-4" onClick={executeFunction}>
         Execute
       </Button>
       {/* {JSON.stringify(props.data)} */}
