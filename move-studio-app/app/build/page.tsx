@@ -260,7 +260,7 @@ export default function BuildPage () {
         showSidebar &&
         <div className="grow w-full flex flex-row items-center justify-start">
           <div 
-            className={`h-full flex flex-row items-center justify-end min-w-[20px]`}
+            className={`h-full flex flex-row items-center justify-end min-w-[15px]`}
             style={{"width": `${sidebarWidth}px`}}
           >
             {

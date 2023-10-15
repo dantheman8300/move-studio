@@ -892,13 +892,27 @@ export default function CodeEditor(
   return (
     <div className="w-full h-full max-h-max flex flex-col items-center justify-start border-slate-600 gap-2">
       {
-        props.tabs.length > 0 &&
         <div className='flex flex-col rounded-lg overflow-hidden border w-full grow'>
           <Tabs 
             className='w-full'
             activationMode='manual'
           >
             <TabsList className='w-full pl-6 justify-start rounded-none bg-slate-900'>
+              {
+                props.tabs.length == 0 &&
+                <div/>
+                // <TabsTrigger 
+                //   data-state={props.activeTab === '' ? 'active' : 'inactive'}
+                //   value={''} 
+                //   className='font-mono flex flex-row items-center justify-center gap-1'
+                //   onClick={() => {
+                //     console.log('selected', '')
+                //     props.setActiveTab('')
+                //   }}
+                // >
+                //   Welcome
+                // </TabsTrigger>
+              }
               {
                 props.tabs.map((tab) => {
                   return (
@@ -928,7 +942,10 @@ export default function CodeEditor(
           </Tabs>
           <Separator />
           {
-            props.activeTab != '' &&
+            (
+              props.activeTab != '' &&
+              props.tabs.length > 0
+            ) ?
             <div className="grow w-full">
               <Editor
                 height= {props.error != '' ? "99.9%" : "100%"}
@@ -938,7 +955,8 @@ export default function CodeEditor(
                 value={code}
                 onChange={handleCodeChange}
               />
-            </div>
+            </div> : 
+            <div className='grow w-full bg-[#011627]'/>
           }
         </div>
       }
