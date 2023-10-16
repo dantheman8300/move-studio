@@ -890,7 +890,7 @@ export default function CodeEditor(
   }
 
   return (
-    <div className="w-full h-full max-h-max flex flex-col items-center justify-start border-slate-600 gap-2">
+    <div className="w-full h-full max-h-max flex flex-col items-center justify-start border-slate-600 gap-2 shadow-xl">
       {
         <div className='flex flex-col rounded-lg overflow-hidden border w-full grow'>
           <Tabs 
@@ -931,21 +931,44 @@ export default function CodeEditor(
           </Tabs>
           <Separator />
           {
-            (
-              props.activeTab != '' &&
-              props.tabs.length > 0
-            ) ?
+            props.error == '' &&
+            props.activeTab != '' &&
+            props.tabs.length > 0 &&
             <div className="grow w-full">
               <Editor
-                height= {props.error != '' ? "99.9%" : "100%"}
-                width="100%" 
+                height={props.error != '' ? "99.9%" : "100%"}
+                // width="100%" 
                 language="sui-move"
                 theme={"NightOwl"}
                 value={code}
                 onChange={handleCodeChange}
               />
-            </div> : 
-            <div className='grow w-full bg-[#011627]'/>
+            </div>
+          }
+          {
+            props.error != '' &&
+            props.activeTab != '' &&
+            props.tabs.length > 0 &&
+            <div className="grow w-full">
+              <Editor
+                height={props.error != '' ? "99.9%" : "100%"}
+                // width="100%" 
+                language="sui-move"
+                theme={"NightOwl"}
+                value={code}
+                onChange={handleCodeChange}
+              />
+            </div>
+          }
+          {
+            // props.error == '' &&
+            props.activeTab == '' &&
+            props.tabs.length == 0 &&
+            <div className='grow w-full bg-[#011627] flex flex-col justify-center items-center'>
+              <span className='text-slate-500'>
+                Select a file to edit or create a new one
+              </span>
+            </div>
           }
         </div>
       }

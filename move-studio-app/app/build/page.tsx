@@ -202,12 +202,12 @@ export default function BuildPage () {
         <div className="flex flex-row gap-6 justify-center items-baseline">
           <TypographyH2>Move Studio</TypographyH2>
           <div className="flex flex-row gap-4 ">
-            <div className="font-normal">
+            <a href="/build">
               Build
-            </div>
-            <div className="">
+            </a>
+            <a href="/deploy">
               Deploy
-            </div>
+            </a>
           </div>
         </div>
         <div className="flex flex-row justify-around gap-2">

@@ -106,7 +106,7 @@ function FileComponent(
     <ContextMenu>
       <ContextMenuTrigger>
         <div 
-          className="px-1 w-full h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center"
+          className="px-1 w-fit text-slate-300 h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center"
           onClick={(event) => {
             event?.preventDefault()
             console.log(props.path + '/' + props.name)
@@ -115,10 +115,10 @@ function FileComponent(
         >
           {
             props.name.endsWith('.move') ?
-            <FileBox className="mr-2 w-4 h-4"/> : 
+            <FileBox strokeWidth={1.25} className="mr-2 w-4 h-4"/> : 
             props.name.endsWith('.toml') ?
-            <FileCog className="mr-2 w-4 h-4"/> : 
-            <File className="mr-2 w-4 h-4"/>
+            <FileCog strokeWidth={1.25} className="mr-2 w-4 h-4"/> : 
+            <File strokeWidth={1.25} className="mr-2 w-4 h-4"/>
           }
           {props.name}
         </div>
@@ -283,7 +283,7 @@ function FolderComponent(
       <ContextMenu>
         <ContextMenuTrigger>
           <div 
-            className="px-1 w-full h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center"
+            className="px-1 w-fit text-slate-300 h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center"
             onClick={(event) => {
               event?.preventDefault()
               setIsOpen(!isOpen)
@@ -291,8 +291,8 @@ function FolderComponent(
           >
             {
               isOpen ? 
-              <FolderOpen className="mr-2 w-4 h-4"/> :
-              <FolderClosed className="mr-2 w-4 h-4"/>
+              <FolderOpen strokeWidth={1.25} className="mr-2 w-4 h-4"/> :
+              <FolderClosed strokeWidth={1.25} className="mr-2 w-4 h-4"/>
             }
             {props.name}
           </div>
@@ -322,7 +322,7 @@ function FolderComponent(
         files.length > 0 &&
         isOpen &&
         <div className="pl-2 w-full font-mono flex flex-row justify-start gap-2 items-center">
-          <Separator className={`h-[${fileBarHeight.toString()}px] border rounded-full w-[2.5px]`} orientation="vertical"/>
+          <Separator className={`h-[${fileBarHeight.toString()}px] rounded-full bg-slate-300`} orientation="vertical"/>
           <div className="w-full">
             {
               createFileSystem(props.addTab, files, props.path + '/' + props.name)
