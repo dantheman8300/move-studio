@@ -106,7 +106,7 @@ function FileComponent(
     <ContextMenu>
       <ContextMenuTrigger>
         <div 
-          className="px-1 w-fit text-slate-300 h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center"
+          className="px-1 w-full text-slate-300 h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center"
           onClick={(event) => {
             event?.preventDefault()
             console.log(props.path + '/' + props.name)
@@ -283,7 +283,7 @@ function FolderComponent(
       <ContextMenu>
         <ContextMenuTrigger>
           <div 
-            className="px-1 w-fit text-slate-300 h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center"
+            className="px-1 w-full text-slate-300 h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center"
             onClick={(event) => {
               event?.preventDefault()
               setIsOpen(!isOpen)
