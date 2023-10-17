@@ -237,7 +237,7 @@ export default function Sidebar(
             <Files projectName={props.selectedProjectName} addTab={props.addTab} />
           </AccordionContent>
         </AccordionItem>
-        <Separator />
+        <Separator className="bg-slate-700" />
         <AccordionItem value="item-2">
           <AccordionTrigger>Tools</AccordionTrigger>
           <AccordionContent >
@@ -251,7 +251,7 @@ export default function Sidebar(
             </div>
           </AccordionContent>
         </AccordionItem>
-        <Separator />
+        <Separator className="bg-slate-700" />
         <AccordionItem value="item-3">
           <AccordionTrigger>Settings</AccordionTrigger>
           <AccordionContent>
