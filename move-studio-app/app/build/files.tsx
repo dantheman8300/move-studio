@@ -115,10 +115,10 @@ function FileComponent(
         >
           {
             props.name.endsWith('.move') ?
-            <FileBox strokeWidth={1.25} className="mr-2 w-4 h-4"/> : 
+            <FileBox strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> : 
             props.name.endsWith('.toml') ?
-            <FileCog strokeWidth={1.25} className="mr-2 w-4 h-4"/> : 
-            <File strokeWidth={1.25} className="mr-2 w-4 h-4"/>
+            <FileCog strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> : 
+            <File strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/>
           }
           {props.name}
         </div>
@@ -291,8 +291,8 @@ function FolderComponent(
           >
             {
               isOpen ? 
-              <FolderOpen strokeWidth={1.25} className="mr-2 w-4 h-4"/> :
-              <FolderClosed strokeWidth={1.25} className="mr-2 w-4 h-4"/>
+              <FolderOpen strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> :
+              <FolderClosed strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/>
             }
             {props.name}
           </div>
