@@ -289,7 +289,7 @@ export default function BuildPage () {
             >
               <Separator 
                 orientation="vertical" 
-                className="h-8 w-1 rounded  hover:bg-cyan-500 hover:cursor-col-resize transition-all focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50"
+                className="h-8 w-1 rounded hover:bg-cyan-500 active:bg-cyan-500"
               />
             </div>
           </div>
