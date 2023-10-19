@@ -324,14 +324,14 @@ export default function Sidebar(
           <AccordionTrigger>Tools</AccordionTrigger>
           <AccordionContent >
             <div className="flex flex-col gap-1">
-              <Button variant="outline" className="" onClick={compileProject}>
-                <ChevronRightSquare className="mr-2 w-4 h-4" /> Compile
+              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-300 text-sm font-mono" onClick={compileProject}>
+                <ChevronRightSquare strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500" /> Compile
               </Button>
-              <Button variant="outline" onClick={testProject}>
-                <FlaskConical className="mr-2 w-4 h-4"/> Test
+              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-300 text-sm font-mono" onClick={testProject}>
+                <FlaskConical strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> Test
               </Button>
-              <Button variant="outline" onClick={deployProject}>
-                <Rocket className="mr-2 w-4 h-4"/> Deploy
+              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-300 text-sm font-mono" onClick={deployProject}>
+                <Rocket strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> Deploy
               </Button>
             </div>
           </AccordionContent>
@@ -341,14 +341,14 @@ export default function Sidebar(
           <AccordionTrigger>Settings</AccordionTrigger>
           <AccordionContent>
             <div className="flex flex-col gap-1">
-              <Button variant="outline" className="" onClick={renameProject}>
-                <FolderEdit className="mr-2 w-4 h-4" /> Rename project
+              <Button variant="ghost" className="flex flex-row w-full justify-start" onClick={renameProject}>
+                <FolderEdit strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500" /> Rename project
               </Button>
-              <Button variant="outline" onClick={duplicateProject}>
-                <CopyPlus className="mr-2 w-4 h-4"/> Duplicate project
+              <Button variant="ghost" className="flex flex-row w-full justify-start" onClick={duplicateProject}>
+                <CopyPlus strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> Duplicate project
               </Button>
-              <Button variant="destructive" onClick={deleteProject}>
-                <Trash2 className="mr-2 w-4 h-4"/> Delete project
+              <Button variant="ghost" className="flex flex-row w-full justify-start" onClick={deleteProject}>
+                <Trash2 strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> Delete project
               </Button>
             </div>
           </AccordionContent>
