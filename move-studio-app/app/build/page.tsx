@@ -269,6 +269,9 @@ export default function BuildPage () {
                 onDragStart={(e) => {
                   const blankCanvas: any = document.createElement('canvas');
                   e.dataTransfer?.setDragImage( blankCanvas, 0, 0);
+                  blankCanvas.width = 1;
+                  blankCanvas.height = 1;
+                  blankCanvas.zIndex = 0;
                   document.body?.appendChild( blankCanvas);
                 }}
                 onDrag={(e) => {
