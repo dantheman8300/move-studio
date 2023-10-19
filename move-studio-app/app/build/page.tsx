@@ -245,7 +245,6 @@ export default function BuildPage () {
         </div>
       </div>
       {
-        selectedProjectName != '' &&
         showSidebar &&
         <div className="grow w-full flex flex-row items-center justify-start">
           <div 
