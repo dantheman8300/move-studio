@@ -27,7 +27,7 @@ export default function MainWindow() {
 
 
   return (
-    <Tabs className="border rounded-xl w-full h-full overflow-hidden shadow-2xl shadow-amber-500/75">
+    <Tabs className="border rounded-xl w-full h-full overflow-hidden shadow-xl shadow-amber-500/75">
       <TabsList className="w-full h-10 rounded-none border-b items-center justify-start px-6">
         {
           mockTabs.map((tab, i) => {

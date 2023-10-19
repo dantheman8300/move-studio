@@ -292,7 +292,7 @@ export default function BuildPage () {
             >
               <Separator 
                 orientation="vertical" 
-                className="h-8 w-1 rounded hover:bg-cyan-500 active:bg-cyan-500"
+                className="h-8 w-1 rounded hover:bg-cyan-500 active:bg-cyan-500 active:animate-pulse"
               />
             </div>
           </div>
