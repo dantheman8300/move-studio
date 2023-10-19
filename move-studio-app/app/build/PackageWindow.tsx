@@ -25,6 +25,10 @@ export default function PackageWindow(
   }
 ) {
   const wallet = useWallet();
+
+  const [searchedModule, setSearchedModule] = useState<string>('');
+  const [searchedStruct, setSearchedStruct] = useState<string>('');
+  const [searchedFunction, setSearchedFunction] = useState<string>('');
   
   const [packageDetails, setPackageDetails] = useState<any>(undefined);
   const [selectedModule, setSelectedModule] = useState<string>('');
@@ -58,11 +62,29 @@ export default function PackageWindow(
   if (packageDetails !== undefined) {
     return (
       <div className="w-full h-full flex flex-row items-start justify-around p-2 gap-2">
-        <div className="flex flex-col items-center justify-start w-fit gap-2">
-          <Input className="bg-slate-900 h-8" type="text" placeholder="Search modules..." />
+        <div className="flex flex-col items-center justify-start gap-2">
+          <Input 
+            className="bg-slate-900 h-8" 
+            type="text" 
+            placeholder="Search modules..." 
+            onChange={(e) => {setSearchedModule(e.target.value)}}
+            value={searchedModule}
+          />
           <ScrollArea className="max-h-96 w-56 rounded-md border">
             {
-              Object.values(packageDetails.data).map((module: any) => {
+              Object.values(packageDetails.data).filter((module: any) => {
+                return (module.name as string).toLowerCase().includes(searchedModule.toLowerCase())
+              }).length == 0 &&
+              <div className="w-full h-full flex flex-row items-center justify-center">
+                <span className="font-mono py-2">
+                  No modules found
+                </span>
+              </div>
+            }
+            {
+              Object.values(packageDetails.data).filter((module: any) => {
+                return (module.name as string).toLowerCase().includes(searchedModule.toLowerCase())
+              }).map((module: any) => {
                 return (
                   <div className="flex flex-row items-center justify-start gap-2">
                     <Button 
@@ -79,13 +101,21 @@ export default function PackageWindow(
           </ScrollArea>
         </div>
         <div className="flex flex-col items-center justify-start h-full w-full max-w-[350px]">
-          <Input className="w-full max-w-80 bg-slate-900 h-8" type="text" placeholder="Search structs..." />
+          <Input 
+            className="w-full max-w-80 bg-slate-900 h-8" 
+            type="text" 
+            placeholder="Search structs..." 
+            onChange={(e) => {setSearchedStruct(e.target.value)}}
+            value={searchedStruct}
+          />
           {
             selectedModule != '' &&
             <Accordion type="multiple" className="w-full max-w-80 overflow-y-auto">
               {
                 packageDetails.data[selectedModule] != undefined &&
-                Object.values(packageDetails.data[selectedModule].structs).length == 0 &&
+                Object.keys(packageDetails.data[selectedModule].structs).filter((structName: string) => {
+                  return structName.toLowerCase().includes(searchedStruct.toLowerCase())
+                }).length == 0 &&
                 <div className="flex flex-row items-center justify-center w-full h-full">
                   <span className="font-mono text-white text-xl">
                     No structs found
@@ -94,7 +124,9 @@ export default function PackageWindow(
               }
               {
                 packageDetails.data[selectedModule] != undefined &&
-                Object.keys(packageDetails.data[selectedModule].structs).map((structName: any, index: number) => {
+                Object.keys(packageDetails.data[selectedModule].structs).filter((structName: string) => {
+                  return structName.toLowerCase().includes(searchedStruct.toLowerCase())
+                }).map((structName: any, index: number) => {
                   const structData = packageDetails.data[selectedModule].structs[structName];
                   return (
                     <AccordionItem value={index.toString()} className="my-2 px-2 w-full border rounded-lg overflow-hidden">
@@ -110,13 +142,24 @@ export default function PackageWindow(
           }
         </div>
         <div className="flex flex-col items-center justify-start h-full overflow-y-auto w-full max-w-[350px]">
-          <Input className="bg-slate-900 h-8 w-full max-w-80" type="text" placeholder="Search modules..." />
+          <Input 
+            className="bg-slate-900 h-8 w-full max-w-80" 
+            type="text" 
+            placeholder="Search modules..."
+            onChange={(e) => {setSearchedFunction(e.target.value)}}
+            value={searchedFunction}
+          />
           {
             selectedModule != '' &&
             <Accordion type="multiple" className="w-full max-w-80 overflow-y-auto">
               {
                 packageDetails.data[selectedModule] != undefined &&
-                Object.values(packageDetails.data[selectedModule].exposedFunctions).filter((functionData: any) => functionData.isEntry).length == 0 &&
+                (
+                  Object.values(packageDetails.data[selectedModule].exposedFunctions).filter((functionData: any) => functionData.isEntry).length == 0 ||
+                  Object.keys(packageDetails.data[selectedModule].exposedFunctions).filter((functionName: string) => {
+                    return functionName.toLowerCase().includes(searchedFunction.toLowerCase())
+                  }).length == 0
+                ) && 
                 <div className="flex flex-row items-center justify-center w-full h-full">
                   <span className="font-mono text-white text-xl">
                     No entry functions found
@@ -126,7 +169,9 @@ export default function PackageWindow(
               {
                 packageDetails.data[selectedModule] != undefined &&
                 Object.values(packageDetails.data[selectedModule].exposedFunctions).filter((functionData: any) => functionData.isEntry).length > 0 &&
-                Object.keys(packageDetails.data[selectedModule].exposedFunctions).map((functionName: any, index: number) => {
+                Object.keys(packageDetails.data[selectedModule].exposedFunctions).filter((functionName: string) => {
+                  return functionName.toLowerCase().includes(searchedFunction.toLowerCase())
+                }).map((functionName: any, index: number) => {
                   const functionData = packageDetails.data[selectedModule].exposedFunctions[functionName];
                   console.log('functionData', functionData)
                   if (functionData.isEntry) {
