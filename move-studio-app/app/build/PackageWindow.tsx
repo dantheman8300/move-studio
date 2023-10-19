@@ -57,7 +57,7 @@ export default function PackageWindow(
 
   if (packageDetails !== undefined) {
     return (
-      <div className="w-full h-full flex flex-row items-start justify-around p-2 gap-2 border">
+      <div className="w-full h-full flex flex-row items-start justify-around p-2 gap-2">
         <div className="flex flex-col items-center justify-start w-fit gap-2">
           <Input className="bg-slate-900 h-8" type="text" placeholder="Search modules..." />
           <ScrollArea className="max-h-96 w-56 rounded-md border">
