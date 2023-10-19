@@ -290,6 +290,9 @@ export default function BuildPage () {
                       localStorage.setItem('sidebarWidth', '0');
                     }
                   }
+
+                  const blankCanvas: any = document.querySelector('canvas');
+                  blankCanvas?.parentNode?.removeChild(blankCanvas);
                 }}
                 orientation="vertical" 
                 className="h-8 w-1 rounded hover:bg-cyan-500 hover:cursor-col-resize active:bg-cyan-500 active:animate-pulse"
