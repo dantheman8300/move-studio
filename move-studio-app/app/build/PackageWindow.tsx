@@ -15,6 +15,7 @@ import {
 import FunctionCard from "../deploy/FunctionCard";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import StructCard from "../deploy/StructCard";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 
 
@@ -56,10 +57,10 @@ export default function PackageWindow(
 
   if (packageDetails !== undefined) {
     return (
-      <div className="w-full h-full flex flex-row items-start justify-around p-2 gap-2">
-        <div className="h-full flex flex-col items-center justify-start w-fit gap-2">
+      <div className="w-full h-full flex flex-row items-start justify-around p-2 gap-2 border">
+        <div className="flex flex-col items-center justify-start w-fit gap-2">
           <Input className="bg-slate-900 h-8" type="text" placeholder="Search modules..." />
-          <div className="w-full h-96 p-1 border rounded-lg overflow-y-auto">
+          <ScrollArea className="max-h-96 w-56 rounded-md border">
             {
               Object.values(packageDetails.data).map((module: any) => {
                 return (
@@ -75,13 +76,13 @@ export default function PackageWindow(
                 )
               })
             }
-          </div>
+          </ScrollArea>
         </div>
-        <div className="flex flex-col items-center justify-start w-96">
-          <Input className="bg-slate-900 h-8" type="text" placeholder="Search structs..." />
+        <div className="flex flex-col items-center justify-start h-full w-full max-w-[350px]">
+          <Input className="w-full max-w-80 bg-slate-900 h-8" type="text" placeholder="Search structs..." />
           {
             selectedModule != '' &&
-            <Accordion type="multiple" className="w-80 overflow-y-auto">
+            <Accordion type="multiple" className="w-full max-w-80 overflow-y-auto">
               {
                 packageDetails.data[selectedModule] != undefined &&
                 Object.values(packageDetails.data[selectedModule].structs).length == 0 &&
@@ -108,11 +109,11 @@ export default function PackageWindow(
             </Accordion>
           }
         </div>
-        <div className="flex flex-col items-center justify-start w-96 h-full overflow-y-auto">
-          <Input className="bg-slate-900 h-8" type="text" placeholder="Search modules..." />
+        <div className="flex flex-col items-center justify-start h-full overflow-y-auto w-full max-w-[350px]">
+          <Input className="bg-slate-900 h-8 w-full max-w-80" type="text" placeholder="Search modules..." />
           {
             selectedModule != '' &&
-            <Accordion type="multiple" className="w-80 overflow-y-auto">
+            <Accordion type="multiple" className="w-full max-w-80 overflow-y-auto">
               {
                 packageDetails.data[selectedModule] != undefined &&
                 Object.values(packageDetails.data[selectedModule].exposedFunctions).filter((functionData: any) => functionData.isEntry).length == 0 &&

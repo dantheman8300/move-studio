@@ -271,19 +271,23 @@ export default function BuildPage () {
                 document.body?.appendChild( blankCanvas);
               }}
               onDrag={(e) => {
-                if (e.clientX > 150) {
-                  setSidebarWidth(e.clientX);
-                } else if (e.clientX > 0){
-                  setSidebarWidth(0);
+                if (e.clientX < 500) {
+                  if (e.clientX > 150) {
+                    setSidebarWidth(e.clientX);
+                  } else if (e.clientX > 0){
+                    setSidebarWidth(0);
+                  }
                 }
               }} 
               onDragEnd={(e) => {
-                if (e.clientX > 150) {
-                  setSidebarWidth(e.clientX);
-                  localStorage.setItem('sidebarWidth', e.clientX.toString());
-                } else {
-                  setSidebarWidth(0);
-                  localStorage.setItem('sidebarWidth', '0');
+                if (e.clientX < 500) {
+                  if (e.clientX > 150) {
+                    setSidebarWidth(e.clientX);
+                    localStorage.setItem('sidebarWidth', e.clientX.toString());
+                  } else {
+                    setSidebarWidth(0);
+                    localStorage.setItem('sidebarWidth', '0');
+                  }
                 }
               }}
             >
@@ -294,8 +298,8 @@ export default function BuildPage () {
             </div>
           </div>
           <div 
-            className="h-full p-4"
-            style={{width: `calc(100% - ${sidebarWidth}px)`}}
+            className="p-4"
+            style={{width: `calc(100% - ${sidebarWidth}px)`, height: '100%'}}
           >
             <MainWindow />
             {/* <CodeEditor 
