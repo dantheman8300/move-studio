@@ -56,7 +56,7 @@ import {
 } from "@/components/ui/accordion"
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { ChevronRightSquare, CopyPlus, Download, ExternalLink, Eye, FileBox, FileCog, FilePlus, FlaskConical, FoldVertical, FolderClosed, FolderEdit, FolderOpen, FolderPlus, GaugeCircle, ListChecks, ListX, Loader2, MoreVertical, PackageCheck, PackageX, Pencil, Rocket, Trash2 } from "lucide-react";
+import { ChevronRightSquare, CopyPlus, Download, ExternalLink, Eye, FileBox, FileCog, FilePlus, FlaskConical, FoldVertical, FolderClosed, FolderEdit, FolderOpen, FolderPlus, GaugeCircle, ListChecks, ListX, Loader2, MoreVertical, PackageCheck, PackagePlus, PackageX, Pencil, Rocket, Trash2 } from "lucide-react";
 
 import {
   ContextMenu,
@@ -71,11 +71,12 @@ import { db } from "../db/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { useWallet } from "@suiet/wallet-kit";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function Sidebar(
   props: {
     selectedProjectName: string;
-    addTab: (path: string, name: string) => void;
+    addTab: (type: string, path: string, name: string) => void;
     setError: (error: string) => void;
 
     addToDigests: (newDigests: {digestId: string, type: 'package' | 'object', name: string}[]) => void
@@ -301,38 +302,65 @@ export default function Sidebar(
   }
 
   return (
-    <div className="pl-2 pr-2 py-2 w-full h-full flex flex-col items-center justify-start gap-1 border rounded-xl shadow-lg shadow-teal-500/75">
+    <div className="pl-2 pr-2 py-2 w-full h-full flex flex-col items-center justify-start gap-1 border rounded-xl shadow-lg shadow-teal-400/75">
       <Input className="bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring" type="text" placeholder="Search..." />
       <Accordion type="multiple" className="w-full grow">
-        <AccordionItem value="item-1" className="w-full">
-          <AccordionTrigger className="w-full">
-            <div className="w-full flex flex-row items-center justify-between">
-              Files
-              <div className="flex flex-row gap-1 items-end justify-center">
-                <FilePlus className="w-4 h-4 hover:bg-accent rounded" onClick={addFile}/>
-                <FolderPlus className="w-4 h-4 hover:bg-accent rounded" onClick={addFolder} />
-                {/* <MoreVertical className="w-4 h-4 hover:bg-accent rounded" /> */}
-              </div>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="w-full h-fit max-h-96 overflow-y-auto">
-            <Files projectName={props.selectedProjectName} addTab={props.addTab} />
-          </AccordionContent>
-        </AccordionItem>
-        <Separator className="bg-slate-700" />
+        {
+          currentProject &&
+          <div>
+            <AccordionItem value="item-1" className="w-full">
+              <AccordionTrigger className="w-full">
+                <div className="w-full flex flex-row items-center justify-between">
+                  Files
+                  <div className="flex flex-row gap-1 items-end justify-center">
+                    <FilePlus className="w-4 h-4 hover:bg-accent rounded" onClick={addFile}/>
+                    <FolderPlus className="w-4 h-4 hover:bg-accent rounded" onClick={addFolder} />
+                    {/* <MoreVertical className="w-4 h-4 hover:bg-accent rounded" /> */}
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="w-full h-fit max-h-96 overflow-y-auto">
+                <Files projectName={props.selectedProjectName} addTab={props.addTab} />
+              </AccordionContent>
+            </AccordionItem>
+            <Separator className="bg-slate-700" />
+          </div>
+        }
         <AccordionItem value="item-2">
           <AccordionTrigger>Tools</AccordionTrigger>
           <AccordionContent >
-            <div className="flex flex-col gap-1">
-              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-300 text-sm font-mono" onClick={compileProject}>
-                <ChevronRightSquare strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500" /> Compile
-              </Button>
-              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-300 text-sm font-mono" onClick={testProject}>
-                <FlaskConical strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> Test
-              </Button>
-              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-300 text-sm font-mono" onClick={deployProject}>
-                <Rocket strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> Deploy
-              </Button>
+            <div className="flex flex-col items-start gap-1">
+              {
+                currentProject &&
+                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-300 text-sm font-mono" onClick={compileProject}>
+                  <ChevronRightSquare strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500" /> Compile
+                </Button>
+              }
+              {
+                currentProject &&
+                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-300 text-sm font-mono" onClick={testProject}>
+                  <FlaskConical strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> Test
+                </Button>
+              }
+              {
+                currentProject &&
+                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-300 text-sm font-mono" onClick={deployProject}>
+                  <Rocket strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> Deploy
+                </Button>
+              }
+              <TooltipProvider delayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger className="flex flex-row items-center justify-center gap-1 ps-1 py-2">
+                    <Input className="w-[175px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono" type="text" placeholder="0x00..000" />
+                    <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={deployProject}>
+                      <PackagePlus strokeWidth={1.25} className="w-4 h-4"/>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="bg-teal-600 text-teal-950">
+                    <p>Add a deployed package</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </AccordionContent>
         </AccordionItem>

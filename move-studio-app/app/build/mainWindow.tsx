@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import CodeEditor from "./codeEditor";
 import PackageWindow from "./PackageWindow";
+import { useEffect } from "react";
 
 
 const mockTabs = [
@@ -23,25 +24,34 @@ const mockTabs = [
 ] as ({type: 'code', path: string, name: string} | {type: 'package', digestId: string, name: string})[]
 
 
-export default function MainWindow() {
+export default function MainWindow(
+  {tabs, removeTab}: 
+  {
+    tabs: ({type: 'code', path: string, name: string} | {type: 'package', digestId: string, name: string})[];
+    removeTab: (type: string, identifier: string) => void;
+  }
+) {
+
+  useEffect(() => {
+    console.log(tabs)
+  })
 
 
   return (
-    <Tabs className="border rounded-xl w-full h-full overflow-hidden shadow-lg shadow-teal-500/75">
+    <Tabs className="border rounded-xl w-full h-full overflow-hidden shadow-lg shadow-teal-400/75">
       <TabsList className="w-full h-10 rounded-none border-b items-center justify-start px-6">
         {
-          mockTabs.map((tab, i) => {
+          tabs.map((tab, i) => {
             if (tab.type === 'code') {
               return (
                 <TabsTrigger key={i} value={tab.path} className="font-mono flex flex-row items-center justify-center gap-1">
                   {tab.name}
                   <Cross2Icon 
                     className='w-4 h-4' 
-                    // onClick={(e) => {
-                    //   e.preventDefault();
-                    //   props.removeTab(tab.path);
-  
-                    // }} 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      removeTab(tab.type, tab.path);
+                    }} 
                   />
                 </TabsTrigger>
               )
@@ -51,11 +61,10 @@ export default function MainWindow() {
                   {tab.name}
                   <Cross2Icon 
                     className='w-4 h-4' 
-                    // onClick={(e) => {
-                    //   e.preventDefault();
-                    //   props.removeTab(tab.path);
-  
-                    // }} 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      removeTab(tab.type, tab.digestId);
+                    }} 
                   />
                 </TabsTrigger>
               )
@@ -65,7 +74,7 @@ export default function MainWindow() {
       </TabsList>
       <div className="h-full flex flex-col items-center justify-start">
       {
-        mockTabs.map((tab, i) => {
+        tabs.map((tab, i) => {
           if (tab.type === 'code') {
             return (
               <TabsContent value={tab.path} className="mt-0 w-full h-full">

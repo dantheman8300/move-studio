@@ -131,7 +131,7 @@ export default function BuildPage () {
 
   const [showSidebar, setShowSidebar] = useState(true);
 
-  const [tabs, setTabs] = useState<({path: string; name: string; type: string})[]>([])
+  const [tabs, setTabs] = useState<({type: 'code', path: string, name: string} | {type: 'package', digestId: string, name: string})[]>([])
   const [activeTab, setActiveTab] = useState<string>('')
 
   const [error, setError] = useState<string>('');
@@ -150,21 +150,30 @@ export default function BuildPage () {
     setActiveTab('');
   }, [selectedProjectName])
 
-  const addTab = (path: string, name: string) => {
-    const isAlreadyTab = tabs.find(tab => tab.path === path);
-    if (!isAlreadyTab) {
-      setTabs([...tabs, {path, name}])
-      setActiveTab(path);
-    } else {
-      setActiveTab(path);
+  const addTab = (type: string, path: string, name: string) => {
+    if (type == 'code') {
+      const isAlreadyTab = tabs.find(tab => (
+        tab.type === 'code' && tab.path === path
+      ));
+      if (!isAlreadyTab) {
+        setTabs([...tabs, {type, path, name}])
+        setActiveTab(path);
+      } else {
+        setActiveTab(path);
+      }
     }
   }
 
-  const removeTab = (path: string) => {
-    const newTabs = tabs.filter(tab => tab.path !== path);
-    setTabs(newTabs);
-    if (activeTab === path) {
-      setActiveTab('');
+  const removeTab = (type: string, identifier: string) => {
+    if (type == 'code') {
+      const newTabs = tabs.filter(tab => (
+        tab.type === 'package' || 
+        (tab.type === 'code' && tab.path !== identifier)
+      ));
+      setTabs(newTabs);
+      if (activeTab === identifier) {
+        setActiveTab('');
+      }
     }
   }
 
@@ -306,7 +315,7 @@ export default function BuildPage () {
             className="p-4"
             style={{width: `calc(100% - ${sidebarWidth}px)`, height: window.innerHeight - 50}}
           >
-            <MainWindow />
+            <MainWindow tabs={tabs} removeTab={removeTab} />
             {/* <CodeEditor 
               packageDigests={packageDigests}
               tabs={tabs}

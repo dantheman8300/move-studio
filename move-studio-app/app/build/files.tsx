@@ -13,7 +13,7 @@ import { db } from "../db/db";
 import { useLiveQuery } from "dexie-react-hooks";
 
 
-function createFileSystem(addTab: (path: string, name: string) => void, files: IFile[], path: string): JSX.Element[]  {
+function createFileSystem(addTab: (type: string, path: string, name: string) => void, files: IFile[], path: string): JSX.Element[]  {
   console.log('path', path)
   const fileSytem: JSX.Element[] = []
   files.forEach(file => {
@@ -33,7 +33,7 @@ function createFileSystem(addTab: (path: string, name: string) => void, files: I
 export default function Files(
   props: {
     projectName: string;
-    addTab: (path: string, name: string) => void;
+    addTab: (type: string, path: string, name: string) => void;
   }
 ) {
 
@@ -77,7 +77,7 @@ function FileComponent(
   props: {
     path: string;
     name: string;
-    addTab: (path: string, name: string) => void;
+    addTab: (type: string, path: string, name: string) => void;
   }
 ) {
 
@@ -110,7 +110,7 @@ function FileComponent(
           onClick={(event) => {
             event?.preventDefault()
             console.log(props.path + '/' + props.name)
-            props.addTab(props.path + '/' + props.name, props.name)
+            props.addTab('code', props.path + '/' + props.name, props.name)
           }}
         >
           {
@@ -132,7 +132,7 @@ function FileComponent(
           onClick={(event) => {
             event?.preventDefault()
             console.log(props.path + '/' + props.name)
-            props.addTab(props.path + '/' + props.name, props.name)
+            props.addTab('code', props.path + '/' + props.name, props.name)
           }}
         >
           <Eye className="mr-2 w-4 h-4"/> Open
@@ -157,7 +157,7 @@ function FolderComponent(
   props: {
     path: string;
     name: string;
-    addTab: (path: string, name: string) => void;
+    addTab: (type: string, path: string, name: string) => void;
   }
 ) {
 
