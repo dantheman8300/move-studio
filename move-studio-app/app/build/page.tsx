@@ -190,7 +190,7 @@ export default function BuildPage () {
   
   return (
     <div className="h-screen w-full max-w-screen flex flex-col items-center dark:bg-slate-950">
-      <div className="flex w-full lg:flex-row flex-col justify-between items-center my-2 px-3">
+      <div className="flex w-full flex-row justify-between items-center my-2 px-3">
         <TypographyH2>Move Studio</TypographyH2>
         <div className="flex flex-row justify-around gap-2">
           {
