@@ -298,7 +298,7 @@ export default function BuildPage () {
           </div>
           <div 
             className="p-4"
-            style={{width: `calc(100% - ${sidebarWidth}px)`, height: '100%'}}
+            style={{width: `calc(100% - ${sidebarWidth}px)`, height: window.innerHeight - 50}}
           >
             <MainWindow />
             {/* <CodeEditor 
