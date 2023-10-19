@@ -262,37 +262,37 @@ export default function BuildPage () {
               />
             }
             <div
-              className="hover:cursor-col-resize h-full flex flex-row items-center justify-center"
-              draggable
-              onDragStart={(e) => {
-                const blankCanvas: any = document.createElement('canvas');
-                e.dataTransfer?.setDragImage( blankCanvas, 0, 0);
-                document.body?.appendChild( blankCanvas);
-              }}
-              onDrag={(e) => {
-                if (e.clientX < 500) {
-                  if (e.clientX > 150) {
-                    setSidebarWidth(e.clientX);
-                  } else if (e.clientX > 0){
-                    setSidebarWidth(0);
-                  }
-                }
-              }} 
-              onDragEnd={(e) => {
-                if (e.clientX < 500) {
-                  if (e.clientX > 150) {
-                    setSidebarWidth(e.clientX);
-                    localStorage.setItem('sidebarWidth', e.clientX.toString());
-                  } else {
-                    setSidebarWidth(0);
-                    localStorage.setItem('sidebarWidth', '0');
-                  }
-                }
-              }}
+              className="h-full flex flex-row items-center justify-center"
             >
               <Separator 
+                draggable
+                onDragStart={(e) => {
+                  const blankCanvas: any = document.createElement('canvas');
+                  e.dataTransfer?.setDragImage( blankCanvas, 0, 0);
+                  document.body?.appendChild( blankCanvas);
+                }}
+                onDrag={(e) => {
+                  if (e.clientX < 500) {
+                    if (e.clientX > 150) {
+                      setSidebarWidth(e.clientX);
+                    } else if (e.clientX > 0){
+                      setSidebarWidth(0);
+                    }
+                  }
+                }} 
+                onDragEnd={(e) => {
+                  if (e.clientX < 500) {
+                    if (e.clientX > 150) {
+                      setSidebarWidth(e.clientX);
+                      localStorage.setItem('sidebarWidth', e.clientX.toString());
+                    } else {
+                      setSidebarWidth(0);
+                      localStorage.setItem('sidebarWidth', '0');
+                    }
+                  }
+                }}
                 orientation="vertical" 
-                className="h-8 w-1 rounded hover:bg-cyan-500 active:bg-cyan-500 active:animate-pulse"
+                className="h-8 w-1 rounded hover:bg-cyan-500 hover:cursor-col-resize active:bg-cyan-500 active:animate-pulse"
               />
             </div>
           </div>
