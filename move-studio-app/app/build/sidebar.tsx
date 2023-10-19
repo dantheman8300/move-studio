@@ -341,13 +341,13 @@ export default function Sidebar(
           <AccordionTrigger>Settings</AccordionTrigger>
           <AccordionContent>
             <div className="flex flex-col gap-1">
-              <Button variant="ghost" className="flex flex-row w-full justify-start" onClick={renameProject}>
+              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-300 text-sm font-mono" onClick={renameProject}>
                 <FolderEdit strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500" /> Rename project
               </Button>
-              <Button variant="ghost" className="flex flex-row w-full justify-start" onClick={duplicateProject}>
+              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-300 text-sm font-mono" onClick={duplicateProject}>
                 <CopyPlus strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> Duplicate project
               </Button>
-              <Button variant="ghost" className="flex flex-row w-full justify-start" onClick={deleteProject}>
+              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-300 text-sm font-mono" onClick={deleteProject}>
                 <Trash2 strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> Delete project
               </Button>
             </div>
