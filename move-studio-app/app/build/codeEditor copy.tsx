@@ -731,13 +731,18 @@ const themes = {
 
 export default function CodeEditor(
   props: {
-    path: string;
+    tabs: {path: string; name: string;}[];
+    activeTab: string;
+    removeTab: (tab: string) => void;
+    setActiveTab: (tab: string) => void;
+    error: string;
+    clearError: () => void;
   }
 ) {
 
   const code = useLiveQuery(async () => {
-    if (props.path != '') {
-      const forks = props.path.split('/');
+    if (props.activeTab != '') {
+      const forks = props.activeTab.split('/');
       const project = await db.projects.get(forks.shift() || '');
       let files = project?.files || [];
       while (forks.length > 1) {
@@ -751,7 +756,7 @@ export default function CodeEditor(
       const file = files.find(file => file.name === forks[0]);
       return file?.content || '';
     }
-  }, [props.path])
+  }, [props.activeTab])
 
   const monaco = useMonaco();
 
@@ -885,13 +890,108 @@ export default function CodeEditor(
   }
 
   return (
-    <Editor
-      height={window.outerHeight - 185}
-      // width="100%" 
-      language="sui-move"
-      theme={"NightOwl"}
-      value={code}
-      onChange={handleCodeChange}
-    />
+    <div className="w-full h-full max-h-max flex flex-col items-center justify-start border-slate-600 gap-2 shadow-xl">
+      {
+        <div className='flex flex-col rounded-lg overflow-hidden border w-full grow'>
+          <Tabs 
+            className='w-full'
+            activationMode='manual'
+          >
+            <TabsList className='w-full pl-6 justify-start rounded-none bg-slate-900'>
+              {
+                props.tabs.length == 0 &&
+                <div/>
+              }
+              {
+                props.tabs.map((tab) => {
+                  return (
+                    <TabsTrigger 
+                      data-state={props.activeTab === tab.path ? 'active' : 'inactive'}
+                      value={tab.path} 
+                      className='font-mono flex flex-row items-center justify-center gap-1'
+                      onClick={() => {
+                        console.log('selected', tab.path)
+                        props.setActiveTab(tab.path)
+                      }}
+                    >
+                      {tab.name}
+                      <Cross2Icon 
+                        className='w-3 h-3 ml-2' 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          props.removeTab(tab.path);
+
+                        }} 
+                      />
+                    </TabsTrigger>
+                  )
+                })
+              }
+            </TabsList>
+          </Tabs>
+          <Separator />
+          {
+            props.error == '' &&
+            props.activeTab != '' &&
+            props.tabs.length > 0 &&
+            <div className="grow w-full">
+              <Editor
+                height={props.error != '' ? "99.9%" : "100%"}
+                // width="100%" 
+                language="sui-move"
+                theme={"NightOwl"}
+                value={code}
+                onChange={handleCodeChange}
+              />
+            </div>
+          }
+          {
+            props.error != '' &&
+            props.activeTab != '' &&
+            props.tabs.length > 0 &&
+            <div className="grow w-full">
+              <Editor
+                height={props.error != '' ? "99.9%" : "100%"}
+                // width="100%" 
+                language="sui-move"
+                theme={"NightOwl"}
+                value={code}
+                onChange={handleCodeChange}
+              />
+            </div>
+          }
+          {
+            // props.error == '' &&
+            props.activeTab == '' &&
+            props.tabs.length == 0 &&
+            <div className='grow w-full bg-[#011627] flex flex-col justify-center items-center'>
+              <span className='text-slate-500'>
+                Select a file to edit or create a new one
+              </span>
+            </div>
+          }
+        </div>
+      }
+      {
+        props.error != '' &&
+        <div className='overflow-hidden w-full flex flex-col border rounded-lg bg-[#011627]'>
+          <div className='w-full h-8 bg-slate-900 flex flex-row items-center justify-center ps-8 text-sm font-mono text-muted-foreground'>
+            Terminal Log
+            <Cross2Icon
+              className='ml-2 w-4 h-4 text-red-500 cursor-pointer hover:text-red-600'
+              onClick={() => props.clearError()}
+            />
+          </div>
+          <Separator />
+          <div className='flex flex-row justify-between items-start w-full'>
+            <div className='p-1 w-full max-w-6xl max-h-80 flex flex-row justify-start items-start overflow-scroll'>
+              <Ansi className='whitespace-pre text-xs'>
+                {props.error}
+              </Ansi>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
   )
 }

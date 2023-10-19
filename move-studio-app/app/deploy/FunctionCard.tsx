@@ -73,7 +73,7 @@ export default function FunctionCard(
             return (
               <div key={index} className="grid w-full max-w-sm items-center gap-1.5 font-mono">
                 <Label htmlFor={`T${index}`}>Type{index}</Label>
-                <Input type="text" id={`T${index}`} placeholder={`T${index}`} />
+                <Input className="bg-slate-900" type="text" id={`T${index}`} placeholder={`T${index}`} />
               </div>
             )
           })
@@ -96,7 +96,7 @@ export default function FunctionCard(
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Input type="text" id={`arg${index}`} placeholder={`ref - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`} />
+                          <Input className="bg-slate-900" type="text" id={`arg${index}`} placeholder={`ref - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`} />
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>{`${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`}</p>
@@ -119,7 +119,7 @@ export default function FunctionCard(
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Input type="text" id={`arg${index}`} placeholder={`mutRef - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`} />
+                          <Input className="bg-slate-900" type="text" id={`arg${index}`} placeholder={`mutRef - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`} />
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>{`${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`}</p>
@@ -137,7 +137,7 @@ export default function FunctionCard(
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
-                        <Input type="text" id={`arg${index}`} placeholder={`${struct.address}::${struct.module}::${struct.name}`} />
+                        <Input className="bg-slate-900" type="text" id={`arg${index}`} placeholder={`${struct.address}::${struct.module}::${struct.name}`} />
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>{`${struct.address}::${struct.module}::${struct.name}`}</p>
@@ -150,7 +150,7 @@ export default function FunctionCard(
           })
         }
       </div>
-      <Button className="w-full py-4" onClick={executeFunction}>
+      <Button className="w-full rounded-lg"  onClick={executeFunction}>
         Execute
       </Button>
       {/* {JSON.stringify(props.data)} */}

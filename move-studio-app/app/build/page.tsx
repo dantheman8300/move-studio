@@ -46,6 +46,7 @@ import {
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/db";
 import { set } from "date-fns";
+import MainWindow from "./mainWindow";
 
 const demoCode = `module demoPackage::party {
 
@@ -122,15 +123,15 @@ const demoPackage: IProject = {
 export default function BuildPage () {
 
   const projectList = useLiveQuery(() => db.projects.toArray()) || [];
-  useEffect(() => {
-  }, [projectList])
+  const [packageDigests, setPackageDigests] = useState<{digestId: string, name: string}[]>([]);
+  const [objectDigests, setObjectDigests] = useState<{digestId: string, name: string}[]>([]);
 
   const [open, setOpen] = useState(false)
   const [selectedProjectName, setSelectedProjectName] = useState("")
 
   const [showSidebar, setShowSidebar] = useState(true);
 
-  const [tabs, setTabs] = useState<{path: string; name: string;}[]>([])
+  const [tabs, setTabs] = useState<({path: string; name: string; type: string})[]>([])
   const [activeTab, setActiveTab] = useState<string>('')
 
   const [error, setError] = useState<string>('');
@@ -177,39 +178,20 @@ export default function BuildPage () {
   const clearError = () => {
     setError('');
   }
+
+  const addToDigests = (newDigests: {digestId: string, type: 'package' | 'object', name: string}[]) => {
+
+    const newPackageDigests = newDigests.filter((newDigest) => newDigest.type === 'package');
+    const newObjectDigests = newDigests.filter((newDigest) => newDigest.type === 'object');
+
+    setPackageDigests([...packageDigests, ...newPackageDigests]);
+    setObjectDigests([...objectDigests, ...newObjectDigests]);
+  }
   
   return (
     <div className="h-screen w-full max-w-screen flex flex-col items-center dark:bg-slate-950">
       <div className="flex w-full lg:flex-row flex-col justify-between items-center my-2 px-3">
-        {/* <div>
-          {
-            showSidebar && 
-            <PanelLeftClose 
-              onClick={() => {
-                setShowSidebar(false);
-              }}
-            />
-          }
-          {
-            !showSidebar && 
-            <PanelLeftOpen 
-              onClick={() => {
-                setShowSidebar(true);
-              }}
-            />
-          }
-        </div> */}
-        <div className="flex flex-row gap-6 justify-center items-baseline">
-          <TypographyH2>Move Studio</TypographyH2>
-          <div className="flex flex-row gap-4 ">
-            <a href="/build">
-              Build
-            </a>
-            <a href="/deploy">
-              Deploy
-            </a>
-          </div>
-        </div>
+        <TypographyH2>Move Studio</TypographyH2>
         <div className="flex flex-row justify-around gap-2">
           {
             <Popover open={open} onOpenChange={setOpen}>
@@ -259,7 +241,7 @@ export default function BuildPage () {
             </Popover>
           }
           <Button className="p-3" variant="secondary" onClick={addProject}>New project</Button>
-          {/* <WalletSelector isTxnInProgress={false} /> */}
+          <WalletSelector isTxnInProgress={false} />
         </div>
       </div>
       {
@@ -267,7 +249,7 @@ export default function BuildPage () {
         showSidebar &&
         <div className="grow w-full flex flex-row items-center justify-start">
           <div 
-            className={`h-full flex flex-row items-center justify-end min-w-[15px]`}
+            className={`h-full flex flex-row items-center justify-end min-w-[15px] py-4 pl-4 gap-4`}
             style={{"width": `${sidebarWidth}px`}}
           >
             {
@@ -276,10 +258,12 @@ export default function BuildPage () {
                 addTab={addTab}
                 selectedProjectName={selectedProjectName} 
                 setError={setError}
+
+                addToDigests={addToDigests}
               />
             }
             <div
-              className="hover:cursor-col-resize h-full flex flex-row items-center justify-center "
+              className="hover:cursor-col-resize h-full flex flex-row items-center justify-center"
               draggable
               onDragStart={(e) => {
                 const blankCanvas: any = document.createElement('canvas');
@@ -305,22 +289,24 @@ export default function BuildPage () {
             >
               <Separator 
                 orientation="vertical" 
-                className="h-8 w-1 rounded"
+                className="h-8 w-1 rounded  hover:bg-cyan-500 hover:cursor-col-resize transition-all focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50"
               />
             </div>
           </div>
           <div 
-            className="h-full p-2"
+            className="h-full p-4"
             style={{width: `calc(100% - ${sidebarWidth}px)`}}
           >
-            <CodeEditor 
+            <MainWindow />
+            {/* <CodeEditor 
+              packageDigests={packageDigests}
               tabs={tabs}
               activeTab={activeTab}
               removeTab={removeTab}
               setActiveTab={setActiveTab}
               error={error}
               clearError={clearError}
-            />
+            /> */}
           </div>
         </div>
       }

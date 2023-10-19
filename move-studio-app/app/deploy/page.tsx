@@ -50,7 +50,7 @@ import 'reactflow/dist/style.css';
 import Deployer from "./Deployer";
 import ObjectCard from "./ObjectCard";
 import PackageCard from "./PackageCard";
-import PackageWindow from "./PackageWindow";
+import PackageWindow from "../build/PackageWindow";
 
 const initialNodes = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },

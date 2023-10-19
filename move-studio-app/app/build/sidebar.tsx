@@ -56,7 +56,7 @@ import {
 } from "@/components/ui/accordion"
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { ChevronRightSquare, CopyPlus, Download, Eye, FileBox, FileCog, FilePlus, FlaskConical, FoldVertical, FolderClosed, FolderEdit, FolderOpen, FolderPlus, GaugeCircle, ListChecks, ListX, Loader2, MoreVertical, PackageCheck, PackageX, Pencil, Trash2 } from "lucide-react";
+import { ChevronRightSquare, CopyPlus, Download, ExternalLink, Eye, FileBox, FileCog, FilePlus, FlaskConical, FoldVertical, FolderClosed, FolderEdit, FolderOpen, FolderPlus, GaugeCircle, ListChecks, ListX, Loader2, MoreVertical, PackageCheck, PackageX, Pencil, Rocket, Trash2 } from "lucide-react";
 
 import {
   ContextMenu,
@@ -69,14 +69,19 @@ import Files from "./files";
 import { useToast } from "@/components/ui/use-toast";
 import { db } from "../db/db";
 import { useLiveQuery } from "dexie-react-hooks";
+import { TransactionBlock } from "@mysten/sui.js/transactions";
+import { useWallet } from "@suiet/wallet-kit";
 
 export default function Sidebar(
   props: {
     selectedProjectName: string;
     addTab: (path: string, name: string) => void;
     setError: (error: string) => void;
+
+    addToDigests: (newDigests: {digestId: string, type: 'package' | 'object', name: string}[]) => void
   }
 ) {
+  const wallet = useWallet();
 
   const { toast } = useToast();
 
@@ -114,7 +119,7 @@ export default function Sidebar(
     }
   }
 
-  const compileProject = async () => {
+  const compileProject = async (): Promise<{modules: string[], dependencies: string[], digest: number[]}> => {
     console.log('compile project');
     
     props.setError('');
@@ -147,6 +152,7 @@ export default function Sidebar(
           Project compilation failed
         </div>,
       })
+      return {modules: [], dependencies: [], digest: []};
     } else {
       toast({
         description: <div className="flex flex-row gap-2 items-center justify-start">
@@ -154,6 +160,7 @@ export default function Sidebar(
           Project compiled successfully
         </div>,
       })
+      return data.compileResults;
     }
   }
 
@@ -203,6 +210,81 @@ export default function Sidebar(
     }
   }
 
+  const deployProject = async () => {
+
+    const compiledModulesAndDependencies = await compileProject();
+
+    toast({
+      description: <div className="flex flex-row gap-2 items-center justify-start">
+        <GaugeCircle className="w-6 h-6 animate-spin" />
+        Deploying...
+      </div>,
+    })
+
+    console.log(compiledModulesAndDependencies)
+
+    if (compiledModulesAndDependencies.modules.length === 0) {
+      return;
+    }
+
+    const txb = new TransactionBlock();
+    
+    const [upgradeCap] = txb.publish({
+      modules: compiledModulesAndDependencies.modules,
+      dependencies: compiledModulesAndDependencies.dependencies,
+    });
+
+    txb.transferObjects([upgradeCap], txb.pure(wallet.address));
+
+    try {
+      const publishTxn = await wallet.signAndExecuteTransactionBlock({ transactionBlock: txb as any });
+
+      console.log(publishTxn);
+
+      toast({
+        description: <div className="flex flex-row gap-2 items-center justify-start">
+          <PackageCheck className="w-6 h-6" />
+          Project deployed successfully
+          <a><ExternalLink className="w-4 h-4" href={`https://suiexplorer.com/txblock/${publishTxn.digest}`} /></a>
+        </div>,
+      })
+
+      console.log(publishTxn.objectChanges)
+
+      const newDigests = [] as {digestId: string, type: 'package' | 'object', name: string}[];
+      for (let objectChange of publishTxn.objectChanges || []) {
+        if (objectChange.type === 'published') {
+          newDigests.push({
+            name: props.selectedProjectName,
+            digestId: objectChange.packageId,
+            type: 'package'
+          });
+        } else if (objectChange.type === 'created') {
+          newDigests.push({
+            name: props.selectedProjectName,
+            digestId: objectChange.objectId,
+            type: 'object'
+          });
+        }
+      }
+
+      console.log(newDigests)
+
+      if (newDigests) {
+        props.addToDigests(newDigests);
+      }
+
+    } catch (error) {
+      console.log(error);
+      toast({
+        description: <div className="flex flex-row gap-2 items-center justify-start">
+          <PackageX className="w-6 h-6" />
+          Project deployment failed
+        </div>,
+      })
+    }
+  }
+
   const renameProject = async () => {
     let projectName = prompt('Enter new project name');
     if (projectName) {
@@ -219,7 +301,7 @@ export default function Sidebar(
   }
 
   return (
-    <div className="pl-2 pr-1 py-2 w-full h-full flex flex-col items-center justify-start gap-1">
+    <div className="pl-2 pr-2 py-2 w-full h-full flex flex-col items-center justify-start gap-1 border rounded-xl shadow-lg shadow-sky-500/75">
       <Input className="bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring" type="text" placeholder="Search..." />
       <Accordion type="multiple" className="w-full grow">
         <AccordionItem value="item-1" className="w-full">
@@ -247,6 +329,9 @@ export default function Sidebar(
               </Button>
               <Button variant="outline" onClick={testProject}>
                 <FlaskConical className="mr-2 w-4 h-4"/> Test
+              </Button>
+              <Button variant="outline" onClick={deployProject}>
+                <Rocket className="mr-2 w-4 h-4"/> Deploy
               </Button>
             </div>
           </AccordionContent>
