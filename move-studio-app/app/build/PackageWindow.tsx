@@ -179,7 +179,7 @@ export default function PackageWindow(
                       <AccordionItem value={index.toString()} className="my-2 px-2 w-full border rounded-lg overflow-hidden font-mono">
                         <AccordionTrigger className="w-full">{functionName}</AccordionTrigger>
                         <AccordionContent className="w-full">
-                          <FunctionCard data={functionData} />
+                          <FunctionCard data={functionData} address={packageDetails.data[selectedModule].address} moduleName={selectedModule} functionName={functionName} />
                         </AccordionContent>
                       </AccordionItem>
                     )

@@ -12,7 +12,10 @@ import { useEffect, useState } from "react"
 
 export default function FunctionCard(
   props: {
-    data: any
+    data: any, 
+    address: string,
+    moduleName: string, 
+    functionName: string
   }
 ) {
 
@@ -22,6 +25,7 @@ export default function FunctionCard(
   const [parameters, setParameters] = useState<any[]>([]);
 
   useEffect(() => {
+    console.log('props.data', props.data)
     const typeParametersEmpty = props.data.typeParameters.map(() => {
       return '';
     });
@@ -45,11 +49,16 @@ export default function FunctionCard(
   const executeFunction = async () => {
     if (!wallet.connected) return
 
+    console.log('typeParameters', typeParameters)
+    console.log('parameters', parameters)
+
     const tx = new TransactionBlock();
-    const packageObjectId = "0xXXX";
     tx.moveCall({
-      target: `${packageObjectId}::nft::mint`,
-      arguments: [tx.pure("Example NFT")],
+      target: `${props.address}::${props.moduleName}::${props.functionName}`,
+      arguments: parameters.map((param) => {
+        return tx.pure(param);
+      }),
+      typeArguments: typeParameters
     });
     
     try {
@@ -73,7 +82,11 @@ export default function FunctionCard(
             return (
               <div key={index} className="grid w-full max-w-sm items-center gap-1.5 font-mono">
                 <Label htmlFor={`T${index}`}>Type{index}</Label>
-                <Input className="bg-slate-900" type="text" id={`T${index}`} placeholder={`T${index}`} />
+                <Input className="bg-slate-900" type="text" id={`T${index}`} placeholder={`T${index}`} value={typeParameters[index]} onChange={(e) => {
+                  const newTypeParameters = typeParameters;
+                  newTypeParameters[index] = e.target.value;
+                  setTypeParameters(newTypeParameters);
+                }} />
               </div>
             )
           })
@@ -96,7 +109,11 @@ export default function FunctionCard(
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Input className="bg-slate-900" type="text" id={`arg${index}`} placeholder={`ref - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`} />
+                          <Input className="bg-slate-900" type="text" id={`arg${index}`} placeholder={`ref - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`} value={parameters[index]} onChange={(e) => {
+                            const newParameters = parameters;
+                            newParameters[index] = e.target.value;
+                            setParameters(newParameters);
+                          }} />
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>{`${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`}</p>
@@ -119,7 +136,11 @@ export default function FunctionCard(
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Input className="bg-slate-900" type="text" id={`arg${index}`} placeholder={`mutRef - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`} />
+                          <Input className="bg-slate-900" type="text" id={`arg${index}`} placeholder={`mutRef - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`} value={parameters[index]} onChange={(e) => {
+                            const newParameters = parameters;
+                            newParameters[index] = e.target.value;
+                            setParameters(newParameters);
+                          }} />
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>{`${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`}</p>
@@ -137,7 +158,11 @@ export default function FunctionCard(
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
-                        <Input className="bg-slate-900" type="text" id={`arg${index}`} placeholder={`${struct.address}::${struct.module}::${struct.name}`} />
+                        <Input className="bg-slate-900" type="text" id={`arg${index}`} placeholder={`${struct.address}::${struct.module}::${struct.name}`} value={parameters[index]} onChange={(e) => {
+                            const newParameters = parameters;
+                            newParameters[index] = e.target.value;
+                            setParameters(newParameters);
+                          }} />
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>{`${struct.address}::${struct.module}::${struct.name}`}</p>
