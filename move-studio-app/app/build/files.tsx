@@ -33,7 +33,7 @@ function createFileSystem(addTab: (type: string, path: string, name: string) => 
 export default function Files(
   props: {
     projectName: string;
-    addTab: (type: string, path: string, name: string) => void;
+    addTab: (type: string, identifier: string, name: string) => void;
   }
 ) {
 
@@ -77,7 +77,7 @@ function FileComponent(
   props: {
     path: string;
     name: string;
-    addTab: (type: string, path: string, name: string) => void;
+    addTab: (type: string, identifier: string, name: string) => void;
   }
 ) {
 
@@ -157,7 +157,7 @@ function FolderComponent(
   props: {
     path: string;
     name: string;
-    addTab: (type: string, path: string, name: string) => void;
+    addTab: (type: string, identifier: string, name: string) => void;
   }
 ) {
 

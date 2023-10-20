@@ -150,16 +150,26 @@ export default function BuildPage () {
     setActiveTab('');
   }, [selectedProjectName])
 
-  const addTab = (type: string, path: string, name: string) => {
+  const addTab = (type: string, identifier: string, name: string) => {
     if (type == 'code') {
       const isAlreadyTab = tabs.find(tab => (
-        tab.type === 'code' && tab.path === path
+        tab.type === 'code' && tab.path === identifier
       ));
       if (!isAlreadyTab) {
-        setTabs([...tabs, {type, path, name}])
-        setActiveTab(path);
+        setTabs([...tabs, {type, path: identifier, name}])
+        setActiveTab(identifier);
       } else {
-        setActiveTab(path);
+        setActiveTab(identifier);
+      }
+    } else if (type == 'package') {
+      const isAlreadyTab = tabs.find(tab => (
+        tab.type === 'package' && tab.digestId === identifier
+      ));
+      if (!isAlreadyTab) {
+        setTabs([...tabs, {type, digestId: identifier, name}])
+        setActiveTab(identifier);
+      } else {
+        setActiveTab(identifier);
       }
     }
   }

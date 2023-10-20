@@ -864,8 +864,8 @@ export default function CodeEditor(
   }, [monaco]);
 
   const handleCodeChange = async (value: string | undefined) => {
-    if (props.activeTab != '') {
-      const forks = props.activeTab.split('/');
+    if (props.path != '') {
+      const forks = props.path.split('/');
       const project = await db.projects.get(forks.shift() || '');
       let files = project?.files || [];
       while (forks.length > 1) {

@@ -76,7 +76,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 export default function Sidebar(
   props: {
     selectedProjectName: string;
-    addTab: (type: string, path: string, name: string) => void;
+    addTab: (type: string, identifier: string, name: string) => void;
     setError: (error: string) => void;
 
     addToDigests: (newDigests: {digestId: string, type: 'package' | 'object', name: string}[]) => void
@@ -255,11 +255,16 @@ export default function Sidebar(
       const newDigests = [] as {digestId: string, type: 'package' | 'object', name: string}[];
       for (let objectChange of publishTxn.objectChanges || []) {
         if (objectChange.type === 'published') {
-          newDigests.push({
-            name: props.selectedProjectName,
-            digestId: objectChange.packageId,
-            type: 'package'
-          });
+          // newDigests.push({
+          //   name: props.selectedProjectName,
+          //   digestId: objectChange.packageId,
+          //   type: 'package'
+          // });
+          props.addTab(
+            'package', 
+            objectChange.packageId,
+            props.selectedProjectName
+          )
         } else if (objectChange.type === 'created') {
           newDigests.push({
             name: props.selectedProjectName,
