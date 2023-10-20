@@ -146,8 +146,14 @@ export default function BuildPage () {
   }, []);
 
   useEffect(() => {
-    setTabs([]);
-    setActiveTab('');
+    const newTabs = tabs.filter((tab) => {
+      return tab.type === 'package'
+    });
+    setTabs(newTabs);
+
+    if (activeTab in newTabs.map((tab) => tab.type === 'code' ? tab.path : '')) {
+      setActiveTab('');
+    }
   }, [selectedProjectName])
 
   const addTab = (type: string, identifier: string, name: string) => {
@@ -179,6 +185,15 @@ export default function BuildPage () {
       const newTabs = tabs.filter(tab => (
         tab.type === 'package' || 
         (tab.type === 'code' && tab.path !== identifier)
+      ));
+      setTabs(newTabs);
+      if (activeTab === identifier) {
+        setActiveTab('');
+      }
+    } else if (type == 'package') {
+      const newTabs = tabs.filter(tab => (
+        tab.type === 'code' || 
+        (tab.type === 'package' && tab.digestId !== identifier)
       ));
       setTabs(newTabs);
       if (activeTab === identifier) {
