@@ -88,6 +88,8 @@ export default function Sidebar(
 
   const currentProject = useLiveQuery(() => db.projects.get(props.selectedProjectName), [props.selectedProjectName]);
 
+  const [addedPackage, setAddedPackage] = useState('');
+
   const deleteProject = async () => {
     let confirm = window.confirm('Are you sure you want to delete this project?');
     if (confirm) {
@@ -291,6 +293,14 @@ export default function Sidebar(
     }
   }
 
+  const addPackage = async () => {
+    const newName = prompt('Enter package name');
+
+    if (newName) {
+      props.addTab('package', addedPackage, newName);
+    }
+  }
+
   const renameProject = async () => {
     let projectName = prompt('Enter new project name');
     if (projectName) {
@@ -356,8 +366,8 @@ export default function Sidebar(
               <TooltipProvider delayDuration={100}>
                 <Tooltip>
                   <TooltipTrigger className="flex flex-row items-center justify-center gap-1 ps-1 py-2">
-                    <Input className="w-[175px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono" type="text" placeholder="0x00..000" />
-                    <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={deployProject}>
+                    <Input className="w-[175px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono" type="text" placeholder="0x00..000" value={addedPackage} onChange={(e) => {setAddedPackage(e.target.value)}} />
+                    <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={addPackage}>
                       <PackagePlus strokeWidth={1.25} className="w-4 h-4"/>
                     </Button>
                   </TooltipTrigger>
