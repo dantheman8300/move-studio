@@ -317,8 +317,8 @@ export default function Sidebar(
                 <div className="w-full flex flex-row items-center justify-between">
                   Files
                   <div className="flex flex-row gap-1 items-end justify-center">
-                    <FilePlus className="w-4 h-4 hover:bg-accent rounded" onClick={addFile}/>
-                    <FolderPlus className="w-4 h-4 hover:bg-accent rounded" onClick={addFolder} />
+                    <FilePlus className="w-4 h-4" onClick={addFile}/>
+                    <FolderPlus className="w-4 h-4" onClick={addFolder} />
                     {/* <MoreVertical className="w-4 h-4 hover:bg-accent rounded" /> */}
                   </div>
                 </div>
