@@ -353,7 +353,7 @@ export default function Sidebar(
                     <div className="flex flex-col items-start gap-1.5">
                       <Label>Add Package</Label>
                       <div className="flex flex-row items-center justify-center gap-1">
-                        <Input className="w-[175px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono" type="text" placeholder="0x000..000" value={addedPackage} onChange={(e) => {setAddedPackage(e.target.value)}} />
+                        <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono" type="text" placeholder="0x000..000" value={addedPackage} onChange={(e) => {setAddedPackage(e.target.value)}} />
                         <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={addPackage}>
                           <DownloadCloud strokeWidth={1.25} className="w-4 h-4 text-teal-300"/>
                         </Button>
@@ -371,7 +371,7 @@ export default function Sidebar(
                     <div className="flex flex-col items-start gap-1.5">
                       <Label>Add Package</Label>
                       <div className="flex flex-row items-center justify-center gap-1">
-                        <Input className="w-[175px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono" type="text" placeholder="0x000..000" value={addedPackage} onChange={(e) => {setAddedPackage(e.target.value)}} />
+                        <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono" type="text" placeholder="0x000..000" value={addedPackage} onChange={(e) => {setAddedPackage(e.target.value)}} />
                         <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={addPackage}>
                           <PackagePlus strokeWidth={1.25} className="w-4 h-4 text-teal-300"/>
                         </Button>
