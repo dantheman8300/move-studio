@@ -84,7 +84,7 @@ export default function PackageWindow(
               return (module.name as string).toLowerCase().includes(searchedModule.toLowerCase())
             }).length == 0 &&
             <div className="w-full h-full flex flex-row items-center justify-center">
-              <span className="font-mono py-2">
+              <span className="font-mono py-2 antialiased">
                 No modules found
               </span>
             </div>
@@ -96,7 +96,7 @@ export default function PackageWindow(
               return (
                 <div className="flex flex-row items-center justify-start gap-2">
                   <Button 
-                    className="font-mono w-full h-8 flex flex-row justify-start" 
+                    className="font-mono w-full h-8 flex flex-row justify-start antialiased" 
                     variant="ghost"
                     onClick={() => {setSelectedModule(module.name)}}
                   >
@@ -125,7 +125,7 @@ export default function PackageWindow(
                 return structName.toLowerCase().includes(searchedStruct.toLowerCase())
               }).length == 0 &&
               <div className="flex flex-row items-center justify-center w-full h-full">
-                <span className="font-mono text-white text-xl">
+                <span className="font-mono text-white text-xl pt-4 antialiased">
                   No structs found
                 </span>
               </div>
@@ -169,7 +169,7 @@ export default function PackageWindow(
                 }).length == 0
               ) && 
               <div className="flex flex-row items-center justify-center w-full h-full">
-                <span className="font-mono text-white text-xl">
+                <span className="font-mono text-white text-xl pt-4 antialiased">
                   No entry functions found
                 </span>
               </div>
