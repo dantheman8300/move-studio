@@ -301,7 +301,12 @@ export default function Sidebar(
   }
 
   return (
-    <div className="pl-2 pr-2 py-2 w-full h-full flex flex-col items-center justify-start gap-1 border rounded-xl shadow-lg shadow-teal-400/75">
+    <ScrollArea 
+      className="pl-2 pr-2 py-2 w-full flex flex-col items-center justify-start gap-1 border rounded-xl shadow-lg shadow-teal-400/75"
+      style={{
+        height: 'calc(100vh - 82px)'
+      }}
+    >
       <Input className="bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring" type="text" placeholder="Search..." />
       <Accordion type="multiple" className="w-full grow antialiased">
         {
@@ -537,6 +542,6 @@ export default function Sidebar(
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-    </div>
+    </ScrollArea>
   )
 }
