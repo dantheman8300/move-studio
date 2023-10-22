@@ -307,7 +307,6 @@ export default function Sidebar(
         height: 'calc(100vh - 82px)'
       }}
     >
-      {/* <Input className="bg-slate-900 h-8" type="text" placeholder="Search..." /> */}
       <Accordion type="multiple" className="w-full grow antialiased">
         {
           currentProject &&
