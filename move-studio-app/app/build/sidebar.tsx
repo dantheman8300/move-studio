@@ -302,19 +302,19 @@ export default function Sidebar(
 
   return (
     <ScrollArea 
-      className="pl-2 pr-2 py-2 w-full flex flex-col items-center justify-start gap-1 border rounded-xl shadow-lg shadow-teal-400/75"
+      className="pl-2 pr-2 w-full flex flex-col items-center justify-start gap-1 border rounded-xl shadow-lg shadow-teal-400/75"
       style={{
         height: 'calc(100vh - 82px)'
       }}
     >
-      <Input className="bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring" type="text" placeholder="Search..." />
+      {/* <Input className="bg-slate-900 h-8" type="text" placeholder="Search..." /> */}
       <Accordion type="multiple" className="w-full grow antialiased">
         {
           currentProject &&
           <div>
             <AccordionItem value="item-1" className="w-full">
               <AccordionTrigger className="w-full">
-                <div className="w-full flex flex-row items-center justify-between">
+                <div className="w-full flex flex-row items-center justify-between text-base">
                   Files
                   <div className="flex flex-row gap-1 items-end justify-center">
                     <FilePlus className="w-4 h-4" onClick={addFile}/>
@@ -331,7 +331,7 @@ export default function Sidebar(
           </div>
         }
         <AccordionItem value="item-2">
-          <AccordionTrigger className="antialiased">Tools</AccordionTrigger>
+          <AccordionTrigger className="antialiased text-base">Tools</AccordionTrigger>
           <AccordionContent >
             <div className="flex flex-col items-start gap-1">
               {
@@ -393,7 +393,7 @@ export default function Sidebar(
         </AccordionItem>
         <Separator className="bg-slate-700" />
         <AccordionItem value="item-4">
-          <AccordionTrigger className="antialiased">Transaction history</AccordionTrigger>
+          <AccordionTrigger className="antialiased text-base">Transaction history</AccordionTrigger>
           <AccordionContent>
             <ScrollArea className="h-min max-h-[200px] w-full max-w-[300px] flex flex-col items-center justify-start gap-2">
               <Popover>
@@ -415,7 +415,7 @@ export default function Sidebar(
                       <Collapsible>
                         <div className="flex flex-row items-center justify-between">
                           <CollapsibleTrigger className="flex flex-row items-center justify-between">
-                            <div className="text-lg">Created <span className="font-mono">Ballon</span></div>
+                            <div className="text-base">Created <span className="font-mono">Ballon</span></div>
                             <ChevronDown className="w-4 h-4"/>
                           </CollapsibleTrigger>
                           <Button variant='ghost' size='icon'>
@@ -444,7 +444,7 @@ export default function Sidebar(
                       <Collapsible>
                         <div className="flex flex-row items-center justify-between">
                           <CollapsibleTrigger className="flex flex-row items-center justify-between">
-                            <div className="text-lg">Created <span className="font-mono">Ballon</span></div>
+                            <div className="text-base">Created <span className="font-mono">Ballon</span></div>
                             <ChevronDown className="w-4 h-4"/>
                           </CollapsibleTrigger>
                           <Button variant='ghost' size='icon'>
@@ -526,7 +526,7 @@ export default function Sidebar(
         </AccordionItem>
         <Separator className="bg-slate-700" />
         <AccordionItem value="item-3">
-          <AccordionTrigger className="antialiased">Settings</AccordionTrigger>
+          <AccordionTrigger className="antialiased text-base">Settings</AccordionTrigger>
           <AccordionContent>
             <div className="flex flex-col gap-1">
               <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono" onClick={renameProject}>
