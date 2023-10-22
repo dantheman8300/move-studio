@@ -106,7 +106,7 @@ function FileComponent(
     <ContextMenu>
       <ContextMenuTrigger>
         <div 
-          className="px-1 w-full text-slate-300 h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center"
+          className="px-1 w-full text-slate-200 antialiased h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center"
           onClick={(event) => {
             event?.preventDefault()
             console.log(props.path + '/' + props.name)
@@ -115,10 +115,10 @@ function FileComponent(
         >
           {
             props.name.endsWith('.move') ?
-            <FileBox strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> : 
+            <FileBox strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/> : 
             props.name.endsWith('.toml') ?
-            <FileCog strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> : 
-            <File strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/>
+            <FileCog strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/> : 
+            <File strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/>
           }
           {props.name}
         </div>
@@ -283,7 +283,7 @@ function FolderComponent(
       <ContextMenu>
         <ContextMenuTrigger>
           <div 
-            className="px-1 w-full text-slate-300 h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center"
+            className="px-1 w-full text-slate-200 antialiased h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground rounded items-center"
             onClick={(event) => {
               event?.preventDefault()
               setIsOpen(!isOpen)
@@ -291,8 +291,8 @@ function FolderComponent(
           >
             {
               isOpen ? 
-              <FolderOpen strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/> :
-              <FolderClosed strokeWidth={1.25} className="mr-2 w-4 h-4 text-slate-500"/>
+              <FolderOpen strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/> :
+              <FolderClosed strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/>
             }
             {props.name}
           </div>
