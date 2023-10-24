@@ -2,12 +2,13 @@ import Editor, { useMonaco } from '@monaco-editor/react';
 import { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from '@/components/ui/separator';
-import { Cross2Icon } from '@radix-ui/react-icons';
+import { Cross2Icon, CubeIcon } from '@radix-ui/react-icons';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
 import { IProject } from '../db/ProjectsDB';
 import Ansi from "ansi-to-react";
 import { Button } from '@/components/ui/button';
+import { CubeSpinner, GuardSpinner } from 'react-spinners-kit';
 
 const demoCode = `module demoPackage::party {
 
@@ -892,6 +893,11 @@ export default function CodeEditor(
       theme={"NightOwl"}
       value={code}
       onChange={handleCodeChange}
+      loading={
+        <div className="w-full h-full flex flex-row items-center justify-center gap-1 bg-slate-950">
+          {/* <GuardSpinner backColor="#f59e0b" /> */}
+        </div>
+      }
     />
   )
 }
