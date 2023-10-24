@@ -332,7 +332,7 @@ export default function BuildPage () {
                   blankCanvas?.parentNode?.removeChild(blankCanvas);
                 }}
                 orientation="vertical" 
-                className="h-8 w-1 rounded hover:bg-cyan-500 hover:cursor-col-resize active:bg-cyan-500 active:animate-pulse"
+                className="h-8 w-1 rounded hover:bg-cyan-500 hover:cursor-col-resize active:bg-teal-500 active:animate-pulse"
               />
             </div>
           </div>
