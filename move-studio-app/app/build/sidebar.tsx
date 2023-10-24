@@ -56,7 +56,7 @@ import {
 } from "@/components/ui/accordion"
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Blocks, ChevronDown, ChevronRightSquare, CopyPlus, Download, DownloadCloud, ExternalLink, Eye, FileBox, FileCog, FilePlus, FlaskConical, FoldVertical, FolderClosed, FolderEdit, FolderOpen, FolderPlus, GaugeCircle, ListChecks, ListX, Loader2, MoreVertical, PackageCheck, PackagePlus, PackageX, Pencil, Rocket, Trash2, UploadCloud } from "lucide-react";
+import { Blocks, ChevronDown, ChevronRightSquare, CopyPlus, Disc3, Download, DownloadCloud, ExternalLink, Eye, FileBox, FileCog, FilePlus, FlaskConical, FoldVertical, FolderClosed, FolderEdit, FolderOpen, FolderPlus, GaugeCircle, ListChecks, ListX, Loader2, MoreVertical, Orbit, PackageCheck, PackagePlus, PackageX, Pencil, Rocket, Trash2, UploadCloud } from "lucide-react";
 
 import {
   ContextMenu,
@@ -75,6 +75,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { CubeSpinner, WhisperSpinner } from "react-spinners-kit";
 
 export default function Sidebar(
   props: {
@@ -131,8 +132,10 @@ export default function Sidebar(
     props.setError('');
 
     toast({
-      description: <div className="flex flex-row gap-2 items-center justify-start">
-        <GaugeCircle className="w-6 h-6 animate-spin" />
+      description: <div className="flex flex-row gap-5 items-center justify-start">
+        {/* <Disc3 strokeWidth={1.25} className="w-6 h-6 animate-spin" /> */}
+        <WhisperSpinner size={15} color="#14b8a6" backColor="#f59e0b" />
+        {/* <CubeSpinner size={15} /> */}
         Compiling...
       </div>,
     })
@@ -154,7 +157,7 @@ export default function Sidebar(
       props.setError(data.errorMessage);
       toast({
         description: <div className="flex flex-row gap-2 items-center justify-start">
-          <PackageX className="w-6 h-6" />
+          <PackageX strokeWidth={1.25} className="w-6 h-6 text-rose-500" />
           Project compilation failed
         </div>,
       })
@@ -162,7 +165,7 @@ export default function Sidebar(
     } else {
       toast({
         description: <div className="flex flex-row gap-2 items-center justify-start">
-          <PackageCheck className="w-6 h-6" />
+          <PackageCheck strokeWidth={1.25} className="w-6 h-6 text-teal-500" />
           Project compiled successfully
         </div>,
       })
@@ -177,7 +180,9 @@ export default function Sidebar(
 
     toast({
       description: <div className="flex flex-row gap-2 items-center justify-start">
-        <FlaskConical className="w-6 h-6 animate-bounce" />
+        {/* <CubeSpinner size={15} /> */}
+        {/* <Orbit strokeWidth={1.25} className="w-6 h-6 animate-spin" /> */}
+        <WhisperSpinner size={15} color="#14b8a6" backColor="#f59e0b" />
         Testing...
       </div>,
     })
@@ -201,7 +206,7 @@ export default function Sidebar(
       props.setError(data.errorMessage);
       toast({
         description: <div className="flex flex-row gap-2 items-center justify-start">
-          <ListX className="w-6 h-6" />
+          <ListX strokeWidth={1.25} className="w-6 h-6 text-rose-500"/>
           Project tests failed
         </div>,
       })
@@ -209,7 +214,7 @@ export default function Sidebar(
       props.setError(data.testResults);
       toast({
         description: <div className="flex flex-row gap-2 items-center justify-start">
-          <ListChecks className="w-6 h-6" />
+          <ListChecks strokeWidth={1.25} className="w-6 h-6 text-teal-500"/>
           Project tests successful
         </div>,
       })
@@ -222,7 +227,7 @@ export default function Sidebar(
 
     toast({
       description: <div className="flex flex-row gap-2 items-center justify-start">
-        <GaugeCircle className="w-6 h-6 animate-spin" />
+        <WhisperSpinner size={15} color="#14b8a6" backColor="#f59e0b" />
         Deploying...
       </div>,
     })

@@ -77,8 +77,8 @@ export default function FunctionCard(
   }
 
   return (
-    <div className="flex flex-col items-center justify-start w-full p-4 gap-2">
-      <div className="flex flex-col items-start w-full">
+    <div className="flex flex-col items-center justify-start w-full px-4 gap-3">
+      <div className="flex flex-col items-start w-full gap-3">
         {
           props.data.typeParameters.map((parameter: any, index: number) => {
             console.log('type parameter', parameter)
@@ -182,13 +182,13 @@ export default function FunctionCard(
         Execute
       </Button>
       {/* {JSON.stringify(props.data)} */}
-      <div className="flex flex-row justify-end w-full gap-2 py-2">
+      {/* <div className="flex flex-row justify-end w-full gap-2 py-2">
         {
           props.data.isEntry &&
           <Badge className="rounded-full">Entry</Badge>
         }
         <Badge className="rounded-full" variant="secondary">{props.data.visibility}</Badge>
-      </div>
+      </div> */}
     </div>
   ) 
 }
