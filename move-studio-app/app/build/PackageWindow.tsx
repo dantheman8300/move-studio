@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useWallet } from "@suiet/wallet-kit";
 import { set } from "date-fns";
 import { useEffect, useState } from "react";
-
+import { CubeSpinner, GuardSpinner } from "react-spinners-kit";
 import {
   Accordion,
   AccordionContent,
@@ -63,7 +63,8 @@ export default function PackageWindow(
   if (packageDetails == undefined) {
     return (
       <div className="w-full h-full flex flex-row items-center justify-center gap-1">
-        <Loader2 className="w-8 h-8 animate-spin" />
+        {/* <Loader2 className="w-8 h-8 animate-spin" /> */}
+        <GuardSpinner backColor="#f59e0b" />
       </div>
     )
   }
