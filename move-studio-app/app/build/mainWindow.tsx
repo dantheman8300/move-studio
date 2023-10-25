@@ -93,8 +93,8 @@ export default function MainWindow(
       {
         tabs.length == 0 &&
         <div className="flex flex-col items-center justify-center w-full h-full">
-          <MagicSpinner color="#fff" size={60} />
-          <span className="font-mono text-white text-xl pt-4 antialiased">
+          <MagicSpinner color="#f59e0b" size={60} />
+          <span className="font-mono text-white text-xl antialiased">
             Move Studio IDE
           </span>
           <span className="font-mono text-teal-600 w-[300px] text-center whitespace-pre-line break-words">
