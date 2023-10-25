@@ -74,13 +74,13 @@ export default function PackageWindow(
     <div className="w-full h-full flex flex-row items-start justify-around p-2 gap-2">
       <div className="flex flex-col items-center justify-start gap-2">
         <Input 
-          className="bg-slate-900 h-8" 
+          className="bg-slate-900 h-8 caret-teal-500" 
           type="text" 
           placeholder="Search modules..." 
           onChange={(e) => {setSearchedModule(e.target.value)}}
           value={searchedModule}
         />
-        <ScrollArea className="max-h-96 w-56 rounded-md border">
+        <ScrollArea className="max-h-96 w-[260px] rounded-md border p-1">
           {
             Object.values(packageDetails.data).filter((module: any) => {
               return (module.name as string).toLowerCase().includes(searchedModule.toLowerCase())
@@ -96,9 +96,12 @@ export default function PackageWindow(
               return (module.name as string).toLowerCase().includes(searchedModule.toLowerCase())
             }).map((module: any) => {
               return (
-                <div className="flex flex-row items-center justify-start gap-2">
+                <div className="flex w-[250px] flex-row items-center justify-start gap-2">
                   <Button 
-                    className="font-mono w-full h-8 flex flex-row justify-start antialiased" 
+                    className={
+                      "font-mono w-full h-8 flex flex-row justify-start antialiased" +
+                      (selectedModule == module.name ? ' bg-slate-800' : ' bg-slate-950')
+                    } 
                     variant="ghost"
                     onClick={() => {setSelectedModule(module.name)}}
                   >
@@ -112,7 +115,7 @@ export default function PackageWindow(
       </div>
       <div className="flex flex-col items-center justify-start h-full w-full max-w-[350px]">
         <Input 
-          className="w-full max-w-80 bg-slate-900 h-8" 
+          className="w-full max-w-80 bg-slate-900 h-8 caret-teal-500" 
           type="text" 
           placeholder="Search structs..." 
           onChange={(e) => {setSearchedStruct(e.target.value)}}
@@ -140,7 +143,7 @@ export default function PackageWindow(
                 const structData = packageDetails.data[selectedModule].structs[structName];
                 return (
                   <AccordionItem value={index.toString()} className="my-2 px-2 w-full border rounded-lg overflow-hidden">
-                    <AccordionTrigger className="w-full font-mono">{structName}</AccordionTrigger>
+                    <AccordionTrigger className="w-full font-mono text-teal-500">{structName}</AccordionTrigger>
                     <AccordionContent className="w-full">
                       <StructCard data={structData} />
                     </AccordionContent>
@@ -153,7 +156,7 @@ export default function PackageWindow(
       </div>
       <div className="flex flex-col items-center justify-start h-full overflow-y-auto w-full max-w-[350px]">
         <Input 
-          className="bg-slate-900 h-8 w-full max-w-80" 
+          className="bg-slate-900 h-8 w-full max-w-80 caret-teal-500" 
           type="text" 
           placeholder="Search modules..."
           onChange={(e) => {setSearchedFunction(e.target.value)}}
@@ -187,7 +190,7 @@ export default function PackageWindow(
                 if (functionData.isEntry) {
                   return (
                     <AccordionItem value={index.toString()} className="my-2 px-2 w-full border rounded-lg overflow-hidden font-mono">
-                      <AccordionTrigger className="w-full">{functionName}</AccordionTrigger>
+                      <AccordionTrigger className="w-full text-teal-500">{functionName}</AccordionTrigger>
                       <AccordionContent className="w-full">
                         <FunctionCard data={functionData} address={packageDetails.data[selectedModule].address} moduleName={selectedModule} functionName={functionName} addTransactionDigest={props.addTransactionDigest} />
                       </AccordionContent>

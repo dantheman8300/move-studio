@@ -103,7 +103,7 @@ export default function FunctionCard(
             return (
               <div key={index} className="grid w-full max-w-sm items-center gap-1.5 font-mono">
                 <Label htmlFor={`T${index}`}>Type{index}</Label>
-                <Input className="bg-slate-900" type="text" id={`T${index}`} placeholder={`T${index}`} value={typeParameters[index]} onChange={(e) => {
+                <Input className="bg-slate-900 caret-teal-500" type="text" id={`T${index}`} placeholder={`T${index}`} value={typeParameters[index]} onChange={(e) => {
                   const newTypeParameters = typeParameters;
                   newTypeParameters[index] = e.target.value;
                   setTypeParameters(newTypeParameters);
@@ -130,7 +130,7 @@ export default function FunctionCard(
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Input className="bg-slate-900" type="text" id={`arg${index}`} placeholder={`ref - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`} value={parameters[index]} onChange={(e) => {
+                          <Input className="bg-slate-900 caret-teal-500" type="text" id={`arg${index}`} placeholder={`ref - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`} value={parameters[index]} onChange={(e) => {
                             const newParameters = parameters;
                             newParameters[index] = e.target.value;
                             setParameters(newParameters);
@@ -157,7 +157,7 @@ export default function FunctionCard(
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Input className="bg-slate-900" type="text" id={`arg${index}`} placeholder={`mutRef - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`} value={parameters[index]} onChange={(e) => {
+                          <Input className="bg-slate-900 caret-teal-500" type="text" id={`arg${index}`} placeholder={`mutRef - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`} value={parameters[index]} onChange={(e) => {
                             const newParameters = parameters;
                             newParameters[index] = e.target.value;
                             setParameters(newParameters);
@@ -179,7 +179,7 @@ export default function FunctionCard(
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
-                        <Input className="bg-slate-900" type="text" id={`arg${index}`} placeholder={`${struct.address}::${struct.module}::${struct.name}`} value={parameters[index]} onChange={(e) => {
+                        <Input className="bg-slate-900 caret-teal-500" type="text" id={`arg${index}`} placeholder={`${struct.address}::${struct.module}::${struct.name}`} value={parameters[index]} onChange={(e) => {
                             const newParameters = parameters;
                             newParameters[index] = e.target.value;
                             setParameters(newParameters);
@@ -196,7 +196,7 @@ export default function FunctionCard(
           })
         }
       </div>
-      <Button className="w-full rounded-lg"  onClick={executeFunction}>
+      <Button className="w-full rounded-lg" variant='outline'  onClick={executeFunction}>
         Execute
       </Button>
       {/* {JSON.stringify(props.data)} */}

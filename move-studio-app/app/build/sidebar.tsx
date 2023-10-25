@@ -274,7 +274,7 @@ export default function Sidebar(
 
       toast({
         description: <div className="flex flex-row gap-2 items-center justify-start">
-          <PackageCheck className="w-6 h-6" />
+          <PackageCheck strokeWidth={1.25} className="w-6 h-6 text-teal-500" />
           Package deployed successfully
           <a href={`https://suiexplorer.com/txblock/${publishTxn.digest}`} target="_blank"><ExternalLink className="w-4 h-4"/></a>
         </div>,
@@ -307,7 +307,7 @@ export default function Sidebar(
       console.log(error);
       toast({
         description: <div className="flex flex-row gap-2 items-center justify-start">
-          <PackageX className="w-6 h-6" />
+          <PackageX strokeWidth={1.25} className="w-6 h-6 text-rose-500" />
           Project deployment failed
         </div>,
       })
@@ -447,7 +447,7 @@ export default function Sidebar(
                     <div className="flex flex-col items-start gap-1.5">
                       <Label className="antialiased text-slate-200 font-mono">Load Package</Label>
                       <div className="flex flex-row items-center justify-center gap-1">
-                        <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono" type="text" placeholder="0x000..000" value={addedPackage} onChange={(e) => {setAddedPackage(e.target.value)}} />
+                        <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono caret-teal-500" type="text" placeholder="0x000..000" value={addedPackage} onChange={(e) => {setAddedPackage(e.target.value)}} />
                         <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={addPackage}>
                           <DownloadCloud strokeWidth={1.25} className="w-4 h-4 text-teal-300"/>
                         </Button>
@@ -465,7 +465,7 @@ export default function Sidebar(
                     <div className="flex flex-col items-start gap-1.5">
                       <Label className="antialiased text-slate-200 font-mono">Load Object</Label>
                       <div className="flex flex-row items-center justify-center gap-1">
-                        <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono" type="text" placeholder="0x000..000" />
+                        <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono caret-teal-500" type="text" placeholder="0x000..000" />
                         <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={addPackage}>
                           <PackagePlus strokeWidth={1.25} className="w-4 h-4 text-teal-300"/>
                         </Button>

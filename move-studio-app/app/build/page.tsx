@@ -256,7 +256,7 @@ export default function BuildPage () {
               </PopoverTrigger>
               <PopoverContent className="w-[200px] p-0">
                 <Command>
-                  <CommandInput placeholder="Search project..." className="h-9" />
+                  <CommandInput placeholder="Search project..." className="h-9 caret-teal-500" />
                   <CommandGroup>
                       {
                         projectList.map((projectName) => {
