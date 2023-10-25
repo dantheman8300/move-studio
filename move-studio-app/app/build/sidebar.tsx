@@ -25,11 +25,16 @@ const frameworks = [
 import { cn } from "@/lib/utils"
 import {
   Command,
+  CommandDialog,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
 } from "@/components/ui/command"
+import { Calculator, Calendar, CreditCard, PanelLeftClose, PanelLeftOpen, Settings, Smile, User } from 'lucide-react';
 import {
   Popover,
   PopoverContent,
@@ -95,6 +100,19 @@ export default function Sidebar(
   const currentProject = useLiveQuery(() => db.projects.get(props.selectedProjectName), [props.selectedProjectName]);
 
   const [addedPackage, setAddedPackage] = useState('');
+
+  const [commandOpen, setCommandOpen] = useState(false)
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setCommandOpen((commandOpen) => !commandOpen)
+      }
+    }
+ 
+    document.addEventListener("keydown", down)
+    return () => document.removeEventListener("keydown", down)
+  }, [])
 
   const deleteProject = async () => {
     let confirm = window.confirm('Are you sure you want to delete this project?');
@@ -326,6 +344,59 @@ export default function Sidebar(
         height: 'calc(100vh - 82px)'
       }}
     >
+      <CommandDialog modal={false} open={commandOpen} onOpenChange={setCommandOpen}>
+        <CommandInput placeholder="Type a command or search..." />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup className="antialiased" heading="Files">
+            <CommandItem>
+              <FilePlus strokeWidth={1.25} className="mr-2 h-4 w-4" />
+              <span>Create file</span>
+            </CommandItem>
+            <CommandItem>
+              <FolderPlus className="mr-2 h-4 w-4" />
+              <span>Create folder</span>
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="Tools">
+            <CommandItem>
+              <ChevronRightSquare className="mr-2 h-4 w-4" />
+              <span>Compile</span>
+              <CommandShortcut>⌘P</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              <FlaskConical className="mr-2 h-4 w-4" />
+              <span>Test</span>
+              <CommandShortcut>⌘B</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              <Rocket className="mr-2 h-4 w-4" />
+              <span>Deploy</span>
+              <CommandShortcut>⌘S</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="Settings">
+            <CommandItem>
+              <User className="mr-2 h-4 w-4" />
+              <span>Rename project</span>
+              <CommandShortcut>⌘P</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              <CreditCard className="mr-2 h-4 w-4" />
+              <span>Duplicate project</span>
+              <CommandShortcut>⌘B</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Delete project</span>
+              <CommandShortcut>⌘S</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
+      {/* <Input className="bg-slate-900 h-8" type="text" placeholder="Search..." /> */}
       <Accordion type="multiple" className="w-full grow antialiased">
         {
           currentProject &&

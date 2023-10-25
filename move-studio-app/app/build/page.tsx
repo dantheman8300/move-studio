@@ -33,7 +33,6 @@ import {
 } from "@/components/ui/table"
 import CodeEditor from "./codeEditor";
 import Sidebar from "./sidebar";
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Sheet,
