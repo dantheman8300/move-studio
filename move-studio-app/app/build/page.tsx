@@ -46,6 +46,9 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/db";
 import { set } from "date-fns";
 import MainWindow from "./mainWindow";
+import Ansi from "ansi-to-react";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { PanelRightClose, X } from "lucide-react";
 
 const demoCode = `module demoPackage::party {
 
@@ -136,6 +139,9 @@ export default function BuildPage () {
   const [transactionDigests, setTransactionDigests] = useState<{digestId: string, objects: {type: string, modified: string}[]}[]>([]);
 
   const [error, setError] = useState<string>('');
+  useEffect(() => {
+    console.log('error', error)
+  }, [error])
 
   const [sidebarWidth, setSidebarWidth] = useState<number>(200);
   useEffect(() => {
@@ -343,19 +349,23 @@ export default function BuildPage () {
             </div>
           </div>
           <div 
-            className="p-4"
+            className="p-4 flex flex-col items-center justify-start gap-4"
             style={{width: `calc(100% - ${sidebarWidth}px)`, height: window.innerHeight - 50}}
           >
             <MainWindow tabs={tabs} removeTab={removeTab} addTransactionDigest={addTransactionDigest} />
-            {/* <CodeEditor 
-              packageDigests={packageDigests}
-              tabs={tabs}
-              activeTab={activeTab}
-              removeTab={removeTab}
-              setActiveTab={setActiveTab}
-              error={error}
-              clearError={clearError}
-            /> */}
+            {
+              error !== '' &&
+              <div className="flex flex-row items-center justify-start gap-1 w-full">
+                <div>
+                  <PanelRightClose strokeWidth={1.25} className="w-4 h-4 hover:cursor-pointer" onClick={clearError} />
+                </div>
+                <ScrollArea className="w-full h-fit max-h-[300px] border rounded-xl shadow-lg shadow-teal-400/75 ps-4 py-2 overflow-y-auto" style={{"lineHeight": .5}}>
+                  <Ansi className='whitespace-pre text-xs font-mono'>
+                    {'\x1b[38;5;245m'.concat(error.replaceAll('[1m', '[38;5;245m').replaceAll('[38;5;9m', '[38;5;124m').replaceAll('[31m', '[38;5;124m').replaceAll('[34m', '[38;5;73m'))}
+                  </Ansi>
+                </ScrollArea>
+              </div>
+            }
           </div>
         </div>
       }
