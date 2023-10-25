@@ -34,7 +34,7 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command"
-import { Calculator, Calendar, CreditCard, PanelLeftClose, PanelLeftOpen, Settings, Smile, User } from 'lucide-react';
+import { BookMarked, Calculator, Calendar, CreditCard, PanelLeftClose, PanelLeftOpen, Settings, Smile, User } from 'lucide-react';
 import {
   Popover,
   PopoverContent,
@@ -104,7 +104,7 @@ export default function Sidebar(
   const [commandOpen, setCommandOpen] = useState(false)
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
         setCommandOpen((commandOpen) => !commandOpen)
       }
@@ -337,6 +337,11 @@ export default function Sidebar(
     }
   }
 
+  const loadSuiFramework = async () => {
+    console.log('load sui framework')
+    props.addTab('package', '0x02', 'Sui Framework');
+  }
+
   return (
     <ScrollArea 
       className="pl-2 pr-2 w-full flex flex-col items-center justify-start gap-1 border rounded-xl shadow-lg shadow-teal-400/75"
@@ -374,6 +379,14 @@ export default function Sidebar(
               <Rocket className="mr-2 h-4 w-4" />
               <span>Deploy</span>
               <CommandShortcut>⌘S</CommandShortcut>
+            </CommandItem>
+            <CommandItem onClick={() => {
+              setCommandOpen(false);
+              loadSuiFramework();
+            }}>
+              <BookMarked className="mr-2 h-4 w-4" />
+              <span>Load Sui Framework</span>
+              <CommandShortcut>⌘J</CommandShortcut>
             </CommandItem>
           </CommandGroup>
           <CommandSeparator />
