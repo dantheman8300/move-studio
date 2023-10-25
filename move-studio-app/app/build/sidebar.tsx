@@ -82,7 +82,8 @@ export default function Sidebar(
     selectedProjectName: string;
     addTab: (type: string, identifier: string, name: string) => void;
     setError: (error: string) => void;
-
+    transactionDigests: {digestId: string, objects: {type: string, modified: string}[]}[];
+    addTransactionDigest: (digestId: string, objects: {type: string, modified: string}[]) => void
     addToDigests: (newDigests: {digestId: string, type: 'package' | 'object', name: string}[]) => void
   }
 ) {
@@ -262,6 +263,8 @@ export default function Sidebar(
 
       console.log(publishTxn.objectChanges)
 
+      const objects = [];
+
       for (let objectChange of publishTxn.objectChanges || []) {
         if (objectChange.type === 'published') {
           props.addTab(
@@ -269,8 +272,18 @@ export default function Sidebar(
             objectChange.packageId,
             props.selectedProjectName
           );
+        } else {
+          console.log('object change', objectChange)
+          objects.push({
+            type: objectChange.objectType,
+            modified: objectChange.type,
+            // owner: objectChange.owner
+          })
         }
       }
+
+      props.addTransactionDigest(publishTxn.digest, objects);
+      
     } catch (error) {
       console.log(error);
       toast({
@@ -360,7 +373,7 @@ export default function Sidebar(
                 <Tooltip>
                   <TooltipTrigger className="ps-4 py-2">
                     <div className="flex flex-col items-start gap-1.5">
-                      <Label>Add Package</Label>
+                      <Label className="antialiased text-slate-200 font-mono">Load Package</Label>
                       <div className="flex flex-row items-center justify-center gap-1">
                         <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono" type="text" placeholder="0x000..000" value={addedPackage} onChange={(e) => {setAddedPackage(e.target.value)}} />
                         <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={addPackage}>
@@ -369,166 +382,117 @@ export default function Sidebar(
                       </div>
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent side="right" className="bg-teal-600 text-teal-950">
-                    <p>Add a object</p>
-                  </TooltipContent>
+                  {/* <TooltipContent side="right" className="bg-teal-600 text-teal-950">
+                    <p>Add an existing package</p>
+                  </TooltipContent> */}
                 </Tooltip>
               </TooltipProvider>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger className="ps-4 py-2">
                     <div className="flex flex-col items-start gap-1.5">
-                      <Label>Add Package</Label>
+                      <Label className="antialiased text-slate-200 font-mono">Load Object</Label>
                       <div className="flex flex-row items-center justify-center gap-1">
-                        <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono" type="text" placeholder="0x000..000" value={addedPackage} onChange={(e) => {setAddedPackage(e.target.value)}} />
+                        <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono" type="text" placeholder="0x000..000" />
                         <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={addPackage}>
                           <PackagePlus strokeWidth={1.25} className="w-4 h-4 text-teal-300"/>
                         </Button>
                       </div>
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent side="right" className="bg-teal-600 text-teal-950">
+                  {/* <TooltipContent side="right" className="bg-teal-600 text-teal-950">
                     <p>Add a object</p>
-                  </TooltipContent>
+                  </TooltipContent> */}
                 </Tooltip>
               </TooltipProvider>
             </div>
           </AccordionContent>
         </AccordionItem>
         <Separator className="bg-slate-700" />
-        <AccordionItem value="item-4">
-          <AccordionTrigger className="antialiased text-base">Transaction history</AccordionTrigger>
-          <AccordionContent>
-            <ScrollArea className="h-min max-h-[200px] w-full max-w-[300px] flex flex-col items-center justify-start gap-2">
-              <Popover>
-                <PopoverTrigger asChild className="w-full max-w-[300px]">
-                  <Button variant="ghost" className="h-10 w-full max-w-[300px] flex flex-row items-center justify-start ps-4 font-mono antialiased">
-                    0x000000
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent side="right">
-                <div className="grid gap-4">
-                  <div className="space-y-2">
-                    <h4 className="font-medium leading-none">Transaction details</h4>
-                    <p className="text-sm text-muted-foreground">
-                      List of objects that were created, updated, or deleted in this transaction.
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <div className="border rounded-xl p-2">
-                      <Collapsible>
-                        <div className="flex flex-row items-center justify-between">
-                          <CollapsibleTrigger className="flex flex-row items-center justify-between">
-                            <div className="text-base">Created <span className="font-mono">Ballon</span></div>
-                            <ChevronDown className="w-4 h-4"/>
-                          </CollapsibleTrigger>
-                          <Button variant='ghost' size='icon'>
-                            <ChevronRightSquare strokeWidth={2} className="w-5 h-5"/>
+        {
+          props.transactionDigests.length > 0 &&
+          <AccordionItem value="item-4">
+            <AccordionTrigger className="antialiased text-base">Transaction history</AccordionTrigger>
+            <AccordionContent>
+              <ScrollArea className="h-min max-h-[200px] w-full max-w-[300px] flex flex-col items-center justify-start gap-2">
+                {
+                  props.transactionDigests.map((digest) => {
+                    return (
+                      <Popover>
+                        <PopoverTrigger asChild className="w-full max-w-[300px]">
+                          <Button variant="ghost" className="h-10 w-fit max-w-[300px] flex flex-row items-center justify-start ps-4 text-sm text-ellipsis font-mono antialiased">
+                            {
+                              `${digest.digestId.slice(0, 10)}...${digest.digestId.slice(digest.digestId.length - 10, digest.digestId.length)}`
+                            }
                           </Button>
-                        </div>
-                        <CollapsibleContent className="w-full">
-                          <div className="w-full flex flex-col items-center justify-start px-3">
-                            <div className="w-full flex flex-row items-center justify-between">
-                              <span>Package: </span>
-                              <span className="font-mono">0x000000</span>
-                            </div>
-                            <div className="w-full flex flex-row items-center justify-between">
-                              <span>Module: </span>
-                              <span className="font-mono">demoPackage</span>
-                            </div>
-                            <div className="w-full flex flex-row items-center justify-between">
-                              <span>type: </span>
-                              <span className="font-mono">Ballon</span>
-                            </div>
+                        </PopoverTrigger>
+                        <PopoverContent side="right">
+                        <div className="grid gap-4">
+                          <div className="space-y-2">
+                            <h4 className="font-medium leading-none">Transaction details</h4>
+                            <p className="text-sm text-muted-foreground">
+                              List of objects that were created, updated, or deleted in this transaction.
+                            </p>
                           </div>
-                        </CollapsibleContent>
-                      </Collapsible>
-                    </div>
-                    <div className="border rounded-xl p-2">
-                      <Collapsible>
-                        <div className="flex flex-row items-center justify-between">
-                          <CollapsibleTrigger className="flex flex-row items-center justify-between">
-                            <div className="text-base">Created <span className="font-mono">Ballon</span></div>
-                            <ChevronDown className="w-4 h-4"/>
-                          </CollapsibleTrigger>
-                          <Button variant='ghost' size='icon'>
-                            <ChevronRightSquare strokeWidth={2} className="w-5 h-5"/>
-                          </Button>
-                        </div>
-                        <CollapsibleContent className="w-full">
-                          <div className="w-full flex flex-col items-center justify-start">
-                            <div className="w-full flex flex-row items-center justify-between">
-                              <span>Package: </span>
-                              <span className="font-mono">0x000000</span>
-                            </div>
-                            <div className="w-full flex flex-row items-center justify-between">
-                              <span>Module: </span>
-                              <span className="font-mono">demoPackage</span>
-                            </div>
-                            <div className="w-full flex flex-row items-center justify-between">
-                              <span>type: </span>
-                              <span className="font-mono">Ballon</span>
-                            </div>
+                          <div className="flex flex-col gap-2">
+                            {
+                              digest.objects.map((object) => {
+
+                                const packageId = object.type.split('::')[0];
+                                const moduleName = object.type.split('::')[1];
+                                const objectName = object.type.replace(`${packageId}::${moduleName}::`, '');
+
+                                return (
+                                  <div className="border rounded-xl p-2">
+                                    <Collapsible open={true}>
+                                      <div className="flex flex-row items-center justify-between">
+                                        <CollapsibleTrigger className="flex flex-row items-center justify-between">
+                                          <div className="text-base"><span className="font-mono text-teal-500">{objectName}</span></div>
+                                          {/* <ChevronDown className="w-4 h-4"/> */}
+                                        </CollapsibleTrigger>
+                                        <Button variant='ghost' size="icon" className="w-6 h-6 ">
+                                          <ChevronRightSquare strokeWidth={1.25} className="w-5 h-5"/>
+                                        </Button>
+                                      </div>
+                                      <CollapsibleContent className="w-full max-w-[300px]">
+                                        <div className="w-full flex flex-col items-center justify-start px-3">
+                                          <div className="w-full flex flex-row items-center justify-between">
+                                            <span>Package: </span>
+                                            <span className="font-mono">{
+                                              packageId.length < 20 ? packageId : 
+                                              `${packageId.slice(0, 6)}...${packageId.slice(packageId.length - 4, packageId.length)}`
+                                            }</span>
+                                          </div>
+                                          <div className="w-full flex flex-row items-center justify-between">
+                                            <span>Module: </span>
+                                            <span className="font-mono">{moduleName}</span>
+                                          </div>
+                                          <div className="w-full flex flex-row items-center justify-between">
+                                            <span>Type: </span>
+                                            <span className="font-mono">{objectName}</span>
+                                          </div>
+                                        </div>
+                                      </CollapsibleContent>
+                                    </Collapsible>
+                                  </div>
+                                )
+                              })
+                            }
                           </div>
-                        </CollapsibleContent>
-                      </Collapsible>
-                    </div>
-                  </div>
-                </div>
-                </PopoverContent>
-              </Popover>
-              <Popover>
-                <PopoverTrigger className="w-full max-w-[300px]">
-                  <Button variant="ghost" className="h-10 w-full max-w-[300px] flex flex-row items-center justify-start ps-4 font-mono">
-                    0x000000
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent side="right">Place content for the popover here.</PopoverContent>
-              </Popover>
-              <Popover>
-                <PopoverTrigger className="w-full max-w-[300px]">
-                  <Button variant="ghost" className="h-10 w-full max-w-[300px] flex flex-row items-center justify-start ps-4 font-mono">
-                    0x000000
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent side="right">Place content for the popover here.</PopoverContent>
-              </Popover>
-              <Popover>
-                <PopoverTrigger className="w-full max-w-[300px]">
-                  <Button variant="ghost" className="h-10 w-full max-w-[300px] flex flex-row items-center justify-start ps-4 font-mono">
-                    0x000000
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent side="right">Place content for the popover here.</PopoverContent>
-              </Popover>
-              <Popover>
-                <PopoverTrigger className="w-full max-w-[300px]">
-                  <Button variant="ghost" className="h-10 w-full max-w-[300px] flex flex-row items-center justify-start ps-4 font-mono">
-                    0x000000
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent side="right">Place content for the popover here.</PopoverContent>
-              </Popover>
-              <Popover>
-                <PopoverTrigger className="w-full max-w-[300px]">
-                  <Button variant="ghost" className="h-10 w-full max-w-[300px] flex flex-row items-center justify-start ps-4 font-mono">
-                    0x000000
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent side="right">Place content for the popover here.</PopoverContent>
-              </Popover>
-              <Popover>
-                <PopoverTrigger className="w-full max-w-[300px]">
-                  <Button variant="ghost" className="h-10 w-full max-w-[300px] flex flex-row items-center justify-start ps-4 font-mono">
-                    0x000000
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent side="right">Place content for the popover here.</PopoverContent>
-              </Popover>
-            </ScrollArea>
-          </AccordionContent>
-        </AccordionItem>
-        <Separator className="bg-slate-700" />
+                        </div>
+                        </PopoverContent>
+                      </Popover>
+                    )
+                  })
+                }
+              </ScrollArea>
+            </AccordionContent>
+          </AccordionItem>
+        }
+        {
+          props.transactionDigests.length > 0 &&
+          <Separator className="bg-slate-700" />
+        }
         <AccordionItem value="item-3">
           <AccordionTrigger className="antialiased text-base">Settings</AccordionTrigger>
           <AccordionContent>

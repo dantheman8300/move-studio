@@ -22,7 +22,8 @@ import { Loader2 } from "lucide-react";
 
 export default function PackageWindow(
   props: {
-    package: {name: string, digestId: string}
+    package: {name: string, digestId: string}, 
+    addTransactionDigest: (digestId: string, objects: {type: string, modified: string}[]) => void,
   }
 ) {
   const wallet = useWallet();
@@ -188,7 +189,7 @@ export default function PackageWindow(
                     <AccordionItem value={index.toString()} className="my-2 px-2 w-full border rounded-lg overflow-hidden font-mono">
                       <AccordionTrigger className="w-full">{functionName}</AccordionTrigger>
                       <AccordionContent className="w-full">
-                        <FunctionCard data={functionData} address={packageDetails.data[selectedModule].address} moduleName={selectedModule} functionName={functionName} />
+                        <FunctionCard data={functionData} address={packageDetails.data[selectedModule].address} moduleName={selectedModule} functionName={functionName} addTransactionDigest={props.addTransactionDigest} />
                       </AccordionContent>
                     </AccordionItem>
                   )

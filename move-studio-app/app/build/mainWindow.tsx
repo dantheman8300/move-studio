@@ -24,10 +24,11 @@ const interleave = (arr: any, thing: any) => [].concat(...arr.map((n: any) => [n
 
 
 export default function MainWindow(
-  {tabs, removeTab}: 
+  {tabs, removeTab, addTransactionDigest}: 
   {
     tabs: ({type: 'code', path: string, name: string} | {type: 'package', digestId: string, name: string})[];
     removeTab: (type: string, identifier: string) => void;
+    addTransactionDigest: (digestId: string, objects: {type: string, modified: string}[]) => void;
   }
 ) {
 
@@ -83,7 +84,7 @@ export default function MainWindow(
           } else if (tab.type === 'package') {
             return (
               <TabsContent value={tab.digestId} className="mt-0 w-full h-full">
-                <PackageWindow package={{name: tab.name, digestId: tab.digestId}} />
+                <PackageWindow package={{name: tab.name, digestId: tab.digestId}} addTransactionDigest={addTransactionDigest} />
               </TabsContent>
             )
           }

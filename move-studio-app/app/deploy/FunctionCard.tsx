@@ -16,7 +16,8 @@ export default function FunctionCard(
     data: any, 
     address: string,
     moduleName: string, 
-    functionName: string
+    functionName: string, 
+    addTransactionDigest: (digestId: string, objects: {type: string, modified: string}[]) => void
   }
 ) {
 
@@ -70,6 +71,23 @@ export default function FunctionCard(
         transactionBlock: tx,
       } as any);
       console.log('nft minted successfully!', resData);
+
+      const objects = [];
+
+      for (let objectChange of resData.objectChanges || []) {
+        if (objectChange.type === 'published') {
+
+        } else {
+          console.log('object change', objectChange)
+          objects.push({
+            type: objectChange.objectType,
+            modified: objectChange.type,
+            // owner: objectChange.owner
+          })
+        }
+      }
+
+      props.addTransactionDigest(resData.digest, objects);
       // alert('Congrats! your nft is minted!')
     } catch (e) {
       console.error('nft mint failed', e);

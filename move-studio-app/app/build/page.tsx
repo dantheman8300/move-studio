@@ -134,6 +134,8 @@ export default function BuildPage () {
   const [tabs, setTabs] = useState<({type: 'code', path: string, name: string} | {type: 'package', digestId: string, name: string})[]>([])
   const [activeTab, setActiveTab] = useState<string>('')
 
+  const [transactionDigests, setTransactionDigests] = useState<{digestId: string, objects: {type: string, modified: string}[]}[]>([]);
+
   const [error, setError] = useState<string>('');
 
   const [sidebarWidth, setSidebarWidth] = useState<number>(200);
@@ -221,6 +223,10 @@ export default function BuildPage () {
     setPackageDigests([...packageDigests, ...newPackageDigests]);
     setObjectDigests([...objectDigests, ...newObjectDigests]);
   }
+
+  const addTransactionDigest = (digestId: string, objects: {type: string, modified: string}[]) => {
+    setTransactionDigests([{digestId, objects}, ...transactionDigests]);
+  }
   
   return (
     <div className="h-screen w-full max-w-screen flex flex-col items-center dark:bg-slate-950">
@@ -291,7 +297,8 @@ export default function BuildPage () {
                 addTab={addTab}
                 selectedProjectName={selectedProjectName} 
                 setError={setError}
-
+                transactionDigests={transactionDigests}
+                addTransactionDigest={addTransactionDigest}
                 addToDigests={addToDigests}
               />
             }
@@ -340,7 +347,7 @@ export default function BuildPage () {
             className="p-4"
             style={{width: `calc(100% - ${sidebarWidth}px)`, height: window.innerHeight - 50}}
           >
-            <MainWindow tabs={tabs} removeTab={removeTab} />
+            <MainWindow tabs={tabs} removeTab={removeTab} addTransactionDigest={addTransactionDigest} />
             {/* <CodeEditor 
               packageDigests={packageDigests}
               tabs={tabs}
