@@ -456,7 +456,7 @@ export default function Sidebar(
                                         </Button>
                                       </div>
                                       <CollapsibleContent className="w-full max-w-[300px]">
-                                        <div className="w-full flex flex-col items-center justify-start px-3">
+                                        <div className="w-full flex flex-col items-center justify-start pt-2 px-3">
                                           <div className="w-full flex flex-row items-center justify-between">
                                             <span>Package: </span>
                                             <span className="font-mono">{
