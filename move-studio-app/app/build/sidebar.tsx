@@ -76,6 +76,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { CubeSpinner, WhisperSpinner } from "react-spinners-kit";
+import { Badge } from "@/components/ui/badge";
 
 export default function Sidebar(
   props: {
@@ -471,6 +472,11 @@ export default function Sidebar(
                                             <span>Type: </span>
                                             <span className="font-mono">{objectName}</span>
                                           </div>
+                                        </div>
+                                        <div className="flex flex-row w-full items-center justify-end pt-2">
+                                          <Badge className="border border-teal-500 text-teal-500 bg-slate-950 font-mono text-xs rounded-xl hover:bg-slate-950">
+                                            {object.modified}
+                                          </Badge>
                                         </div>
                                       </CollapsibleContent>
                                     </Collapsible>
