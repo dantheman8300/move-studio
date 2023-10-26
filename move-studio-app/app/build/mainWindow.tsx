@@ -39,7 +39,7 @@ export default function MainWindow(
 
   return (
     <Tabs className="border rounded-xl w-full h-full overflow-hidden shadow-lg shadow-teal-500/75">
-      <TabsList className="w-full h-10 rounded-none items-center justify-start px-6">
+      <TabsList className="w-full h-10 rounded-none items-center justify-start px-6 border-b">
         {
           tabs.map((tab, i) => {
             if (tab.type === 'code') {
