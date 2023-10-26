@@ -369,15 +369,22 @@ export default function BuildPage () {
             }
             {
               objectDigests.length > 0 &&
-              <div className="w-full h-[800px] border rounded-xl shadow-lg shadow-teal-400/75 flex flex-row items-center justify-start px-4 gap-4 overflow-x-auto">
-                {
-                  objectDigests.map((objectDigest) => {
-                    return (
-                      <ObjectCard objectId={objectDigest.digestId} name={objectDigest.name} />
-                    )
-                  })
-                }
-              </div >
+              <div className="w-full h-[800px] flex flex-row items-center justify-start gap-1">
+                <div>
+                  <PanelRightClose strokeWidth={1.25} className="w-4 h-4 hover:cursor-pointer" onClick={() => {
+                    setObjectDigests([]);
+                  }} />
+                </div>
+                <div className="w-full h-full border rounded-xl shadow-lg shadow-teal-400/75 flex flex-row items-center justify-start px-4 gap-4 overflow-x-auto">
+                  {
+                    objectDigests.map((objectDigest) => {
+                      return (
+                        <ObjectCard objectId={objectDigest.digestId} name={objectDigest.name} />
+                      )
+                    })
+                  }
+                </div >
+              </div>
             }
           </div>
         </div>
