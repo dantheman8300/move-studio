@@ -88,8 +88,8 @@ export default function Sidebar(
     selectedProjectName: string;
     addTab: (type: string, identifier: string, name: string) => void;
     setError: (error: string) => void;
-    transactionDigests: {digestId: string, objects: {type: string, modified: string}[]}[];
-    addTransactionDigest: (digestId: string, objects: {type: string, modified: string}[]) => void
+    transactionDigests: {digestId: string, objects: {type: string, modified: string, objectId: string}[]}[];
+    addTransactionDigest: (digestId: string, objects: {type: string, modified: string, objectId: string}[]) => void
     addToDigests: (newDigests: {digestId: string, type: 'package' | 'object', name: string}[]) => void
   }
 ) {
@@ -296,6 +296,7 @@ export default function Sidebar(
           objects.push({
             type: objectChange.objectType,
             modified: objectChange.type,
+            objectId: objectChange.objectId,
             // owner: objectChange.owner
           })
         }
@@ -535,7 +536,9 @@ export default function Sidebar(
                                           <div className="text-base"><span className="font-mono text-teal-500">{objectName}</span></div>
                                           {/* <ChevronDown className="w-4 h-4"/> */}
                                         </CollapsibleTrigger>
-                                        <Button variant='ghost' size="icon" className="w-6 h-6 ">
+                                        <Button variant='ghost' size="icon" className="w-6 h-6 " onClick={() => {
+                                          props.addToDigests([{digestId: object.objectId, type: 'object', name: objectName}])
+                                        }}>
                                           <ChevronRightSquare strokeWidth={1.25} className="w-5 h-5"/>
                                         </Button>
                                       </div>

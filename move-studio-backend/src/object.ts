@@ -6,6 +6,8 @@ export async function getObjectDetails(objectId: string, rpc: string) {
   const connection = new Connection({ fullnode: rpc });
   let provider = new JsonRpcProvider(connection);
 
+  console.log("objectId", objectId)
+
   let objectDetails = await provider.getObject({
     id: objectId,
     options: {

@@ -28,7 +28,7 @@ export default function MainWindow(
   {
     tabs: ({type: 'code', path: string, name: string} | {type: 'package', digestId: string, name: string})[];
     removeTab: (type: string, identifier: string) => void;
-    addTransactionDigest: (digestId: string, objects: {type: string, modified: string}[]) => void;
+    addTransactionDigest: (digestId: string, objects: {type: string, modified: string, objectId: string}[]) => void;
   }
 ) {
 

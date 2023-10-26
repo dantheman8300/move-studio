@@ -23,7 +23,7 @@ import { Loader2 } from "lucide-react";
 export default function PackageWindow(
   props: {
     package: {name: string, digestId: string}, 
-    addTransactionDigest: (digestId: string, objects: {type: string, modified: string}[]) => void,
+    addTransactionDigest: (digestId: string, objects: {type: string, modified: string, objectId: string}[]) => void,
   }
 ) {
   const wallet = useWallet();
@@ -80,7 +80,7 @@ export default function PackageWindow(
           onChange={(e) => {setSearchedModule(e.target.value)}}
           value={searchedModule}
         />
-        <ScrollArea className="max-h-96 w-[260px] rounded-md border p-1">
+        <ScrollArea className="h-full max-h-[400px] w-[260px] rounded-md border p-1 overflow-y-auto">
           {
             Object.values(packageDetails.data).filter((module: any) => {
               return (module.name as string).toLowerCase().includes(searchedModule.toLowerCase())
@@ -123,7 +123,7 @@ export default function PackageWindow(
         />
         {
           selectedModule != '' &&
-          <Accordion type="multiple" className="w-full max-w-80 overflow-y-auto">
+          <Accordion type="multiple" className="w-full max-w-80 h-full max-h-[400px] overflow-y-auto">
             {
               packageDetails.data[selectedModule] != undefined &&
               Object.keys(packageDetails.data[selectedModule].structs).filter((structName: string) => {
@@ -164,7 +164,7 @@ export default function PackageWindow(
         />
         {
           selectedModule != '' &&
-          <Accordion type="multiple" className="w-full max-w-80 overflow-y-auto">
+          <Accordion type="multiple" className="w-full max-w-80 h-full max-h-[400px] h-fit overflow-y-auto">
             {
               packageDetails.data[selectedModule] != undefined &&
               (

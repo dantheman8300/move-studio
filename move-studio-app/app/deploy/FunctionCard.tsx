@@ -17,7 +17,7 @@ export default function FunctionCard(
     address: string,
     moduleName: string, 
     functionName: string, 
-    addTransactionDigest: (digestId: string, objects: {type: string, modified: string}[]) => void
+    addTransactionDigest: (digestId: string, objects: {type: string, modified: string, objectId: string}[]) => void
   }
 ) {
 
@@ -82,6 +82,7 @@ export default function FunctionCard(
           objects.push({
             type: objectChange.objectType,
             modified: objectChange.type,
+            objectId: objectChange.objectId,
             // owner: objectChange.owner
           })
         }

@@ -48,7 +48,7 @@ import { set } from "date-fns";
 import ReactFlow, { Background, Controls, MiniMap } from 'reactflow';
 import 'reactflow/dist/style.css';
 import Deployer from "./Deployer";
-import ObjectCard from "./ObjectCard";
+import ObjectCard from "../build/ObjectCard";
 import PackageCard from "./PackageCard";
 import PackageWindow from "../build/PackageWindow";
 
