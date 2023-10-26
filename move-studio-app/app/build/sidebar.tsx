@@ -590,13 +590,13 @@ export default function Sidebar(
           <AccordionTrigger className="antialiased text-base">Settings</AccordionTrigger>
           <AccordionContent>
             <div className="flex flex-col gap-1">
-              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono" onClick={renameProject}>
+              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500" onClick={renameProject}>
                 <FolderEdit strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500" /> Rename project
               </Button>
-              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono" onClick={duplicateProject}>
+              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500" onClick={duplicateProject}>
                 <CopyPlus strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/> Duplicate project
               </Button>
-              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono" onClick={deleteProject}>
+              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500" onClick={deleteProject}>
                 <Trash2 strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/> Delete project
               </Button>
             </div>
