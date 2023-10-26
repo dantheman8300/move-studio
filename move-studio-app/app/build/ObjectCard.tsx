@@ -65,7 +65,7 @@ export default function ObjectCard(
   }
 
   return (
-    <div className="border rounded-xl min-h-[350px] min-w-[300px] max-h-[350px] max-w-[300px] flex flex-col items-center justify-start py-2 px-4 shadow-lg shadow-teal-500/75">
+    <div className="border rounded-xl min-h-[350px] min-w-[300px] max-h-[350px] max-w-[300px] flex flex-col items-center justify-start py-2 px-4 shadow shadow-teal-500/75">
       <span className="font-mono text-xl">{props.name}</span>
       <TooltipProvider>
         <Tooltip>
