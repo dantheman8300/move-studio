@@ -439,19 +439,19 @@ export default function Sidebar(
             <div className="flex flex-col items-start gap-1">
               {
                 currentProject &&
-                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono" onClick={compileProject}>
+                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500" onClick={compileProject}>
                   <ChevronRightSquare strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500" /> Compile
                 </Button>
               }
               {
                 currentProject &&
-                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono" onClick={testProject}>
+                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500" onClick={testProject}>
                   <FlaskConical strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/> Test
                 </Button>
               }
               {
                 currentProject &&
-                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono" onClick={deployProject}>
+                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 " onClick={deployProject}>
                   <Rocket strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/> Deploy
                 </Button>
               }
@@ -461,7 +461,7 @@ export default function Sidebar(
                     <div className="flex flex-col items-start gap-1.5">
                       <Label className="antialiased text-slate-200 font-mono">Load Package</Label>
                       <div className="flex flex-row items-center justify-center gap-1">
-                        <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono caret-teal-500" type="text" placeholder="0x000..000" value={addedPackage} onChange={(e) => {setAddedPackage(e.target.value)}} />
+                        <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-teal-500 font-mono caret-teal-500" type="text" placeholder="0x000..000" value={addedPackage} onChange={(e) => {setAddedPackage(e.target.value)}} />
                         <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={addPackage}>
                           <DownloadCloud strokeWidth={1.25} className="w-4 h-4 text-teal-300"/>
                         </Button>
@@ -479,7 +479,7 @@ export default function Sidebar(
                     <div className="flex flex-col items-start gap-1.5">
                       <Label className="antialiased text-slate-200 font-mono">Load Object</Label>
                       <div className="flex flex-row items-center justify-center gap-1">
-                        <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring font-mono caret-teal-500" type="text" placeholder="0x000..000" />
+                        <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-teal-500 font-mono caret-teal-500" type="text" placeholder="0x000..000" />
                         <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={addPackage}>
                           <PackagePlus strokeWidth={1.25} className="w-4 h-4 text-teal-300"/>
                         </Button>
