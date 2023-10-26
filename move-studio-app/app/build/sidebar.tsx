@@ -506,7 +506,7 @@ export default function Sidebar(
                     return (
                       <Popover>
                         <PopoverTrigger asChild className="w-full max-w-[300px]">
-                          <Button variant="ghost" className="h-10 w-fit max-w-[300px] flex flex-row items-center justify-start ps-4 text-sm text-ellipsis font-mono antialiased">
+                          <Button variant="ghost" className="h-10 w-fit max-w-[300px] flex flex-row items-center justify-start ps-4 text-sm text-ellipsis font-mono antialiased text-teal-800 hover:text-teal-500">
                             {
                               `${digest.digestId.slice(0, 10)}...${digest.digestId.slice(digest.digestId.length - 10, digest.digestId.length)}`
                             }
