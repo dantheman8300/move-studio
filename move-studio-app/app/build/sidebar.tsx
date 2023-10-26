@@ -420,8 +420,8 @@ export default function Sidebar(
                 <div className="w-full flex flex-row items-center justify-between text-base">
                   Files
                   <div className="flex flex-row gap-1 items-end justify-center">
-                    <FilePlus className="w-4 h-4" onClick={addFile}/>
-                    <FolderPlus className="w-4 h-4" onClick={addFolder} />
+                    <FilePlus className="w-4 h-4 hover:text-teal-500" onClick={addFile}/>
+                    <FolderPlus className="w-4 h-4 hover:text-teal-500" onClick={addFolder} />
                     {/* <MoreVertical className="w-4 h-4 hover:bg-accent rounded" /> */}
                   </div>
                 </div>
@@ -536,32 +536,30 @@ export default function Sidebar(
                                           <div className="text-base"><span className="font-mono text-teal-500">{objectName}</span></div>
                                           {/* <ChevronDown className="w-4 h-4"/> */}
                                         </CollapsibleTrigger>
-                                        <Button variant='ghost' size="icon" className="w-6 h-6 " onClick={() => {
+                                        <ChevronRightSquare strokeWidth={1.25} className="w-5 h-5 hover:text-teal-500 hover:cursor-pointer" onClick={() => {
                                           props.addToDigests([{digestId: object.objectId, type: 'object', name: objectName}])
-                                        }}>
-                                          <ChevronRightSquare strokeWidth={1.25} className="w-5 h-5"/>
-                                        </Button>
+                                        }}/>
                                       </div>
                                       <CollapsibleContent className="w-full max-w-[300px]">
                                         <div className="w-full flex flex-col items-center justify-start pt-2 px-3">
                                           <div className="w-full flex flex-row items-center justify-between">
                                             <span>Package: </span>
-                                            <span className="font-mono">{
+                                            <span className="font-mono text-teal-800">{
                                               packageId.length < 20 ? packageId : 
                                               `${packageId.slice(0, 6)}...${packageId.slice(packageId.length - 4, packageId.length)}`
                                             }</span>
                                           </div>
                                           <div className="w-full flex flex-row items-center justify-between">
                                             <span>Module: </span>
-                                            <span className="font-mono">{moduleName}</span>
+                                            <span className="font-mono text-teal-800">{moduleName}</span>
                                           </div>
                                           <div className="w-full flex flex-row items-center justify-between">
                                             <span>Type: </span>
-                                            <span className="font-mono">{objectName}</span>
+                                            <span className="font-mono text-teal-800">{objectName}</span>
                                           </div>
                                         </div>
                                         <div className="flex flex-row w-full items-center justify-end pt-2">
-                                          <Badge className="border border-teal-500 text-teal-500 bg-slate-950 font-mono text-xs rounded-xl hover:bg-slate-950">
+                                          <Badge className="border border-amber-700 text-amber-700 bg-slate-950 font-mono text-xs rounded-xl hover:bg-slate-950">
                                             {object.modified}
                                           </Badge>
                                         </div>
