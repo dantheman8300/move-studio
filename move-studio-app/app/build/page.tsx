@@ -235,7 +235,7 @@ export default function BuildPage () {
   }
   
   return (
-    <div className="h-screen w-full max-w-screen flex flex-col items-center dark:bg-slate-950">
+    <div className="h-screen w-full max-w-screen flex flex-col items-center dark:bg-slate-950 overflow-hidden">
       <div className="flex w-full flex-row justify-between items-center my-2 px-3">
         <TypographyH2>Move Studio</TypographyH2>
         <div className="flex flex-row justify-around gap-2">
@@ -286,7 +286,7 @@ export default function BuildPage () {
               </PopoverContent>
             </Popover>
           }
-          <Button className="p-3" variant="secondary" onClick={addProject}>New project</Button>
+          <Button className="p-3 hover:text-teal-500 active:scale-90 transition-transform" variant="secondary" onClick={addProject}>New project</Button>
           <WalletSelector isTxnInProgress={false} />
         </div>
       </div>
