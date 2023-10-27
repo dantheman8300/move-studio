@@ -379,7 +379,10 @@ export default function BuildPage () {
                   {
                     objectDigests.map((objectDigest) => {
                       return (
-                        <ObjectCard objectId={objectDigest.digestId} name={objectDigest.name} />
+                        <ObjectCard objectId={objectDigest.digestId} name={objectDigest.name} removeObject={(objectId: string) => {
+                          const newObjectDigests = objectDigests.filter((objectDigest) => objectDigest.digestId !== objectId);
+                          setObjectDigests(newObjectDigests);
+                        }} />
                       )
                     })
                   }

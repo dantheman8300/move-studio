@@ -47,7 +47,7 @@ export default function MainWindow(
                 <TabsTrigger key={i} value={tab.path} className="font-mono flex flex-row items-center justify-center gap-1">
                   {tab.name}
                   <Cross2Icon 
-                    className='w-4 h-4' 
+                    className='w-4 h-4 hover:text-red-500 hover:cursor-pointer active:scale-75 transition-transform' 
                     onClick={(e) => {
                       e.preventDefault();
                       removeTab(tab.type, tab.path);
@@ -60,7 +60,7 @@ export default function MainWindow(
                 <TabsTrigger key={i} value={tab.digestId} className="font-mono flex flex-row items-center justify-center gap-1">
                   {tab.name}
                   <Cross2Icon 
-                    className='w-4 h-4' 
+                    className='w-4 h-4 hover:text-red-500 hover:cursor-pointer active:scale-75 transition-transform' 
                     onClick={(e) => {
                       e.preventDefault();
                       removeTab(tab.type, tab.digestId);

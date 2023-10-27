@@ -420,8 +420,8 @@ export default function Sidebar(
                 <div className="w-full flex flex-row items-center justify-between text-base">
                   Files
                   <div className="flex flex-row gap-1 items-end justify-center">
-                    <FilePlus className="w-4 h-4 hover:text-teal-500" onClick={addFile}/>
-                    <FolderPlus className="w-4 h-4 hover:text-teal-500" onClick={addFolder} />
+                    <FilePlus className="w-4 h-4 hover:text-teal-500 active:scale-90 transition-transform" onClick={addFile}/>
+                    <FolderPlus className="w-4 h-4 hover:text-teal-500 active:scale-90 transition-transform" onClick={addFolder} />
                     {/* <MoreVertical className="w-4 h-4 hover:bg-accent rounded" /> */}
                   </div>
                 </div>
@@ -439,19 +439,19 @@ export default function Sidebar(
             <div className="flex flex-col items-start gap-1">
               {
                 currentProject &&
-                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500" onClick={compileProject}>
+                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 active:scale-90 transition-transform" onClick={compileProject}>
                   <ChevronRightSquare strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500" /> Compile
                 </Button>
               }
               {
                 currentProject &&
-                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500" onClick={testProject}>
+                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 active:scale-90 transition-transform" onClick={testProject}>
                   <FlaskConical strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/> Test
                 </Button>
               }
               {
                 currentProject &&
-                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 " onClick={deployProject}>
+                <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 active:scale-90 transition-transform" onClick={deployProject}>
                   <Rocket strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/> Deploy
                 </Button>
               }
@@ -506,7 +506,7 @@ export default function Sidebar(
                     return (
                       <Popover>
                         <PopoverTrigger asChild className="w-full max-w-[300px]">
-                          <Button variant="ghost" className="h-10 w-fit max-w-[300px] flex flex-row items-center justify-start ps-4 text-sm text-ellipsis font-mono antialiased text-teal-800 hover:text-teal-500">
+                          <Button variant="ghost" className="h-10 w-fit max-w-[300px] flex flex-row items-center justify-start ps-4 text-sm text-ellipsis font-mono antialiased text-teal-800 hover:text-teal-500 active:scale-90 transition-transform">
                             {
                               `${digest.digestId.slice(0, 10)}...${digest.digestId.slice(digest.digestId.length - 10, digest.digestId.length)}`
                             }
@@ -536,30 +536,30 @@ export default function Sidebar(
                                           <div className="text-base"><span className="font-mono text-teal-500">{objectName}</span></div>
                                           {/* <ChevronDown className="w-4 h-4"/> */}
                                         </CollapsibleTrigger>
-                                        <ChevronRightSquare strokeWidth={1.25} className="w-5 h-5 hover:text-teal-500 hover:cursor-pointer" onClick={() => {
+                                        <ChevronRightSquare strokeWidth={1.25} className="w-5 h-5 hover:text-teal-500 hover:cursor-pointer active:scale-75 transition-transform" onClick={() => {
                                           props.addToDigests([{digestId: object.objectId, type: 'object', name: objectName}])
                                         }}/>
                                       </div>
                                       <CollapsibleContent className="w-full max-w-[300px]">
                                         <div className="w-full flex flex-col items-center justify-start pt-2 px-3">
                                           <div className="w-full flex flex-row items-center justify-between">
-                                            <span>Package: </span>
+                                            <span className="text-slate-300">Package: </span>
                                             <span className="font-mono text-teal-800">{
                                               packageId.length < 20 ? packageId : 
                                               `${packageId.slice(0, 6)}...${packageId.slice(packageId.length - 4, packageId.length)}`
                                             }</span>
                                           </div>
                                           <div className="w-full flex flex-row items-center justify-between">
-                                            <span>Module: </span>
+                                            <span className="text-slate-300">Module: </span>
                                             <span className="font-mono text-teal-800">{moduleName}</span>
                                           </div>
                                           <div className="w-full flex flex-row items-center justify-between">
-                                            <span>Type: </span>
+                                            <span className="text-slate-300">Type: </span>
                                             <span className="font-mono text-teal-800">{objectName}</span>
                                           </div>
                                         </div>
                                         <div className="flex flex-row w-full items-center justify-end pt-2">
-                                          <Badge className="border border-amber-700 text-amber-700 bg-slate-950 font-mono text-xs rounded-xl hover:bg-slate-950">
+                                          <Badge className="border border-slate-300 text-slate-300 bg-slate-950 font-mono text-xs rounded-xl hover:bg-slate-950">
                                             {object.modified}
                                           </Badge>
                                         </div>
@@ -588,13 +588,13 @@ export default function Sidebar(
           <AccordionTrigger className="antialiased text-base">Settings</AccordionTrigger>
           <AccordionContent>
             <div className="flex flex-col gap-1">
-              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500" onClick={renameProject}>
+              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 active:scale-90 transition-transform" onClick={renameProject}>
                 <FolderEdit strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500" /> Rename project
               </Button>
-              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500" onClick={duplicateProject}>
+              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 active:scale-90 transition-transform" onClick={duplicateProject}>
                 <CopyPlus strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/> Duplicate project
               </Button>
-              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500" onClick={deleteProject}>
+              <Button variant="ghost" className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 active:scale-90 transition-transform" onClick={deleteProject}>
                 <Trash2 strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500"/> Delete project
               </Button>
             </div>

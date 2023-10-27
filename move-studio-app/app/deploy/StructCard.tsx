@@ -9,16 +9,16 @@ export default function StructCard(
   return (
     <div className="flex flex-col items-center justify-start w-full p-4 gap-2">
       <div className="flex flex-col items-start w-full">
-        <span>Types:</span>
+        <span className="text-slate-300">Types:</span>
         <div className="ps-2 flex flex-col items-start justify-start w-full">
           {
             props.data.typeParameters.map((parameter: any, index: number) => {
               return (
                 <div>
-                  <span className="font-mono">{parameter.isPhantom && 'phantom'} T{index}</span>
+                  <span className="font-mono text-teal-800">{parameter.isPhantom && 'phantom'} T{index}</span>
                   {
                     parameter.constraints.abilities.map((ability: string) => {
-                      return <span>
+                      return <span className="text-teal-800">
                         {ability}
                       </span>
                     })
@@ -30,7 +30,7 @@ export default function StructCard(
         </div>
       </div>
       <div className="flex flex-col items-start w-full">
-        <span>Fields:</span>
+        <span className="text-slate-300">Fields:</span>
         <div className="ps-2 flex flex-col items-start justify-start w-full">
           {
             props.data.fields.map((field: any, index: number) => {
@@ -38,13 +38,13 @@ export default function StructCard(
               if (field.type.Struct != undefined) {
                 return (
                   <div>
-                    <span>{field.name}: </span><span className="font-mono">{field.type.Struct.address}::{field.type.Struct.module}::{field.type.Struct.name}</span>
+                    <span className="font-mono text-slate-400">{field.name} - </span><span className="font-mono text-teal-800 hover:text-teal-500">{field.type.Struct.address}::{field.type.Struct.module}::{field.type.Struct.name}</span>
                   </div>
                 )
               } else {
                 return (
                   <div>
-                    <span>{field.name}: </span><span className="font-mono">{field.type}</span>
+                    <span className="font-mono text-slate-400">{field.name} - </span><span className="font-mono text-teal-800 hover:text-teal-500">{field.type}</span>
                   </div>
                 )
               }

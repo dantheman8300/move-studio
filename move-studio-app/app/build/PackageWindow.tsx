@@ -96,11 +96,11 @@ export default function PackageWindow(
               return (module.name as string).toLowerCase().includes(searchedModule.toLowerCase())
             }).map((module: any) => {
               return (
-                <div className="flex w-[250px] flex-row items-center justify-start gap-2">
+                <div className="flex w-[250px] flex-row items-start justify-start gap-2">
                   <Button 
                     className={
-                      "font-mono w-full h-8 flex flex-row justify-start antialiased" +
-                      (selectedModule == module.name ? ' bg-slate-800' : ' bg-slate-950')
+                      "font-mono w-full h-8 flex flex-row justify-start antialiased hover:text-teal-500 bg-slate-950 hover:bg-slate-950 active:scale-y-75 transition-transform" +
+                      (selectedModule == module.name ? ' text-teal-500' : ' text-white')
                     } 
                     variant="ghost"
                     onClick={() => {setSelectedModule(module.name)}}
@@ -143,7 +143,7 @@ export default function PackageWindow(
                 const structData = packageDetails.data[selectedModule].structs[structName];
                 return (
                   <AccordionItem value={index.toString()} className="my-2 px-2 w-full border rounded-lg overflow-hidden">
-                    <AccordionTrigger className="w-full font-mono antialiased text-teal-500">{structName}</AccordionTrigger>
+                    <AccordionTrigger className="w-full font-mono antialiased text-slate-200">{structName}</AccordionTrigger>
                     <AccordionContent className="w-full">
                       <StructCard data={structData} />
                     </AccordionContent>
@@ -190,7 +190,7 @@ export default function PackageWindow(
                 if (functionData.isEntry) {
                   return (
                     <AccordionItem value={index.toString()} className="my-2 px-2 w-full border rounded-lg overflow-hidden font-mono">
-                      <AccordionTrigger className="w-full antialiased text-teal-500">{functionName}</AccordionTrigger>
+                      <AccordionTrigger className="w-full antialiased text-slate-200">{functionName}</AccordionTrigger>
                       <AccordionContent className="w-full">
                         <FunctionCard data={functionData} address={packageDetails.data[selectedModule].address} moduleName={selectedModule} functionName={functionName} addTransactionDigest={props.addTransactionDigest} />
                       </AccordionContent>

@@ -11,12 +11,20 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ExternalLink, RefreshCw, X } from "lucide-react";
+
+const urlNetwork: {[key: string]: string} = {
+  'Sui Testnet': 'testnet',
+  'Sui Mainnet': 'mainnet',
+  'Sui Devnet': 'devnet'
+}
 
 
 export default function ObjectCard(
   props: {
     objectId: string, 
-    name: string
+    name: string, 
+    removeObject: (objectId: string) => void
   }
 ) {
 
@@ -34,6 +42,7 @@ export default function ObjectCard(
   } | undefined>(undefined);
 
   useEffect(() => {
+    console.log('wallet', wallet.chain?.name)
     fetchObjectDetails().then((data) => {
       console.log('data', data)
       setObjectDetails(data);
@@ -66,6 +75,14 @@ export default function ObjectCard(
 
   return (
     <div className="border rounded-xl min-h-[350px] min-w-[300px] max-h-[350px] max-w-[300px] flex flex-col items-center justify-start py-2 px-4 shadow shadow-teal-500/75">
+      <div className="w-full flex flex-row justify-end items-baseline gap-2">
+        <RefreshCw className="w-4 h-4 hover:text-teal-500 hover:cursor-pointer active:scale-75 transition-transform" onClick={() => {fetchObjectDetails().then((data) => {
+          console.log('data', data)
+          setObjectDetails(data);
+        } )}} />
+        <a href={`https://suiexplorer.com/object/${props.objectId}?network=${urlNetwork[wallet.chain?.name || '']}`} target="_blank"><ExternalLink className="w-4 h-4 hover:text-amber-500 active:scale-75 transition-transform" /></a>
+        <X className="w-4 h-4 hover:text-rose-500 hover:cursor-pointer active:scale-75 transition-transform" onClick={() => {props.removeObject(props.objectId)}} />
+      </div>
       <span className="font-mono text-xl">{props.name}</span>
       <TooltipProvider>
         <Tooltip>
@@ -79,7 +96,7 @@ export default function ObjectCard(
       </TooltipProvider>
       <div className="py-2 w-full">
         <div className="w-full flex flex-row items-center justify-between">
-          <span>
+          <span className="text-slate-300">
             Type: 
           </span>
           <TooltipProvider>
@@ -96,7 +113,7 @@ export default function ObjectCard(
           </TooltipProvider>
         </div>
         <div className="w-full flex flex-row items-center justify-between">
-          <span>
+          <span className="text-slate-300">
           Module: 
           </span>
           <TooltipProvider>
@@ -113,7 +130,7 @@ export default function ObjectCard(
           </TooltipProvider>
         </div>
         <div className="w-full flex flex-row items-center justify-between">
-          <span>
+          <span className="text-slate-300">
             Package:  
           </span>
           <TooltipProvider>
@@ -147,7 +164,7 @@ export default function ObjectCard(
             Object.keys(objectDetails.data.content.fields).filter((attributeName) => attributeName != 'id').map((key) => {
               return (
                 <TableRow>
-                  <TableCell className="text-center max-w-[75px] truncate">{key}</TableCell>
+                  <TableCell className="text-center max-w-[75px] truncate text-slate-300 hover:text-slate-200">{key}</TableCell>
                   
                   <TableCell className="font-mono text-center max-w-[175px] truncate ps-4 text-teal-800 hover:text-teal-500">
                     <TooltipProvider>
