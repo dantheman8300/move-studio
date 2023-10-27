@@ -39,7 +39,7 @@ export default function ObjectCard(
         }
       }, 
     }
-  } | undefined>(undefined);
+  } | null>(null);
 
   useEffect(() => {
     console.log('wallet', wallet.chain?.name)
@@ -65,7 +65,7 @@ export default function ObjectCard(
 
   }
 
-  if (objectDetails == undefined) {
+  if (objectDetails == null) {
     return (
       <div className="border rounded-xl h-[350px] w-[300px] flex flex-col items-center justify-start py-3 px-2">
         Loading...
@@ -161,9 +161,9 @@ export default function ObjectCard(
         </TableHeader>
         <TableBody className="h-fit max-h-[200px] overflow-y-auto" >
           {
-            Object.keys(objectDetails.data.content.fields).filter((attributeName) => attributeName != 'id').map((key) => {
+            Object.keys(objectDetails.data.content.fields).filter((attributeName) => attributeName != 'id').map((key, index) => {
               return (
-                <TableRow>
+                <TableRow key={index}>
                   <TableCell className="text-center max-w-[75px] truncate text-slate-300 hover:text-slate-200">{key}</TableCell>
                   
                   <TableCell className="font-mono text-center max-w-[175px] truncate ps-4 text-teal-800 hover:text-teal-500">

@@ -32,10 +32,6 @@ export default function MainWindow(
   }
 ) {
 
-  useEffect(() => {
-    console.log(tabs)
-  })
-
 
   return (
     <Tabs className="border rounded-xl w-full h-full overflow-hidden shadow-lg shadow-teal-500/75">
@@ -74,16 +70,16 @@ export default function MainWindow(
       </TabsList>
       <div className="h-full flex flex-col items-center justify-start">
       {
-        tabs.map((tab, i) => {
+        tabs.map((tab, index) => {
           if (tab.type === 'code') {
             return (
-              <TabsContent value={tab.path} className="mt-0 w-full h-full">
+              <TabsContent key={index} value={tab.path} className="mt-0 w-full h-full">
                 <CodeEditor path={tab.path} />
               </TabsContent>
             )
           } else if (tab.type === 'package') {
             return (
-              <TabsContent value={tab.digestId} className="mt-0 w-full h-full">
+              <TabsContent key={index} value={tab.digestId} className="mt-0 w-full h-full">
                 <PackageWindow package={{name: tab.name, digestId: tab.digestId}} addTransactionDigest={addTransactionDigest} />
               </TabsContent>
             )

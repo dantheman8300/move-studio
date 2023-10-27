@@ -502,9 +502,9 @@ export default function Sidebar(
             <AccordionContent>
               <ScrollArea className="h-min max-h-[200px] w-full max-w-[300px] flex flex-col items-center justify-start gap-2">
                 {
-                  props.transactionDigests.map((digest) => {
+                  props.transactionDigests.map((digest, index) => {
                     return (
-                      <Popover>
+                      <Popover key={index}>
                         <PopoverTrigger asChild className="w-full max-w-[300px]">
                           <Button variant="ghost" className="h-10 w-fit max-w-[300px] flex flex-row items-center justify-start ps-4 text-sm text-ellipsis font-mono antialiased text-teal-800 hover:text-teal-500 active:scale-90 transition-transform">
                             {
@@ -522,14 +522,14 @@ export default function Sidebar(
                           </div>
                           <div className="flex flex-col gap-2">
                             {
-                              digest.objects.map((object) => {
+                              digest.objects.map((object, index) => {
 
                                 const packageId = object.type.split('::')[0];
                                 const moduleName = object.type.split('::')[1];
                                 const objectName = object.type.replace(`${packageId}::${moduleName}::`, '');
 
                                 return (
-                                  <div className="border rounded-xl p-2">
+                                  <div key={index} className="border rounded-xl p-2">
                                     <Collapsible open={true}>
                                       <div className="flex flex-row items-center justify-between">
                                         <CollapsibleTrigger className="flex flex-row items-center justify-between">

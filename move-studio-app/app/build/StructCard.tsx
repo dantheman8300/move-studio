@@ -14,11 +14,11 @@ export default function StructCard(
           {
             props.data.typeParameters.map((parameter: any, index: number) => {
               return (
-                <div>
+                <div key={index}>
                   <span className="font-mono text-teal-800">{parameter.isPhantom && 'phantom'} T{index}</span>
                   {
                     parameter.constraints.abilities.map((ability: string) => {
-                      return <span className="text-teal-800">
+                      return <span key={index} className="text-teal-800">
                         {ability}
                       </span>
                     })
@@ -37,13 +37,13 @@ export default function StructCard(
 
               if (field.type.Struct != undefined) {
                 return (
-                  <div>
+                  <div key={index}>
                     <span className="font-mono text-slate-400">{field.name} - </span><span className="font-mono text-teal-800 hover:text-teal-500">{field.type.Struct.address}::{field.type.Struct.module}::{field.type.Struct.name}</span>
                   </div>
                 )
               } else {
                 return (
-                  <div>
+                  <div key={index}>
                     <span className="font-mono text-slate-400">{field.name} - </span><span className="font-mono text-teal-800 hover:text-teal-500">{field.type}</span>
                   </div>
                 )

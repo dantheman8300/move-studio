@@ -12,9 +12,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import FunctionCard from "../deploy/FunctionCard";
+import FunctionCard from "./FunctionCard";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import StructCard from "../deploy/StructCard";
+import StructCard from "./StructCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 
@@ -32,7 +32,7 @@ export default function PackageWindow(
   const [searchedStruct, setSearchedStruct] = useState<string>('');
   const [searchedFunction, setSearchedFunction] = useState<string>('');
   
-  const [packageDetails, setPackageDetails] = useState<any>(undefined);
+  const [packageDetails, setPackageDetails] = useState<any>(null);
   const [selectedModule, setSelectedModule] = useState<string>('');
 
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function PackageWindow(
     return {name: packageToFetch.name, data: data}
   }
 
-  if (packageDetails == undefined) {
+  if (packageDetails == null) {
     return (
       <div className="w-full h-full flex flex-row items-center justify-center gap-1">
         {/* <Loader2 className="w-8 h-8 animate-spin" /> */}
@@ -94,9 +94,9 @@ export default function PackageWindow(
           {
             Object.values(packageDetails.data).filter((module: any) => {
               return (module.name as string).toLowerCase().includes(searchedModule.toLowerCase())
-            }).map((module: any) => {
+            }).map((module: any, index) => {
               return (
-                <div className="flex w-[250px] flex-row items-start justify-start gap-2">
+                <div key={index} className="flex w-[250px] flex-row items-start justify-start gap-2">
                   <Button 
                     className={
                       "font-mono w-full h-8 flex flex-row justify-start antialiased hover:text-teal-500 bg-slate-950 hover:bg-slate-950 active:scale-y-75 transition-transform" +
@@ -125,7 +125,7 @@ export default function PackageWindow(
           selectedModule != '' &&
           <Accordion type="multiple" className="w-full max-w-80 h-full max-h-[400px] overflow-y-auto">
             {
-              packageDetails.data[selectedModule] != undefined &&
+              packageDetails.data[selectedModule] != null &&
               Object.keys(packageDetails.data[selectedModule].structs).filter((structName: string) => {
                 return structName.toLowerCase().includes(searchedStruct.toLowerCase())
               }).length == 0 &&
@@ -136,13 +136,13 @@ export default function PackageWindow(
               </div>
             }
             {
-              packageDetails.data[selectedModule] != undefined &&
+              packageDetails.data[selectedModule] != null &&
               Object.keys(packageDetails.data[selectedModule].structs).filter((structName: string) => {
                 return structName.toLowerCase().includes(searchedStruct.toLowerCase())
               }).map((structName: any, index: number) => {
                 const structData = packageDetails.data[selectedModule].structs[structName];
                 return (
-                  <AccordionItem value={index.toString()} className="my-2 px-2 w-full border rounded-lg overflow-hidden">
+                  <AccordionItem key={index} value={index.toString()} className="my-2 px-2 w-full border rounded-lg overflow-hidden">
                     <AccordionTrigger className="w-full font-mono antialiased text-slate-200">{structName}</AccordionTrigger>
                     <AccordionContent className="w-full">
                       <StructCard data={structData} />
@@ -166,7 +166,7 @@ export default function PackageWindow(
           selectedModule != '' &&
           <Accordion type="multiple" className="w-full max-w-80 h-full max-h-[400px] h-fit overflow-y-auto">
             {
-              packageDetails.data[selectedModule] != undefined &&
+              packageDetails.data[selectedModule] != null &&
               (
                 Object.values(packageDetails.data[selectedModule].exposedFunctions).filter((functionData: any) => functionData.isEntry).length == 0 ||
                 Object.keys(packageDetails.data[selectedModule].exposedFunctions).filter((functionName: string) => {
@@ -180,7 +180,7 @@ export default function PackageWindow(
               </div>
             }
             {
-              packageDetails.data[selectedModule] != undefined &&
+              packageDetails.data[selectedModule] != null &&
               Object.values(packageDetails.data[selectedModule].exposedFunctions).filter((functionData: any) => functionData.isEntry).length > 0 &&
               Object.keys(packageDetails.data[selectedModule].exposedFunctions).filter((functionName: string) => {
                 return functionName.toLowerCase().includes(searchedFunction.toLowerCase())
@@ -189,7 +189,7 @@ export default function PackageWindow(
                 console.log('functionData', functionData)
                 if (functionData.isEntry) {
                   return (
-                    <AccordionItem value={index.toString()} className="my-2 px-2 w-full border rounded-lg overflow-hidden font-mono">
+                    <AccordionItem key={index} value={index.toString()} className="my-2 px-2 w-full border rounded-lg overflow-hidden font-mono">
                       <AccordionTrigger className="w-full antialiased text-slate-200">{functionName}</AccordionTrigger>
                       <AccordionContent className="w-full">
                         <FunctionCard data={functionData} address={packageDetails.data[selectedModule].address} moduleName={selectedModule} functionName={functionName} addTransactionDigest={props.addTransactionDigest} />

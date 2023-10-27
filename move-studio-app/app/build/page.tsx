@@ -234,164 +234,166 @@ export default function BuildPage () {
     setTransactionDigests([{digestId, objects}, ...transactionDigests]);
   }
   
-  return (
-    <div className="h-screen w-full max-w-screen flex flex-col items-center dark:bg-slate-950 overflow-hidden">
-      <div className="flex w-full flex-row justify-between items-center my-2 px-3">
-        <TypographyH2>Move Studio</TypographyH2>
-        <div className="flex flex-row justify-around gap-2">
-          {
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-[200px] justify-between"
-                  disabled={projectList.length === 0}
-                >
-                  {selectedProjectName
-                    ? selectedProjectName
-                    : "Select project..."}
-                  <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0">
-                <Command>
-                  <CommandInput placeholder="Search project..." className="h-9 caret-teal-500" />
-                  <CommandGroup>
-                      {
-                        projectList.map((projectName) => {
-                        console.log('projectName', projectName)
-                        return (
-                          <CommandItem
-                            key={projectName.name}
-                            onSelect={() => {
-                              console.log('newName', projectName)
-                              setSelectedProjectName(projectName.name === selectedProjectName ? "" : projectName.name)
-                              setOpen(false)
-                            }}
-                          >
-                            {projectName.name}
-                            <CheckIcon
-                              className={cn(
-                                "ml-auto h-4 w-4",
-                                selectedProjectName === projectName.name ? "opacity-100" : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
-                        )
-                      })}
-                    </CommandGroup>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          }
-          <Button className="p-3 hover:text-teal-500 active:scale-90 transition-transform" variant="secondary" onClick={addProject}>New project</Button>
-          <WalletSelector isTxnInProgress={false} />
-        </div>
-      </div>
-      {
-        showSidebar &&
-        <div className="grow w-full flex flex-row items-center justify-start">
-          <div 
-            className={`h-full flex flex-row items-center justify-end min-w-[15px] py-4 pl-4 gap-4`}
-            style={{"width": `${sidebarWidth}px`}}
-          >
+  if (typeof window !== "undefined") {
+    return (
+      <div className="h-screen w-full max-w-screen flex flex-col items-center dark:bg-slate-950 overflow-hidden">
+        <div className="flex w-full flex-row justify-between items-center my-2 px-3">
+          <TypographyH2>Move Studio</TypographyH2>
+          <div className="flex flex-row justify-around gap-2">
             {
-              sidebarWidth > 0 &&
-              <Sidebar 
-                addTab={addTab}
-                selectedProjectName={selectedProjectName} 
-                setError={setError}
-                transactionDigests={transactionDigests}
-                addTransactionDigest={addTransactionDigest}
-                addToDigests={addToDigests}
-              />
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-[200px] justify-between"
+                    disabled={projectList.length === 0}
+                  >
+                    {selectedProjectName
+                      ? selectedProjectName
+                      : "Select project..."}
+                    <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search project..." className="h-9 caret-teal-500" />
+                    <CommandGroup>
+                        {
+                          projectList.map((projectName) => {
+                          console.log('projectName', projectName)
+                          return (
+                            <CommandItem
+                              key={projectName.name}
+                              onSelect={() => {
+                                console.log('newName', projectName)
+                                setSelectedProjectName(projectName.name === selectedProjectName ? "" : projectName.name)
+                                setOpen(false)
+                              }}
+                            >
+                              {projectName.name}
+                              <CheckIcon
+                                className={cn(
+                                  "ml-auto h-4 w-4",
+                                  selectedProjectName === projectName.name ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                            </CommandItem>
+                          )
+                        })}
+                      </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             }
-            <div
-              className="h-full flex flex-row items-center justify-center"
+            <Button className="p-3 hover:text-teal-500 active:scale-90 transition-transform" variant="secondary" onClick={addProject}>New project</Button>
+            <WalletSelector isTxnInProgress={false} />
+          </div>
+        </div>
+        {
+          showSidebar &&
+          <div className="grow w-full flex flex-row items-center justify-start">
+            <div 
+              className={`h-full flex flex-row items-center justify-end min-w-[15px] py-4 pl-4 gap-4`}
+              style={{"width": `${sidebarWidth}px`}}
             >
-              <Separator 
-                draggable
-                onDragStart={(e) => {
-                  const blankCanvas: any = document.createElement('canvas');
-                  e.dataTransfer?.setDragImage( blankCanvas, 0, 0);
-                  blankCanvas.width = 1;
-                  blankCanvas.height = 1;
-                  blankCanvas.zIndex = 0;
-                  document.body?.appendChild( blankCanvas);
-                }}
-                onDrag={(e) => {
-                  if (e.clientX < 500) {
-                    if (e.clientX > 150) {
-                      setSidebarWidth(e.clientX);
-                    } else if (e.clientX > 0){
-                      setSidebarWidth(0);
+              {
+                sidebarWidth > 0 &&
+                <Sidebar 
+                  addTab={addTab}
+                  selectedProjectName={selectedProjectName} 
+                  setError={setError}
+                  transactionDigests={transactionDigests}
+                  addTransactionDigest={addTransactionDigest}
+                  addToDigests={addToDigests}
+                />
+              }
+              <div
+                className="h-full flex flex-row items-center justify-center"
+              >
+                <Separator 
+                  draggable
+                  onDragStart={(e) => {
+                    const blankCanvas: any = document.createElement('canvas');
+                    e.dataTransfer?.setDragImage( blankCanvas, 0, 0);
+                    blankCanvas.width = 1;
+                    blankCanvas.height = 1;
+                    blankCanvas.zIndex = 0;
+                    document.body?.appendChild( blankCanvas);
+                  }}
+                  onDrag={(e) => {
+                    if (e.clientX < 500) {
+                      if (e.clientX > 150) {
+                        setSidebarWidth(e.clientX);
+                      } else if (e.clientX > 0){
+                        setSidebarWidth(0);
+                      }
                     }
-                  }
-                }} 
-                onDragEnd={(e) => {
-                  if (e.clientX < 500) {
-                    if (e.clientX > 150) {
-                      setSidebarWidth(e.clientX);
-                      localStorage.setItem('sidebarWidth', e.clientX.toString());
-                    } else {
-                      setSidebarWidth(0);
-                      localStorage.setItem('sidebarWidth', '0');
+                  }} 
+                  onDragEnd={(e) => {
+                    if (e.clientX < 500) {
+                      if (e.clientX > 150) {
+                        setSidebarWidth(e.clientX);
+                        localStorage.setItem('sidebarWidth', e.clientX.toString());
+                      } else {
+                        setSidebarWidth(0);
+                        localStorage.setItem('sidebarWidth', '0');
+                      }
                     }
-                  }
 
-                  const blankCanvas: any = document.querySelector('canvas');
-                  blankCanvas?.parentNode?.removeChild(blankCanvas);
-                }}
-                orientation="vertical" 
-                className="h-8 w-1 rounded hover:bg-cyan-500 hover:cursor-col-resize active:bg-teal-500 active:animate-pulse"
-              />
+                    const blankCanvas: any = document.querySelector('canvas');
+                    blankCanvas?.parentNode?.removeChild(blankCanvas);
+                  }}
+                  orientation="vertical" 
+                  className="h-8 w-1 rounded hover:bg-cyan-500 hover:cursor-col-resize active:bg-teal-500 active:animate-pulse"
+                />
+              </div>
+            </div>
+            <div 
+              className="p-4 flex flex-col items-center justify-start gap-4"
+              style={{width: `calc(100% - ${sidebarWidth}px)`, height: window.innerHeight - 50}}
+            >
+              <MainWindow tabs={tabs} removeTab={removeTab} addTransactionDigest={addTransactionDigest} />
+              {
+                error !== '' &&
+                <div className="flex flex-row items-center justify-start gap-1 w-full">
+                  <div>
+                    <PanelRightClose strokeWidth={1.25} className="w-4 h-4 hover:cursor-pointer" onClick={clearError} />
+                  </div>
+                  <ScrollArea className="w-full h-fit max-h-[300px] border rounded-xl shadow-lg shadow-teal-400/75 ps-4 py-2" style={{"lineHeight": .5}}>
+                    <Ansi className='whitespace-pre text-xs font-mono'>
+                      {'\x1b[38;5;245m'.concat(error.replaceAll('[1m', '[38;5;245m').replaceAll('[38;5;9m', '[38;5;124m').replaceAll('[31m', '[38;5;124m').replaceAll('[34m', '[38;5;73m'))}
+                    </Ansi>
+                  </ScrollArea>
+                </div>
+              }
+              {
+                objectDigests.length > 0 &&
+                <div className="w-full h-[800px] flex flex-row items-center justify-start gap-1">
+                  <div>
+                    <PanelRightClose strokeWidth={1.25} className="w-4 h-4 hover:cursor-pointer" onClick={() => {
+                      setObjectDigests([]);
+                    }} />
+                  </div>
+                  <div className="w-full h-full border rounded-xl shadow-lg shadow-teal-400/75 flex flex-row items-center justify-start px-4 gap-4 overflow-x-auto">
+                    {
+                      objectDigests.map((objectDigest, index) => {
+                        return (
+                          <ObjectCard key={index} objectId={objectDigest.digestId} name={objectDigest.name} removeObject={(objectId: string) => {
+                            const newObjectDigests = objectDigests.filter((objectDigest) => objectDigest.digestId !== objectId);
+                            setObjectDigests(newObjectDigests);
+                          }} />
+                        )
+                      })
+                    }
+                  </div >
+                </div>
+              }
             </div>
           </div>
-          <div 
-            className="p-4 flex flex-col items-center justify-start gap-4"
-            style={{width: `calc(100% - ${sidebarWidth}px)`, height: window.innerHeight - 50}}
-          >
-            <MainWindow tabs={tabs} removeTab={removeTab} addTransactionDigest={addTransactionDigest} />
-            {
-              error !== '' &&
-              <div className="flex flex-row items-center justify-start gap-1 w-full">
-                <div>
-                  <PanelRightClose strokeWidth={1.25} className="w-4 h-4 hover:cursor-pointer" onClick={clearError} />
-                </div>
-                <ScrollArea className="w-full h-fit max-h-[300px] border rounded-xl shadow-lg shadow-teal-400/75 ps-4 py-2" style={{"lineHeight": .5}}>
-                  <Ansi className='whitespace-pre text-xs font-mono'>
-                    {'\x1b[38;5;245m'.concat(error.replaceAll('[1m', '[38;5;245m').replaceAll('[38;5;9m', '[38;5;124m').replaceAll('[31m', '[38;5;124m').replaceAll('[34m', '[38;5;73m'))}
-                  </Ansi>
-                </ScrollArea>
-              </div>
-            }
-            {
-              objectDigests.length > 0 &&
-              <div className="w-full h-[800px] flex flex-row items-center justify-start gap-1">
-                <div>
-                  <PanelRightClose strokeWidth={1.25} className="w-4 h-4 hover:cursor-pointer" onClick={() => {
-                    setObjectDigests([]);
-                  }} />
-                </div>
-                <div className="w-full h-full border rounded-xl shadow-lg shadow-teal-400/75 flex flex-row items-center justify-start px-4 gap-4 overflow-x-auto">
-                  {
-                    objectDigests.map((objectDigest) => {
-                      return (
-                        <ObjectCard objectId={objectDigest.digestId} name={objectDigest.name} removeObject={(objectId: string) => {
-                          const newObjectDigests = objectDigests.filter((objectDigest) => objectDigest.digestId !== objectId);
-                          setObjectDigests(newObjectDigests);
-                        }} />
-                      )
-                    })
-                  }
-                </div >
-              </div>
-            }
-          </div>
-        </div>
-      }
-    </div>
-  )
+        }
+      </div>
+    )
+  }
 }
