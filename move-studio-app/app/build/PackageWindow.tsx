@@ -46,7 +46,7 @@ export default function PackageWindow(
 
   const getPackageDetails = async (packageToFetch: {name: string, digestId: string}) => {
     const response = await fetch(
-      'http://localhost:80/package-details',
+      process.env.API_LINK ? `${process.env.API_LINK}/package-details` : 'http://localhost:80/package-details',
       {
         method: 'POST', 
         headers: {

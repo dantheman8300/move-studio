@@ -51,7 +51,7 @@ export default function ObjectCard(
 
   const fetchObjectDetails = async () => {
     const response = await fetch(
-      'http://localhost:80/object-details',
+      process.env.API_LINK ? `${process.env.API_LINK}/object-details` : 'http://localhost:80/object-details',
       {
         method: 'POST', 
         headers: {

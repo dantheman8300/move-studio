@@ -161,7 +161,7 @@ export default function Sidebar(
     })
 
     const response = await fetch(
-      'http://localhost:80/compile',
+      process.env.API_LINK ? `${process.env.API_LINK}/compile` : 'http://localhost:80/compile',
       {
         method: 'POST', 
         headers: {
@@ -208,7 +208,7 @@ export default function Sidebar(
     })
 
     const response = await fetch(
-      'http://localhost:80/test',
+      process.env.API_LINK ? `${process.env.API_LINK}/test` : 'http://localhost:80/test',
       {
         method: 'POST', 
         headers: {
