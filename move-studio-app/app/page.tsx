@@ -34,9 +34,11 @@ export default function Home() {
           </span>
         </div>
         {/* <Image src={CodeEditorImage} alt='' width={200} height={200} /> */}
-        <Button className='animate-pulse hover:animate-none h-12 px-4 text-lg mt-10 shadow shadow-[3px_3px_20px_-5px_rgb(16,185,129,0.8),0px_-5px_20px_-5px_rgb(99,102,241,0.5),0_5px_20px_-5px_rgb(245,158,11,0.5)]'>
-          Start building
-        </Button>
+        <a href='/build'>
+          <Button className='animate-pulse hover:animate-none h-12 px-4 text-lg mt-10 shadow shadow-[3px_3px_20px_-5px_rgb(16,185,129,0.8),0px_-5px_20px_-5px_rgb(99,102,241,0.5),0_5px_20px_-5px_rgb(245,158,11,0.5)]'>
+            Start building
+          </Button>
+        </a>
         <div className={
           'w-[1000px] min-h-[600px] mt-[75px] shadow-[0_0_75px_-10px_rgb(0,0,0,0.3)] hover:shadow-[0_0_100px_-25px_rgb(0,0,0,0.3)] transition-shadow rounded-xl bg-transparent border overflow-hidden' +
           `${activeTab === 'editor' ? ' shadow-amber-500/50 hover:shadow-amber-500 border-amber-500' : ''}` +
