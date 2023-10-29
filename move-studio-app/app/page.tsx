@@ -4,13 +4,14 @@ import TypographyH2 from '@/components/TypographyH2'
 import { Separator } from '@/components/ui/separator'
 import Image from 'next/image'
 import CodeEditorImage from '../public/CodeEditor.png'
-import { Boxes, SquareStack, Terminal, Twitter } from 'lucide-react'
+import { Boxes, FileSearch2, PackagePlus, SquareStack, Terminal, Twitter, Users } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu'
 
 export default function Home() {
 
@@ -19,13 +20,13 @@ export default function Home() {
   return (
     <div className='w-screen min-h-screen h-full bg-slate-950 '>
       <div className='fixed w-full backdrop-filter backdrop-blur-sm bg-opacity-30 border-b border-slate-500'>
-        <div className="flex w-full flex-row justify-between items-center my-2 px-3 h-[50px]">
+        <div className="flex w-full flex-row justify-between items-center my-2 px-3 h-[50px] gap-2">
           <TypographyH2>Move Studio</TypographyH2>
-          <Twitter strokeWidth={1.25} className="w-8 h-8 mr-5 text-teal-500 hover:text-teal-300 cursor-pointer" />
+          {/* <Twitter strokeWidth={1.25} className="w-8 h-8 mr-5 text-teal-500 hover:text-teal-300 cursor-pointer" /> */}
         </div>
         {/* <Separator /> */}
       </div>
-      <div className='w-full h-[500px] flex flex-col items-center justify-start pt-[100px]'>
+      <div className='w-full min-h-[500px] flex flex-col items-center justify-start pt-[100px]'>
         <div className='flex flex-col items-center justify-start'>
           <span className='text-5xl font-bold'>The best <span className='bg-gradient-to-r from-sky-300 to-indigo-400 text-transparent bg-clip-text'>Sui</span> Development Suite</span>
           <span className='text-xl text-slate-400'>
@@ -143,16 +144,48 @@ export default function Home() {
             </div>
           }
         </div>
+        {/* <div className='mt-10 min-h-[200px]'>
+          <span className="text-slate-400 text-lg">Supported by</span>
+        </div> */}
       </div>
-      {/* <Separator />
-      <div className='w-full h-[500px]'>
-
+      {/* <Separator /> */}
+      <div className='mt-[100px] w-full h-fit flex flex-col items-center justify-start gap-10'>
+        <span className='mt-10 text-4xl font-bold'>Built for <span className='bg-gradient-to-r from-teal-300 to-emerald-500 text-transparent bg-clip-text'>Effiency</span></span>
+        <div className='w-[600px] h-[100px] border rounded-xl flex flex-row bg-gradient-to-b from-slate-950 to-emerald-500/20 shadow-[0_0_40px_-10px_rgb(0,0,0,0.3)] shadow-emerald-500/50'>
+          <div className='w-[200px] flex flex-col items-center justify-center'>
+            <span className='text-2xl font-bold flex flex-row items-center gap-2'><PackagePlus strokeWidth={1.25} className='h-5 w-5'/>1000+</span>
+            <span className='text-slate-400'>Deployed packages</span>
+          </div>
+          <Separator orientation='vertical' className='h-[100px]' />
+          <div className='w-[200px] flex flex-col items-center justify-center'>
+            <span className='text-2xl font-bold flex flex-row items-center gap-2'><FileSearch2 strokeWidth={1.25} className='h-5 w-5'/>700+</span>
+            <span className='text-slate-400'>Objects views</span>
+          </div>
+          <Separator orientation='vertical' className='h-[100px]' />
+          <div className='w-[200px] flex flex-col items-center justify-center'>
+            <span className='text-2xl font-bold flex flex-row items-center gap-2'><Users strokeWidth={1.25} className='h-5 w-5'/>500+</span>
+            <span className='text-slate-400'>Developers</span>
+          </div>
+        </div>
       </div>
-      <Separator />
-      <div className='w-full h-[500px]'>
-
+      {/* <Separator /> */}
+      <div className='w-full mt-[100px] min-h-[500px] flex flex-col items-center justify-start '>
+        <span className='mt-10 text-4xl font-bold'><span className='bg-gradient-to-r from-purple-300 to-indigo-500 text-transparent bg-clip-text'>Loved</span> by Developers</span>
+        <div className='w-fit grid grid-cols-3 mt-10 gap-2'>
+          <div className='border rounded-xl w-[300px] h-[100px] shadow-[0_0_40px_-10px_rgb(0,0,0,0.3)] shadow-indigo-500/50 p-2 text-slate-300'>
+            {'\"I am using movestudio and feel it is very effective in my learning of move language...\"'}
+          </div>
+          <div className='border rounded-xl w-[300px] h-[100px] shadow-[0_0_40px_-10px_rgb(0,0,0,0.3)] shadow-indigo-500/50 p-2 text-slate-300'>
+            {'\"Honestly not sure how I\'d deploy modules to mainnet without it\"'}
+          </div>
+          <div className='border rounded-xl w-[300px] h-[100px] shadow-[0_0_40px_-10px_rgb(0,0,0,0.3)] shadow-indigo-500/50 p-2 text-slate-300'>
+            {'\"I do consider your IDE a brilliant and super useful achievement for Sui blockchain development\"'}
+          </div>
+          <div className='border rounded-xl w-[300px] h-[100px] shadow-[0_0_40px_-10px_rgb(0,0,0,0.3)] shadow-indigo-500/50 p-2 text-slate-300'>
+            {'\"web-based IDE is much more user-friendly\"'}
+          </div>
+        </div>
       </div>
-      <Separator /> */}
     </div>
   )
 }
