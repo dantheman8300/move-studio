@@ -1,113 +1,158 @@
+'use client'
+
+import TypographyH2 from '@/components/TypographyH2'
+import { Separator } from '@/components/ui/separator'
 import Image from 'next/image'
+import CodeEditorImage from '../public/CodeEditor.png'
+import { Boxes, SquareStack, Terminal, Twitter } from 'lucide-react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { useState } from 'react'
 
 export default function Home() {
+
+  const [activeTab, setActiveTab] = useState('editor')
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className='w-screen min-h-screen h-full bg-slate-950 '>
+      <div className='fixed w-full backdrop-filter backdrop-blur-sm bg-opacity-30 border-b border-slate-500'>
+        <div className="flex w-full flex-row justify-between items-center my-2 px-3 h-[50px]">
+          <TypographyH2>Move Studio</TypographyH2>
+          <Twitter strokeWidth={1.25} className="w-8 h-8 mr-5 text-teal-500 hover:text-teal-300 cursor-pointer" />
+        </div>
+        {/* <Separator /> */}
+      </div>
+      <div className='w-full h-[500px] flex flex-col items-center justify-start pt-[100px]'>
+        <div className='flex flex-col items-center justify-start'>
+          <span className='text-5xl font-bold'>The best <span className='bg-gradient-to-r from-sky-300 to-indigo-400 text-transparent bg-clip-text'>Sui</span> Development Suite</span>
+          <span className='text-xl text-slate-400'>
+            A complete Sui development suite built into your browser.
+          </span>
+        </div>
+        {/* <Image src={CodeEditorImage} alt='' width={200} height={200} /> */}
+        {/* <div>
+          Start building
+        </div> */}
+        <div className={
+          'w-[1000px] min-h-[600px] mt-[75px] shadow-[0_0_75px_-10px_rgb(0,0,0,0.3)] hover:shadow-[0_0_100px_-25px_rgb(0,0,0,0.3)] transition-shadow rounded-xl bg-transparent border overflow-hidden' +
+          `${activeTab === 'editor' ? ' shadow-amber-500/50 hover:shadow-amber-500 border-amber-500' : ''}` +
+          `${activeTab === 'manager' ? ' shadow-emerald-500/50 hover:shadow-emerald-500 border-emerald-500' : ''}` +
+          `${activeTab === 'explorer' ? ' shadow-indigo-500/50 hover:shadow-indigo-500 border-indigo-500' : ''}`
+        }>
+          <div className="w-full flex flex-row items-start justify-around border-b">
+            <div 
+              className={
+                'h-[70px] grow flex flex-col items-center justify-center hover:cursor-pointer' + 
+                `${activeTab === 'editor' ? ' bg-gradient-to-b from-slate-950 to-amber-500/20' : ''}`
+              }
+              onClick={() => setActiveTab('editor')}
+            >
+              <Terminal className={
+                'w-5 h-5' +
+                `${activeTab === 'editor' ? ' text-amber-500' : ' text-slate-400'}`
+              } strokeWidth={1.25} />
+              <span className={
+                `${activeTab === 'editor' ? 'text-slate-100' : 'text-slate-400'}`
+              }>
+                Code editor
+              </span>
+            </div>
+            <Separator orientation='vertical' className='h-[70px]' />
+            <div 
+              className={
+                'h-[70px] grow flex flex-col items-center justify-center hover:cursor-pointer' + 
+                `${activeTab === 'manager' ? ' bg-gradient-to-b from-slate-950 to-emerald-500/20' : ''}`
+              }
+              onClick={() => setActiveTab('manager')}
+            >
+              <Boxes className={
+                'w-5 h-5' +
+                `${activeTab === 'manager' ? ' text-emerald-500' : ' text-slate-400'}`
+              } strokeWidth={1.25} />
+              <span className={
+                `${activeTab === 'manager' ? 'text-slate-100' : 'text-slate-400'}`
+              }>
+                Package manager
+              </span>
+            </div>
+            <Separator orientation='vertical' className='h-[70px]' />
+            <div 
+              className={
+                'h-[70px] grow flex flex-col items-center justify-center hover:cursor-pointer' + 
+                `${activeTab === 'explorer' ? ' bg-gradient-to-b from-slate-950 to-indigo-500/20' : ''}`
+              }
+              onClick={() => setActiveTab('explorer')}
+            >
+              <SquareStack className={
+                'w-5 h-5' +
+                `${activeTab === 'explorer' ? ' text-indigo-500' : ' text-slate-400'}`
+              } strokeWidth={1.25} />
+              <span className={
+                `${activeTab === 'explorer' ? 'text-slate-100' : 'text-slate-400'}`
+              }>
+                Object explorer
+              </span>
+            </div>
+          </div>
+          {
+            activeTab === 'editor' &&
+            <div className='h-[500px] flex flex-row items-center justify-around'>
+              <div className='w-fit h-[450px] flex flex-col items-start justify-start ps-4'>
+                <span className='text-3xl font-semibold bg-gradient-to-r from-yellow-300 to-amber-500 text-transparent bg-clip-text'>Code Editor</span>
+                <span className='text-slate-400'>Tailored to the Sui Move language</span>
+                <ul className='mt-2 list-disc text-slate-200'>
+                  <li>Built in compiling</li>
+                  <li>Syntax highligting for the Sui Move language</li>
+                  <li>Fully integrated with Move testing framework</li>
+                </ul>
+              </div>
+              <Image src={CodeEditorImage} alt='' height={400} />
+            </div>
+          }
+          {
+            activeTab === 'manager' &&
+            <div className='h-[500px] flex flex-row items-center justify-around'>
+              <div className='w-fit h-[450px] flex flex-col items-start justify-start ps-4'>
+                <span className='text-3xl font-semibold bg-gradient-to-r from-teal-300 to-emerald-500 text-transparent bg-clip-text'>Package manager</span>
+                <span className='text-slate-400'>Interact with deployed packages instantly</span>
+                <ul className='mt-2 list-disc text-slate-200'>
+                  <li>Deploy packages</li>
+                  <li>Execute functions through on-chain packages</li>
+                  {/* <li>Fully integrated with Move testing framework</li> */}
+                </ul>
+              </div>
+              <Image src={CodeEditorImage} alt='' height={400} />
+            </div>
+          }
+          {
+            activeTab === 'explorer' &&
+            <div className='h-[500px] flex flex-row items-center justify-around'>
+              <div className='w-fit h-[450px] flex flex-col items-start justify-start ps-4'>
+                <span className='text-3xl font-semibold bg-gradient-to-r from-purple-300 to-indigo-500 text-transparent bg-clip-text'>Object explorer</span>
+                <span className='text-slate-400'>Access all on-chain objects</span>
+                <ul className='mt-2 list-disc text-slate-200'>
+                  <li>View attributes of on-chain objects</li>
+                  <li>Look at object modification history in transactions</li>
+                  {/* <li>Fully integrated with Move testing framework</li> */}
+                </ul>
+              </div>
+              <Image src={CodeEditorImage} alt='' height={400} />
+            </div>
+          }
         </div>
       </div>
+      {/* <Separator />
+      <div className='w-full h-[500px]'>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
       </div>
+      <Separator />
+      <div className='w-full h-[500px]'>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
       </div>
-    </main>
+      <Separator /> */}
+    </div>
   )
 }
