@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ExternalLink, RefreshCw, X } from "lucide-react";
+import { GuardSpinner } from "react-spinners-kit";
 
 const urlNetwork: {[key: string]: string} = {
   'Sui Testnet': 'testnet',
@@ -30,6 +31,8 @@ export default function ObjectCard(
 
   const wallet = useWallet();
 
+  const [loading, setLoading] = useState<boolean>(true);
+
   const [objectDetails, setObjectDetails] = useState<{
     data: {
       content: {
@@ -42,10 +45,12 @@ export default function ObjectCard(
   } | null>(null);
 
   useEffect(() => {
+    setLoading(true);
     console.log('wallet', wallet.chain?.name)
     fetchObjectDetails().then((data) => {
       console.log('data', data)
       setObjectDetails(data);
+      setLoading(false);
     });
   }, [props.objectId])
 
@@ -65,10 +70,10 @@ export default function ObjectCard(
 
   }
 
-  if (objectDetails == null) {
+  if (loading || objectDetails == null) {
     return (
-      <div className="border rounded-xl h-[350px] w-[300px] flex flex-col items-center justify-start py-3 px-2">
-        Loading...
+      <div className="border rounded-xl min-h-[350px] min-w-[300px] max-h-[350px] max-w-[300px] flex flex-col items-center justify-start py-2 px-4 shadow shadow-teal-500/75 w-full h-full flex flex-row items-center justify-center gap-1">
+        <GuardSpinner backColor="#f59e0b" />
       </div>
     )
   }
@@ -76,14 +81,20 @@ export default function ObjectCard(
   return (
     <div className="border rounded-xl min-h-[350px] min-w-[300px] max-h-[350px] max-w-[300px] flex flex-col items-center justify-start py-2 px-4 shadow shadow-teal-500/75">
       <div className="w-full flex flex-row justify-end items-baseline gap-2">
-        <RefreshCw className="w-4 h-4 hover:text-teal-500 hover:cursor-pointer active:scale-75 transition-transform" onClick={() => {fetchObjectDetails().then((data) => {
-          console.log('data', data)
-          setObjectDetails(data);
-        } )}} />
+        <RefreshCw className="w-4 h-4 hover:text-teal-500 hover:cursor-pointer active:scale-75 transition-transform" onClick={() => {
+          setLoading(true);
+          fetchObjectDetails().then((data) => {
+            console.log('data', data)
+            setObjectDetails(data);
+            setLoading(false);
+          })
+        }} />
         <a href={`https://suiexplorer.com/object/${props.objectId}?network=${urlNetwork[wallet.chain?.name || '']}`} target="_blank"><ExternalLink className="w-4 h-4 hover:text-amber-500 active:scale-75 transition-transform" /></a>
         <X className="w-4 h-4 hover:text-rose-500 hover:cursor-pointer active:scale-75 transition-transform" onClick={() => {props.removeObject(props.objectId)}} />
       </div>
-      <span className="font-mono text-xl">{props.name}</span>
+      <span className="font-mono text-xl">{
+        objectDetails.data.content.type.split(`${objectDetails.data.content.type.split('::')[0]}::${objectDetails.data.content.type.split('::')[1]}::`)
+      }</span>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
