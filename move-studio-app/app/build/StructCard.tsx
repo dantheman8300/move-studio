@@ -59,25 +59,31 @@ export default function StructCard(
                     <span className="font-mono text-slate-400">{field.name} - </span><span className="font-mono text-teal-800 hover:text-teal-500">
                       <TooltipProvider>
                         <Tooltip>
-                          <TooltipTrigger>[{
+                          <TooltipTrigger>{'vector<'}{
                             field.type.Vector.Struct != undefined ?
                               `${field.type.Vector.Struct.address}::${field.type.Vector.Struct.module}::${field.type.Vector.Struct.name}`.length < 10 ?
                                 `${field.type.Vector.Struct.address}::${field.type.Vector.Struct.module}::${field.type.Vector.Struct.name}`
                               :
                                 `${field.type.Vector.Struct.address}::${field.type.Vector.Struct.module}::${field.type.Vector.Struct.name}`.slice(0, 4) + '...' + `${field.type.Vector.Struct.address}::${field.type.Vector.Struct.module}::${field.type.Vector.Struct.name}`.slice(-4)
                             :
-                              `${field.type.Vector.slice(0, 4)}...${field.type.Vector}`.length < 10 ?
-                                `${field.type.Vector.slice(0, 4)}...${field.type.Vector}`
+                              field.type.Vector.TypeParameter != undefined ?
+                                `T${field.type.Vector.TypeParameter}`
                               :
-                                `${field.type.Vector.slice(0, 4)}...${field.type.Vector.slice(-4)}`
-                          }]</TooltipTrigger>
+                                `${field.type.Vector.slice(0, 4)}...${field.type.Vector}`.length < 10 ?
+                                  `${field.type.Vector}`
+                                :
+                                  `${field.type.Vector.slice(0, 4)}...${field.type.Vector.slice(-4)}`
+                          }{'>'}</TooltipTrigger>
                           <TooltipContent>
-                            <p>[{
+                            <p>{
                             field.type.Vector.Struct != undefined ?
                               `${field.type.Vector.Struct.address}::${field.type.Vector.Struct.module}::${field.type.Vector.Struct.name}`
                             :
-                              `${field.type.Vector.slice(0, 4)}...${field.type.Vector}`
-                          }]</p>
+                              field.type.Vector.TypeParameter != undefined ?
+                                `T${field.type.Vector.TypeParameter}`
+                              :
+                                `${field.type.Vector.slice(0, 4)}...${field.type.Vector}`
+                          }</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
