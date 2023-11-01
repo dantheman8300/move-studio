@@ -80,7 +80,7 @@ export default function PackageWindow(
           onChange={(e) => {setSearchedModule(e.target.value)}}
           value={searchedModule}
         />
-        <ScrollArea className="h-full max-h-[400px] w-[260px] rounded-md border p-1 overflow-y-auto">
+        <ScrollArea className="h-full max-h-[400px] w-fit max-w-[260px] rounded-md border p-1 overflow-y-auto">
           {
             Object.values(packageDetails.data).filter((module: any) => {
               return (module.name as string).toLowerCase().includes(searchedModule.toLowerCase())
@@ -96,10 +96,10 @@ export default function PackageWindow(
               return (module.name as string).toLowerCase().includes(searchedModule.toLowerCase())
             }).map((module: any, index) => {
               return (
-                <div key={index} className="flex w-[250px] flex-row items-start justify-start gap-2">
+                <div key={index} className="flex w-fit max-w-[250px] flex-row items-start justify-start gap-2">
                   <Button 
                     className={
-                      "font-mono w-full h-8 flex flex-row justify-start antialiased hover:text-teal-500 bg-slate-950 hover:bg-slate-950 active:scale-y-75 transition-transform" +
+                      "font-mono w-fit h-8 flex flex-row justify-start antialiased hover:text-teal-500 bg-slate-950 hover:bg-slate-950 active:scale-y-75 transition-transform" +
                       (selectedModule == module.name ? ' text-teal-500' : ' text-white')
                     } 
                     variant="ghost"
