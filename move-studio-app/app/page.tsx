@@ -3,7 +3,9 @@
 import TypographyH2 from '@/components/TypographyH2'
 import { Separator } from '@/components/ui/separator'
 import Image from 'next/image'
-import CodeEditorImage from '../public/CodeEditor.png'
+import CodeEditorImage from '../public/codeEditorScreenshot.png'
+import PackageManagerImage from '../public/packageManagerScreenshot.png'
+import objectViewerImage from '../public/objectViewerScreenshot.png'
 import { Boxes, FileSearch2, PackagePlus, SquareStack, Terminal, Twitter, Users } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -112,7 +114,10 @@ export default function Home() {
                   <li>Fully integrated with Move testing framework</li>
                 </ul>
               </div>
-              <Image src={CodeEditorImage} alt='' height={400} />
+              {/* <video src='../public/CodeEditorVideo.mp4' autoPlay loop className='h-full w-full border'>
+                <source src="../public/CodeEditorVideo.mp4" />
+              </video> */}
+              <Image src={CodeEditorImage} alt='' width={500} className='rounded-xl' />
             </div>
           }
           {
@@ -127,7 +132,7 @@ export default function Home() {
                   {/* <li>Fully integrated with Move testing framework</li> */}
                 </ul>
               </div>
-              <Image src={CodeEditorImage} alt='' height={400} />
+              <Image src={PackageManagerImage} alt='' width={530} className='rounded-xl' />
             </div>
           }
           {
@@ -142,7 +147,7 @@ export default function Home() {
                   {/* <li>Fully integrated with Move testing framework</li> */}
                 </ul>
               </div>
-              <Image src={CodeEditorImage} alt='' height={400} />
+              <Image src={objectViewerImage} alt='' width={530} className='rounded-xl' />
             </div>
           }
         </div>
