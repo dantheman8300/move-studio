@@ -213,7 +213,27 @@ export default function BuildPage () {
   const addProject = async () => {
     let prompt = window.prompt('Enter project name');
     if (prompt) {
-      await db.projects.add({name: prompt, files: []});
+      await db.projects.add({name: prompt, files: [
+        {
+          type: 'folder', 
+          name: 'sources',
+          children: []
+        }, 
+        {
+          type: 'file', 
+          name: 'Move.toml',
+          content: `[package]
+name = "${prompt}"
+version = "0.0.1"
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "testnet" }
+
+[addresses]
+${prompt} = "0x0"
+          `
+        }
+      ]});
     }
   }
 
