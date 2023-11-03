@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu'
+import { IconBrandX } from '@tabler/icons-react';
 
 export default function Home() {
 
@@ -25,6 +26,7 @@ export default function Home() {
         <div className="flex w-full flex-row justify-between items-center my-2 px-3 h-[50px] gap-2">
           <TypographyH2>Move Studio</TypographyH2>
           {/* <Twitter strokeWidth={1.25} className="w-8 h-8 mr-5 text-teal-500 hover:text-teal-300 cursor-pointer" /> */}
+          <a href='https://twitter.com/MoveStudioIDE' target='_blank'><IconBrandX strokeWidth={1.25} className="w-8 h-8 mr-5 hover:text-teal-300 cursor-pointer" /></a>
         </div>
         {/* <Separator /> */}
       </div>
