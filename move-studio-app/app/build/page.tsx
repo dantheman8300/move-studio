@@ -151,7 +151,43 @@ export default function BuildPage () {
     if (sidebarWidth) {
       setSidebarWidth(parseInt(sidebarWidth));
     }
+
+    const newUser = localStorage.getItem('newUserV2');
+    if (!newUser) {
+      addDemoProject();
+    }
   }, []);
+
+  const addDemoProject = async () => {
+    await db.projects.add({name: 'demoPackage', files: [
+      {
+        type: 'folder', 
+        name: 'sources',
+        children: [
+          {
+            type: 'file',
+            name: 'party.move', 
+            content: demoCode
+          }
+        ]
+      }, 
+      {
+        type: 'file', 
+        name: 'Move.toml',
+        content: `[package]
+name = "${'demoPackage'}"
+version = "0.0.1"
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "testnet" }
+
+[addresses]
+${'demoPackage'} = "0x0"
+`
+      }
+    ]});
+    localStorage.setItem('newUserV2', 'true');
+  }
 
   useEffect(() => {
     const newTabs = tabs.filter((tab) => {
