@@ -403,7 +403,7 @@ export default function Sidebar(
         height: 'calc(100vh - 82px)'
       }}
     >
-      <CommandDialog modal={false} open={commandOpen} onOpenChange={setCommandOpen}>
+      {/* <CommandDialog modal={false} open={commandOpen} onOpenChange={setCommandOpen}>
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
@@ -462,7 +462,7 @@ export default function Sidebar(
             </CommandItem>
           </CommandGroup>
         </CommandList>
-      </CommandDialog>
+      </CommandDialog> */}
       {/* <Input className="bg-slate-900 h-8" type="text" placeholder="Search..." /> */}
       <Accordion type="multiple" className="w-full grow antialiased">
         {
