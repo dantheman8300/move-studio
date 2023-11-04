@@ -51,6 +51,8 @@ import { PanelRightClose, X } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ObjectCard from "./ObjectCard";
 
+import { track } from '@vercel/analytics';
+
 const demoCode = `module demoPackage::party {
 
   // Libraries being used
@@ -187,6 +189,7 @@ ${'demoPackage'} = "0x0"
       }
     ]});
     localStorage.setItem('newUserV2', 'true');
+    track('demo-project-created');
   }
 
   useEffect(() => {
@@ -270,6 +273,9 @@ ${prompt} = "0x0"
           `
         }
       ]});
+      track('project-created', {
+        project: prompt
+      })
     }
   }
 

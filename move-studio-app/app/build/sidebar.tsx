@@ -83,6 +83,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { CubeSpinner, WhisperSpinner } from "react-spinners-kit";
 import { Badge } from "@/components/ui/badge";
 
+import { track } from '@vercel/analytics';
+
 export default function Sidebar(
   props: {
     selectedProjectName: string;
@@ -118,6 +120,10 @@ export default function Sidebar(
   const deleteProject = async () => {
     let confirm = window.confirm('Are you sure you want to delete this project?');
     if (confirm) {
+      track('project-deleted', {
+        project: props.selectedProjectName
+        }
+      );
       await db.projects.delete(props.selectedProjectName);
       window.location.reload();
     }
@@ -132,6 +138,10 @@ export default function Sidebar(
         content: ''
       }
       await db.projects.update(props.selectedProjectName, {files: [...currentProject?.files || [], file]});
+      track('file-added', {
+        project: props.selectedProjectName,
+        file: fileName
+      });
     }
   }
 
@@ -144,11 +154,19 @@ export default function Sidebar(
         children: []
       }
       await db.projects.update(props.selectedProjectName, {files: [...currentProject?.files || [], folder]});
+      track('folder-added', {
+        project: props.selectedProjectName,
+        folder: folderName
+      });
     }
   }
 
   const compileProject = async (): Promise<{modules: string[], dependencies: string[], digest: number[]}> => {
     console.log('compile project');
+
+    track('project-compiled', {
+      project: props.selectedProjectName
+    });
     
     props.setError('');
 
@@ -196,6 +214,10 @@ export default function Sidebar(
 
   const testProject = async () => {
     console.log('test project');
+
+    track('project-tested', {
+      project: props.selectedProjectName
+    });
     
     props.setError('');
 
@@ -245,6 +267,10 @@ export default function Sidebar(
   const deployProject = async () => {
 
     const compiledModulesAndDependencies = await compileProject();
+    
+    track('project-deployed', {
+      project: props.selectedProjectName
+    });
 
     toast({
       description: <div className="flex flex-row gap-2 items-center justify-start">
@@ -321,17 +347,32 @@ export default function Sidebar(
 
     if (newName) {
       props.addTab('package', addedPackage, newName);
+      track('package-added', {
+        packageName: newName,
+        package: addedPackage
+      });
     }
   }
 
   const addObject = async () => {
+    if (addedObject == '') {
+      alert('Invalid object id');
+      return;
+    }
     props.addToDigests([{digestId: addedObject, type: 'object', name: addedObject}])
+    track('object-added', {
+      object: addedObject
+    });
   }
 
   const renameProject = async () => {
     let projectName = prompt('Enter new project name');
     if (projectName) {
       await db.projects.update(props.selectedProjectName, {name: projectName});
+      track('project-renamed', {
+        oldProjectName: props.selectedProjectName,
+        newProjectName: projectName
+      });
       window.location.reload();
     }
   }
@@ -339,12 +380,19 @@ export default function Sidebar(
   const duplicateProject = async () => {
     let projectName = prompt('Entry duplicate project name');
     if (projectName) {
+      track('project-duplicated', {
+        project: props.selectedProjectName,
+        duplicateProject: projectName
+      });
       await db.projects.add({name: projectName, files: currentProject?.files || []});
     }
   }
 
   const loadSuiFramework = async () => {
     console.log('load sui framework')
+    track('sui-framework-loaded', {
+      project: props.selectedProjectName
+    });
     props.addTab('package', '0x02', 'Sui Framework');
   }
 
@@ -543,6 +591,9 @@ export default function Sidebar(
                                         </CollapsibleTrigger>
                                         <ChevronRightSquare strokeWidth={1.25} className="w-5 h-5 hover:text-teal-500 hover:cursor-pointer active:scale-75 transition-transform" onClick={() => {
                                           props.addToDigests([{digestId: object.objectId, type: 'object', name: objectName}])
+                                          track('object-added', {
+                                            object: object.objectId
+                                          });
                                         }}/>
                                       </div>
                                       <CollapsibleContent className="w-full max-w-[300px]">

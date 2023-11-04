@@ -10,6 +10,8 @@ import {normalizeStructTag} from '@mysten/sui.js/utils'
 import { useWallet } from "@suiet/wallet-kit"
 import { useEffect, useState } from "react"
 
+import { track } from '@vercel/analytics';
+
 
 export default function FunctionCard(
   props: {
@@ -55,6 +57,14 @@ export default function FunctionCard(
 
     console.log('typeParameters', typeParameters)
     console.log('parameters', parameters)
+
+    track('execute_function', {
+      address: props.address,
+      module_name: props.moduleName,
+      function_name: props.functionName,
+      type_parameters_count: typeParameters.length,
+      parameters_count: parameters.length
+    });
 
     const tx = new TransactionBlock();
     tx.moveCall({

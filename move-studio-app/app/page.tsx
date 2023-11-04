@@ -16,6 +16,8 @@ import { useState } from 'react'
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu'
 import { IconBrandX } from '@tabler/icons-react';
 
+import { track } from '@vercel/analytics';
+
 export default function Home() {
 
   const [activeTab, setActiveTab] = useState('editor')
@@ -39,7 +41,7 @@ export default function Home() {
         </div>
         {/* <Image src={CodeEditorImage} alt='' width={200} height={200} /> */}
         <a href='/build'>
-          <Button className='animate-pulse hover:animate-none h-12 px-4 text-lg mt-10 shadow shadow-[3px_3px_20px_-5px_rgb(16,185,129,0.8),0px_-5px_20px_-5px_rgb(99,102,241,0.5),0_5px_20px_-5px_rgb(245,158,11,0.5)]'>
+          <Button className='animate-pulse hover:animate-none h-12 px-4 text-lg mt-10 shadow shadow-[3px_3px_20px_-5px_rgb(16,185,129,0.8),0px_-5px_20px_-5px_rgb(99,102,241,0.5),0_5px_20px_-5px_rgb(245,158,11,0.5)]' onClick={() =>{track('start_building_button')}}>
             Start building
           </Button>
         </a>
@@ -55,7 +57,10 @@ export default function Home() {
                 'h-[70px] grow flex flex-col items-center justify-center hover:cursor-pointer' + 
                 `${activeTab === 'editor' ? ' bg-gradient-to-b from-slate-950 to-amber-500/20' : ''}`
               }
-              onClick={() => setActiveTab('editor')}
+              onClick={() => {
+                setActiveTab('editor')
+                track('editor_tab_clicked')
+              }}
             >
               <Terminal className={
                 'w-5 h-5' +
@@ -73,7 +78,10 @@ export default function Home() {
                 'h-[70px] grow flex flex-col items-center justify-center hover:cursor-pointer' + 
                 `${activeTab === 'manager' ? ' bg-gradient-to-b from-slate-950 to-emerald-500/20' : ''}`
               }
-              onClick={() => setActiveTab('manager')}
+              onClick={() => {
+                setActiveTab('manager')
+                track('manager_tab_clicked')
+              }}
             >
               <Boxes className={
                 'w-5 h-5' +
@@ -91,7 +99,10 @@ export default function Home() {
                 'h-[70px] grow flex flex-col items-center justify-center hover:cursor-pointer' + 
                 `${activeTab === 'explorer' ? ' bg-gradient-to-b from-slate-950 to-indigo-500/20' : ''}`
               }
-              onClick={() => setActiveTab('explorer')}
+              onClick={() => {
+                setActiveTab('explorer')
+                track('explorer_tab_clicked')
+              }}
             >
               <SquareStack className={
                 'w-5 h-5' +
