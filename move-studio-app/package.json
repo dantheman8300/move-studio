@@ -41,6 +41,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@suiet/wallet-kit": "^0.2.19",
     "@tabler/icons-react": "^2.40.0",
+    "@vercel/analytics": "^1.1.1",
     "ansi-to-react": "^6.1.6",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
