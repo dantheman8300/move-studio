@@ -359,7 +359,7 @@ ${prompt} = "0x0"
           showSidebar &&
           <div className="grow w-full flex flex-row items-center justify-start">
             <div 
-              className={`h-full flex flex-row items-center justify-end min-w-[15px] py-4 pl-4 gap-4`}
+              className={`h-full flex flex-row items-center justify-end min-w-[15px] py-4 pl-4 gap-2`}
               style={{"width": `${sidebarWidth}px`}}
             >
               {
@@ -415,7 +415,7 @@ ${prompt} = "0x0"
               </div>
             </div>
             <div 
-              className="p-4 flex flex-col items-center justify-start gap-4"
+              className="pl-2 pr-4 py-4 flex flex-col items-center justify-start gap-4"
               style={{width: `calc(100% - ${sidebarWidth}px)`, height: window.innerHeight - 50}}
             >
               <MainWindow tabs={tabs} removeTab={removeTab} addTransactionDigest={addTransactionDigest} />
