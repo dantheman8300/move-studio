@@ -173,18 +173,29 @@ export default function ObjectCard(
         <TableBody className="h-fit max-h-[200px] overflow-y-auto" >
           {
             Object.keys(objectDetails.data.content.fields).filter((attributeName) => attributeName != 'id').map((key, index) => {
+              console.log('key', key)
+              console.log('objectDetails.data.content.fields[key]', objectDetails.data.content.fields[key])
               return (
                 <TableRow key={index}>
-                  <TableCell className="text-center max-w-[75px] truncate text-slate-300 hover:text-slate-200">{key}</TableCell>
-                  
-                  <TableCell className="font-mono text-center max-w-[175px] truncate ps-4 text-teal-800 hover:text-teal-500">
+                  <TableCell className="text-center ">
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger className="text-center max-w-[175px] truncate">
+                        <TooltipTrigger className="max-w-[75px] truncate text-slate-300 hover:text-slate-200">{key}</TooltipTrigger>
+                        <TooltipContent>
+                          <p>{key}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
+                  
+                  <TableCell className="font-mono text-center max-w-[150px] truncate ps-4 text-teal-800 hover:text-teal-500">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger className="text-center max-w-[150px] truncate">
                           {objectDetails.data.content.fields[key].toString()}
                         </TooltipTrigger>
                         <TooltipContent className="font-mono bg-amber-500 text-amber-950">
-                          <p>{objectDetails.data.content.fields[key].toString()}</p>
+                          <p className="whitespace-pre-wrap text-start">{JSON.stringify(objectDetails.data.content.fields[key], null, '\n')}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
