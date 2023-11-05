@@ -34,7 +34,7 @@ export default function Home() {
       </div>
       <div className='w-full min-h-[500px] flex flex-col items-center justify-start pt-[100px]'>
         <div className='flex flex-col items-center justify-start'>
-          <span className='text-5xl font-bold'>The best <span className='bg-gradient-to-r from-sky-300 to-indigo-400 text-transparent bg-clip-text'>Sui</span> Development Suite</span>
+          <span className='text-5xl font-bold text-slate-100'>The best <span className='bg-gradient-to-r from-sky-300 to-indigo-400 text-transparent bg-clip-text'>Sui</span> Development Suite</span>
           <span className='text-xl text-slate-400'>
             A complete Sui development suite built into your browser.
           </span>
@@ -170,7 +170,7 @@ export default function Home() {
       </div>
       {/* <Separator /> */}
       <div className='mt-[100px] w-full h-fit flex flex-col items-center justify-start gap-10'>
-        <span className='mt-10 text-4xl font-bold'>Built for <span className='bg-gradient-to-r from-teal-300 to-emerald-500 text-transparent bg-clip-text'>Effiency</span></span>
+        <span className='mt-10 text-4xl font-bold text-slate-100'>Built for <span className='bg-gradient-to-r from-teal-300 to-emerald-500 text-transparent bg-clip-text'>Effiency</span></span>
         <div className='w-[600px] h-[100px] border rounded-xl flex flex-row bg-gradient-to-b from-slate-950 to-emerald-500/20 shadow-[0_0_40px_-10px_rgb(0,0,0,0.3)] shadow-emerald-500/50'>
           <div className='w-[200px] flex flex-col items-center justify-center'>
             <span className='text-2xl font-bold flex flex-row items-center gap-2'><PackagePlus strokeWidth={1.25} className='h-5 w-5'/>1000+</span>
@@ -190,7 +190,7 @@ export default function Home() {
       </div>
       {/* <Separator /> */}
       <div className='w-full mt-[100px] min-h-[500px] flex flex-col items-center justify-start '>
-        <span className='mt-10 text-4xl font-bold'><span className='bg-gradient-to-r from-purple-300 to-indigo-500 text-transparent bg-clip-text'>Loved</span> by Developers</span>
+        <span className='mt-10 text-4xl font-bold text-slate-100'><span className='bg-gradient-to-r from-purple-300 to-indigo-500 text-transparent bg-clip-text'>Loved</span> by Developers</span>
         <div className='w-fit grid grid-cols-3 mt-10 gap-2'>
           <div className='border rounded-xl w-[300px] h-[100px] shadow-[0_0_40px_-10px_rgb(0,0,0,0.3)] shadow-indigo-500/50 p-2 text-slate-300'>
             {'\"I am using movestudio and feel it is very effective in my learning of move language...\"'}
