@@ -17,11 +17,34 @@ import {
   CommandItem,
 } from "@/components/ui/command"
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
 import {
   Table,
   TableBody,
@@ -52,6 +75,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import ObjectCard from "./ObjectCard";
 
 import { track } from '@vercel/analytics';
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import AddProjectCard from "./addProjectCard";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const demoCode = `module demoPackage::party {
 
@@ -249,36 +276,6 @@ ${'demoPackage'} = "0x0"
     }
   }
 
-  const addProject = async () => {
-    let prompt = window.prompt('Enter project name');
-    if (prompt) {
-      await db.projects.add({name: prompt, files: [
-        {
-          type: 'folder', 
-          name: 'sources',
-          children: []
-        }, 
-        {
-          type: 'file', 
-          name: 'Move.toml',
-          content: `[package]
-name = "${prompt}"
-version = "0.0.1"
-
-[dependencies]
-Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "testnet" }
-
-[addresses]
-${prompt} = "0x0"
-          `
-        }
-      ]});
-      track('project-created', {
-        project: prompt
-      })
-    }
-  }
-
   const clearError = () => {
     setError('');
   }
@@ -351,7 +348,51 @@ ${prompt} = "0x0"
                 </PopoverContent>
               </Popover>
             }
-            <Button className="p-3 hover:text-teal-500 active:scale-90 transition-transform" variant="secondary" onClick={addProject}>New project</Button>
+            <Dialog>
+              <DialogTrigger>
+                <Button className="p-3 hover:text-teal-500 active:scale-90 transition-transform" variant="secondary">New project</Button>
+              </DialogTrigger>
+              <DialogContent className="bg-transparent border-none max-w-[400px]">
+                <Tabs defaultValue="create">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="create">Create new project</TabsTrigger>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <TabsTrigger value="upload" disabled>Upload from GitHub</TabsTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Coming soon!</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TabsList>
+                  <TabsContent value="create">
+                    <AddProjectCard />
+                  </TabsContent>
+                  {/* <TabsContent value="upload">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Pull GitHub repo</CardTitle>
+                        <CardDescription>
+                          Change your password here. After saving, you'll be logged out.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        <div className="space-y-1">
+                          <Label htmlFor="new">New password</Label>
+                          <Input id="new" type="password" />
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <Button>Save password</Button>
+                      </CardFooter>
+                    </Card>
+                  </TabsContent> */}
+                </Tabs>
+              </DialogContent>
+            </Dialog>
+            
             <WalletSelector isTxnInProgress={false} />
           </div>
         </div>
