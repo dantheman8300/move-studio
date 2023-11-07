@@ -8,6 +8,7 @@ import { track } from "@vercel/analytics";
 import { useState } from "react";
 import { DialogClose } from "@/components/ui/dialog";
 import { IFile } from "../db/ProjectsDB";
+import { Upload } from "lucide-react";
 
 
 export default function UploadProjectCard() {
@@ -116,17 +117,17 @@ export default function UploadProjectCard() {
         {
           inputFiles ? (
             inputFiles.length > 20 ? (
-              <Button className="w-full" disabled onClick={UploadProjectCard}>Folder size is too large (20 or more)</Button>
+              <Button className="w-full" disabled>Folder size is too large (20 or more)</Button>
             ) : (
               inputFiles.length === 0 ? (
                 <Button className="w-full" disabled>Empty directory</Button>
               ) : (
-                <Button className="w-full">Upload project</Button>
+                <Button className="w-full" onClick={UploadProjectCard}>Upload project</Button>
               )
             )
           )
           : (
-            <Button className="w-full" disabled onClick={UploadProjectCard}>Select a directory</Button>
+            <Button className="w-full" disabled>Select a directory</Button>
           )
         }
       </CardFooter>
