@@ -37,6 +37,13 @@ export default function UploadProjectCard() {
       return;
     }
 
+    const projectName = inputFiles![0].webkitRelativePath.split('/')[0];
+
+    if (projectList.find(p => p.name === projectName)) {
+      alert('A project with the same name already exists');
+      return;
+    }
+
     const files = [] as IFile[];
 
     for (let i = 0; i < inputFiles!.length; i++) {
@@ -87,8 +94,6 @@ export default function UploadProjectCard() {
       } 
     }
 
-    const projectName = inputFiles![0].webkitRelativePath.split('/')[0];
-
     await db.projects.add({name: projectName, files});
     track('project-created', {
       project: projectName
@@ -122,7 +127,9 @@ export default function UploadProjectCard() {
               inputFiles.length === 0 ? (
                 <Button className="w-full" disabled>Empty directory</Button>
               ) : (
-                <Button className="w-full" onClick={UploadProjectCard}>Upload project</Button>
+                <DialogClose className="w-full">
+                  <Button className="w-full" onClick={UploadProjectCard}>Upload project</Button>
+                </DialogClose>
               )
             )
           )
