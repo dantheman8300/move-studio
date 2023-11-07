@@ -70,7 +70,7 @@ import { db } from "../db/db";
 import { set } from "date-fns";
 import MainWindow from "./mainWindow";
 import Ansi from "ansi-to-react";
-import { PanelRightClose, X } from "lucide-react";
+import { PanelRightClose, Upload, X } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ObjectCard from "./ObjectCard";
 
@@ -79,6 +79,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import AddProjectCard from "./addProjectCard";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import UploadProjectCard from "./uploadProjectCard";
 
 const demoCode = `module demoPackage::party {
 
@@ -354,12 +355,13 @@ ${'demoPackage'} = "0x0"
               </DialogTrigger>
               <DialogContent className="bg-transparent border-none max-w-[400px]">
                 <Tabs defaultValue="create">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="create">Create new project</TabsTrigger>
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="create">New</TabsTrigger>
+                    <TabsTrigger value="upload">System</TabsTrigger>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <TabsTrigger value="upload" disabled>Upload from GitHub</TabsTrigger>
+                          <TabsTrigger value="github" disabled>GitHub</TabsTrigger>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>Coming soon!</p>
@@ -369,6 +371,9 @@ ${'demoPackage'} = "0x0"
                   </TabsList>
                   <TabsContent value="create">
                     <AddProjectCard />
+                  </TabsContent>
+                  <TabsContent value="upload">
+                    <UploadProjectCard />
                   </TabsContent>
                   {/* <TabsContent value="upload">
                     <Card>
