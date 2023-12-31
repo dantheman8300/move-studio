@@ -80,6 +80,7 @@ import { Input } from "@/components/ui/input";
 import AddProjectCard from "./addProjectCard";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import UploadProjectCard from "./uploadProjectCard";
+import { createProject } from "../db/db_utils";
 
 const demoCode = `module demoPackage::party {
 
@@ -189,33 +190,7 @@ export default function BuildPage () {
   }, []);
 
   const addDemoProject = async () => {
-    await db.projects.add({name: 'demoPackage', files: [
-      {
-        type: 'folder', 
-        name: 'sources',
-        children: [
-          {
-            type: 'file',
-            name: 'party.move', 
-            content: demoCode
-          }
-        ]
-      }, 
-      {
-        type: 'file', 
-        name: 'Move.toml',
-        content: `[package]
-name = "${'demoPackage'}"
-version = "0.0.1"
-
-[dependencies]
-Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "testnet" }
-
-[addresses]
-${'demoPackage'} = "0x0"
-`
-      }
-    ]});
+    await createProject("demoPackage");
     localStorage.setItem('newUserV2', 'true');
     track('demo-project-created');
   }

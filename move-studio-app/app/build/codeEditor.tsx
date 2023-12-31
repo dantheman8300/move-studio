@@ -9,6 +9,7 @@ import { IProject } from '../db/ProjectsDB';
 import Ansi from "ansi-to-react";
 import { Button } from '@/components/ui/button';
 import { CubeSpinner, GuardSpinner } from 'react-spinners-kit';
+import { getFile, getProject } from '../db/db_utils';
 
 const demoCode = `module demoPackage::party {
 
@@ -739,17 +740,14 @@ export default function CodeEditor(
   const code = useLiveQuery(async () => {
     if (props.path != '') {
       const forks = props.path.split('/');
-      const project = await db.projects.get(forks.shift() || '');
-      let files = project?.files || [];
-      while (forks.length > 1) {
-        let fork = forks.shift();
-        const searchedDir = files.find(file => file.name === fork);
-        if (searchedDir == undefined) {
-          break;
-        }
-        files = searchedDir.children || [];
+      const project = forks.shift()
+
+      if (project == undefined) {
+        return '';
       }
-      const file = files.find(file => file.name === forks[0]);
+      
+      const file = await getFile(project, forks.join('/'));
+
       return file?.content || '';
     }
   }, [props.path])
@@ -867,7 +865,7 @@ export default function CodeEditor(
   const handleCodeChange = async (value: string | undefined) => {
     if (props.path != '') {
       const forks = props.path.split('/');
-      const project = await db.projects.get(forks.shift() || '');
+      const project = await getProject(forks.shift() || '');
       let files = project?.files || [];
       while (forks.length > 1) {
         let fork = forks.shift();

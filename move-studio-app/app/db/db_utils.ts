@@ -1,11 +1,6 @@
 import { track } from '@vercel/analytics';
 import { IFile, IProject, db } from './db';
 
-export type StringifiedProject = {
-  path: string;
-  content: string;
-}
-
 export async function getProject(projectName: string): Promise<IProject | null> {
   const project = await db.projects.get(projectName);
 
@@ -167,6 +162,86 @@ export async function addFile(projectName: string, path: string): Promise<boolea
     return false;
   }
 
+}
+
+export async function addFolder(projectName: string, path: string): Promise<boolean> {
+  const project = await getProject(projectName);
+
+  if (project === null) {
+    return false;
+  }
+
+  const pathParts = path.split('/').filter(part => part !== '');
+  let currentDirectory = project.files;
+
+  for (const part of pathParts.slice(0, pathParts.length - 1)) {
+    const file = currentDirectory.find(file => file.name === part);
+
+    if (file === undefined) {
+      return false;
+    }
+
+    currentDirectory = file.children || [];
+  }
+
+  currentDirectory.push({
+    type: 'folder',
+    name: pathParts[pathParts.length - 1],
+    content: '',
+    children: []
+  });
+
+  try {
+    await db.projects.update(projectName, {files: project.files});
+    track('file-added', {
+      project: projectName,
+      path: path
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
+
+}
+
+export async function deleteFile(projectName: string, path: string): Promise<boolean> {
+  const project = await getProject(projectName);
+
+  if (project === null) {
+    return false;
+  }
+
+  const pathParts = path.split('/').filter(part => part !== '');
+  let currentDirectory = project.files;
+
+  for (const part of pathParts.slice(0, pathParts.length - 1)) {
+    const file = currentDirectory.find(file => file.name === part);
+
+    if (file === undefined) {
+      return false;
+    }
+
+    currentDirectory = file.children || [];
+  }
+
+  const fileIndex = currentDirectory.findIndex(file => file.name === pathParts[pathParts.length - 1]);
+
+  if (fileIndex === -1) {
+    return false;
+  }
+
+  currentDirectory.splice(fileIndex, 1);
+
+  try {
+    await db.projects.update(projectName, {files: project.files});
+    track('file-deleted', {
+      project: projectName,
+      path: path
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 export async function updateFileContents(projectName: string, path: string, content: string): Promise<boolean> {

@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { IFile } from "../db/ProjectsDB";
 import { db } from "../db/db";
 import { useLiveQuery } from "dexie-react-hooks";
+import { addFile, addFolder, deleteFile, getFile, getProject } from "../db/db_utils";
 
 
 function createFileSystem(addTab: (type: string, path: string, name: string) => void, files: IFile[], path: string): JSX.Element[]  {
@@ -38,7 +39,7 @@ export default function Files(
 ) {
 
   const contents = useLiveQuery(async () => {
-    const project = await db.projects.get(props.projectName)
+    const project = await getProject(props.projectName)
     if (!project) return [];
     const files = project.files;
 
@@ -81,24 +82,12 @@ function FileComponent(
   }
 ) {
 
-  const removeFile = async () => {
+  const onRemoveFile = async () => {
     let forks = (props.path + '/' + props.name).split('/');
-    console.log('forks', forks)
     let projectName = forks.shift();
-    let project = await db.projects.get(projectName || '');
-    if (!project) return;
-    console.log('project', project)
-    let currentFolder = project.files as IFile[];
-    while (forks.length > 1) {
-      console.log('current folder', currentFolder)
-      currentFolder = currentFolder.find(file => file.name === forks[0])?.children as IFile[];
-      forks.shift();
-    }
-    const fileIndex = currentFolder.findIndex(file => file.name === forks[0]);
-    currentFolder.splice(fileIndex, 1);
-    console.log('current folder', currentFolder)
-    console.log('project', project)
-    await db.projects.put(project);
+    if (!projectName) return;
+
+    await deleteFile(projectName, forks.join('/'));
   }
 
 
@@ -145,7 +134,7 @@ function FileComponent(
           <Download className="mr-2 w-4 h-4"/> Move
         </ContextMenuItem>
         <Separator />
-        <ContextMenuItem onClick={removeFile}>
+        <ContextMenuItem onClick={onRemoveFile}>
           <Trash2 className="mr-2 w-4 h-4"/> Delete
         </ContextMenuItem>
       </ContextMenuContent>
@@ -168,101 +157,50 @@ function FolderComponent(
   }, [fileBarHeight])
 
   const files = useLiveQuery(async () => {
-    const project = await db.projects.get(props.path.split('/')[0])
-    if (!project) return [];
+    const projectName = props.path.split('/')[0];
     let forks = (props.path + '/' + props.name).split('/').splice(1);
-    if (!forks) return [];
-    let currentFolder = project.files as IFile[];
-    while (forks.length > 0) {
-      currentFolder = currentFolder.find(file => file.name === forks[0])?.children as IFile[];
-      forks.shift();
-    }
+    
+    let folder = await getFile(projectName, forks.join('/'));
 
-    if (currentFolder) {
-      setFileBarHeight(30 * currentFolder.length);
-    }
+    if (!folder) return [];
 
-    return currentFolder || [];
+    return folder.children || [];
   }, [props.path, props.name])
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const addFile = async () => {
+  const onAddFile = async () => {
     let fileName = prompt('Enter file name');
-    let forks = (props.path + '/' + props.name).split('/');
+    let forks = (props.path + '/' + props.name + '/' + fileName).split('/');
     console.log(forks)
     let projectName = forks.shift();
-    let project = await db.projects.get(projectName || '');
-    if (!project) return;
-    console.log('project', project)
-    let currentFolder = project.files as IFile[];
-    while (forks.length > 0) {
-      console.log('current folder', currentFolder)
-      currentFolder = currentFolder.find(file => file.name === forks[0])?.children as IFile[];
-      forks.shift();
-    }
-    if (fileName) {
-      let file: IFile = {
-        type: 'file',
-        name: fileName,
-        content: ''
-      }
-      currentFolder.push(file);
-      await db.projects.put(project);
-    }
+    if (!projectName) return;
+    await addFile(projectName, forks.join('/'));
   }
 
-  const addFolder = async () => {
+  const onAddFolder = async () => {
     let folderName = prompt('Enter folder name');
+    let forks = (props.path + '/' + props.name + '/' + folderName).split('/');
+    console.log(forks)
+    let projectName = forks.shift();
+    if (!projectName) return;
+    await addFolder(projectName, forks.join('/'));
+  }
+
+  const onDeleteFolder = async () => {
     let forks = (props.path + '/' + props.name).split('/');
     console.log(forks)
     let projectName = forks.shift();
-    let project = await db.projects.get(projectName || '');
-    if (!project) return;
-    console.log('project', project)
-    let currentFolder = project.files as IFile[];
-    while (forks.length > 0) {
-      console.log('current folder', currentFolder)
-      currentFolder = currentFolder.find(file => file.name === forks[0])?.children as IFile[];
-      forks.shift();
-    }
-    if (folderName) {
-      let folder: IFile = {
-        type: 'folder',
-        name: folderName,
-        children: []
-      }
-      currentFolder.push(folder);
-      await db.projects.put(project);
-    }
+    if (!projectName) return;
+    await deleteFile(projectName, forks.join('/'));
   }
 
-  const deleteFolder = async () => {
-    let forks = (props.path + '/' + props.name).split('/');
-    console.log(forks)
-    let projectName = forks.shift();
-    let project = await db.projects.get(projectName || '');
-    if (!project) return;
-    console.log('project', project)
-    let currentFolder = project.files as IFile[];
-    while (forks.length > 1) {
-      console.log('current folder', currentFolder)
-      currentFolder = currentFolder.find(file => file.name === forks[0])?.children as IFile[];
-      forks.shift();
-    }
-    const folderIndex = currentFolder.findIndex(file => file.name === forks[0]);
-    currentFolder.splice(folderIndex, 1);
-    console.log('current folder', currentFolder)
-    console.log('project', project)
-    await db.projects.put(project);
-  }
-
-  const renameFolder = async () => {
+  const onRenameFolder = async () => {
     let newName = prompt('Enter new name');
     let forks = (props.path + '/' + props.name).split('/');
     console.log(forks)
     let projectName = forks.shift();
-    let project = await db.projects.get(projectName || '');
+    let project = await getProject(projectName || '');
     if (!project) return;
     console.log('project', project)
     let currentFolder = project.files as IFile[];
@@ -298,21 +236,21 @@ function FolderComponent(
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent className="bg-slate-900">
-          <ContextMenuItem onClick={renameFolder}>
+          <ContextMenuItem onClick={onRenameFolder}>
             <Pencil className="mr-2 w-4 h-4"/> Rename
           </ContextMenuItem>
           <Separator />
-          <ContextMenuItem onClick={addFile}>
+          <ContextMenuItem onClick={onAddFile}>
             <FilePlus className="mr-2 w-4 h-4"/> Add file 
           </ContextMenuItem>
-          <ContextMenuItem onClick={addFolder}>
+          <ContextMenuItem onClick={onAddFolder}>
             <FolderPlus className="mr-2 w-4 h-4"/> Add folder 
           </ContextMenuItem>
           {/* <ContextMenuItem>
             <FoldVertical className="mr-2 w-4 h-4"/> Collaspe child folders 
           </ContextMenuItem> */}
           <Separator />
-          <ContextMenuItem onClick={deleteFolder}>
+          <ContextMenuItem onClick={onDeleteFolder}>
             <Trash2 className="mr-2 w-4 h-4"/> Delete
           </ContextMenuItem>
         </ContextMenuContent>

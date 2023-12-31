@@ -55,7 +55,7 @@ import { Badge } from "@/components/ui/badge";
 
 import { track } from "@vercel/analytics";
 import { Textarea } from "@/components/ui/textarea";
-import { duplicateProject, renameProject, stringifyProject } from "../db/db_utils";
+import { deleteProject, duplicateProject, getProject, renameProject, stringifyProject } from "../db/db_utils";
 
 export default function Sidebar(props: {
   selectedProjectName: string;
@@ -78,7 +78,7 @@ export default function Sidebar(props: {
   const { toast } = useToast();
 
   const currentProject = useLiveQuery(
-    () => db.projects.get(props.selectedProjectName),
+    () => getProject(props.selectedProjectName),
     [props.selectedProjectName]
   );
 
@@ -106,15 +106,12 @@ export default function Sidebar(props: {
     }
   }, [props.selectedProjectName]);
 
-  const deleteProject = async () => {
+  const onDeleteProject = async () => {
     let confirm = window.confirm(
       "Are you sure you want to delete this project?"
     );
     if (confirm) {
-      track("project-deleted", {
-        project: props.selectedProjectName,
-      });
-      await db.projects.delete(props.selectedProjectName);
+      await deleteProject(props.selectedProjectName);
       window.location.reload();
     }
   };
@@ -893,7 +890,7 @@ export default function Sidebar(props: {
                 <Button
                   variant="ghost"
                   className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 active:scale-90 transition-transform"
-                  onClick={deleteProject}
+                  onClick={onDeleteProject}
                 >
                   <Trash2
                     strokeWidth={1.25}
