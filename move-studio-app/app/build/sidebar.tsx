@@ -32,10 +32,9 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { IFile } from "../db/ProjectsDB";
 import Files from "./files";
 import { useToast } from "@/components/ui/use-toast";
-import { db } from "../db/db";
+import { IFile, db } from "../db/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { useWallet } from "@suiet/wallet-kit";
@@ -56,6 +55,7 @@ import { Badge } from "@/components/ui/badge";
 
 import { track } from "@vercel/analytics";
 import { Textarea } from "@/components/ui/textarea";
+import { duplicateProject, renameProject, stringifyProject } from "../db/db_utils";
 
 export default function Sidebar(props: {
   selectedProjectName: string;
@@ -99,6 +99,12 @@ export default function Sidebar(props: {
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
   }, []);
+
+  useEffect(() => {
+    if (currentProject) {
+      console.log('stringify', stringifyProject(props.selectedProjectName));
+    }
+  }, [props.selectedProjectName]);
 
   const deleteProject = async () => {
     let confirm = window.confirm(
@@ -392,31 +398,18 @@ export default function Sidebar(props: {
     });
   };
 
-  const renameProject = async () => {
-    let projectName = prompt("Enter new project name");
-    if (projectName) {
-      await db.projects.update(props.selectedProjectName, {
-        name: projectName,
-      });
-      track("project-renamed", {
-        oldProjectName: props.selectedProjectName,
-        newProjectName: projectName,
-      });
+  const onRenameProject = async () => {
+    let newProjectName = prompt("Enter new project name");
+    if (newProjectName && currentProject) {
+      await renameProject(currentProject.name, newProjectName);
       window.location.reload();
     }
   };
 
-  const duplicateProject = async () => {
-    let projectName = prompt("Entry duplicate project name");
-    if (projectName) {
-      track("project-duplicated", {
-        project: props.selectedProjectName,
-        duplicateProject: projectName,
-      });
-      await db.projects.add({
-        name: projectName,
-        files: currentProject?.files || [],
-      });
+  const onDuplicateProject = async () => {
+    let newProjectName = prompt("Entry duplicate project name");
+    if (newProjectName && currentProject) {
+      duplicateProject(currentProject.name, newProjectName);
     }
   };
 
@@ -874,7 +867,7 @@ export default function Sidebar(props: {
                 <Button
                   variant="ghost"
                   className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 active:scale-90 transition-transform"
-                  onClick={renameProject}
+                  onClick={onRenameProject}
                 >
                   <Pencil
                     strokeWidth={1.25}
@@ -887,7 +880,7 @@ export default function Sidebar(props: {
                 <Button
                   variant="ghost"
                   className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 active:scale-90 transition-transform"
-                  onClick={duplicateProject}
+                  onClick={onDuplicateProject}
                 >
                   <CopyPlus
                     strokeWidth={1.25}

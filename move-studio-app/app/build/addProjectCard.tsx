@@ -7,6 +7,7 @@ import { db } from "../db/db";
 import { track } from "@vercel/analytics";
 import { useState } from "react";
 import { DialogClose } from "@/components/ui/dialog";
+import { createProject } from "../db/db_utils";
 
 
 export default function AddProjectCard() {
@@ -14,33 +15,6 @@ export default function AddProjectCard() {
   const projectList = useLiveQuery(() => db.projects.toArray()) || [];
 
   const [projectName, setProjectName] = useState('');
-
-  const addProject = async () => {
-    await db.projects.add({name: projectName, files: [
-      {
-        type: 'folder', 
-        name: 'sources',
-        children: []
-      }, 
-      {
-        type: 'file', 
-        name: 'Move.toml',
-        content: `[package]
-name = "${projectName}"
-version = "0.0.1"
-
-[dependencies]
-Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "testnet" }
-
-[addresses]
-${projectName} = "0x0"
-`
-      }
-    ]});
-    track('project-created', {
-      project: projectName
-    })
-  }
   
   return (
     <Card>
@@ -64,7 +38,9 @@ ${projectName} = "0x0"
           :
             (projectName.length > 0) && /^[a-zA-Z0-9]+$/.test(projectName) ?
                 <DialogClose asChild>
-                  <Button className="w-full" onClick={addProject}>Add project</Button>
+                  <Button className="w-full" onClick={async () => {
+                    await createProject(projectName);
+                  }}>Add project</Button>
                 </DialogClose>
               : 
                 <Button className="w-full" disabled>Invalid project name</Button>
