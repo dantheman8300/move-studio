@@ -71,7 +71,7 @@ import {
 } from "@/components/ui/context-menu"
 import { IFile, IProject, IndexedDb } from "../db/ProjectsDB";
 import Files from "./files";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner"
 import { db } from "../db/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
@@ -84,6 +84,7 @@ import { CubeSpinner, WhisperSpinner } from "react-spinners-kit";
 import { Badge } from "@/components/ui/badge";
 
 import { track } from '@vercel/analytics';
+import { error } from "console";
 
 export default function Sidebar(
   props: {
@@ -96,8 +97,6 @@ export default function Sidebar(
   }
 ) {
   const wallet = useWallet();
-
-  const { toast } = useToast();
 
   const currentProject = useLiveQuery(() => db.projects.get(props.selectedProjectName), [props.selectedProjectName]);
 
@@ -170,13 +169,8 @@ export default function Sidebar(
     
     props.setError('');
 
-    toast({
-      description: <div className="flex flex-row gap-5 items-center justify-start">
-        {/* <Disc3 strokeWidth={1.25} className="w-6 h-6 animate-spin" /> */}
-        <WhisperSpinner size={15} color="#14b8a6" backColor="#f59e0b" />
-        {/* <CubeSpinner size={15} /> */}
-        Compiling...
-      </div>,
+    toast.info("Compiling...", {
+      icon: <WhisperSpinner size={15} color="#14b8a6" backColor="#f59e0b" />
     })
 
     const response = await fetch(
@@ -194,19 +188,13 @@ export default function Sidebar(
     
     if (data.error) {
       props.setError(data.errorMessage);
-      toast({
-        description: <div className="flex flex-row gap-2 items-center justify-start">
-          <PackageX strokeWidth={1.25} className="w-6 h-6 text-rose-500" />
-          Project compilation failed
-        </div>,
+      toast.error("Project compilation failed", {
+        icon: <PackageX strokeWidth={1.25} className="w-6 h-6 text-rose-500" />
       })
       return {modules: [], dependencies: [], digest: []};
     } else {
-      toast({
-        description: <div className="flex flex-row gap-2 items-center justify-start">
-          <PackageCheck strokeWidth={1.25} className="w-6 h-6 text-teal-500" />
-          Project compiled successfully
-        </div>,
+      toast.success("Project compiled successfully", {
+        icon: <PackageCheck strokeWidth={1.25} className="w-6 h-6 text-teal-500" />
       })
       return data.compileResults;
     }
@@ -221,13 +209,8 @@ export default function Sidebar(
     
     props.setError('');
 
-    toast({
-      description: <div className="flex flex-row gap-2 items-center justify-start">
-        {/* <CubeSpinner size={15} /> */}
-        {/* <Orbit strokeWidth={1.25} className="w-6 h-6 animate-spin" /> */}
-        <WhisperSpinner size={15} color="#14b8a6" backColor="#f59e0b" />
-        Testing...
-      </div>,
+    toast.info("Testing...", {
+      icon: <WhisperSpinner size={15} color="#14b8a6" backColor="#f59e0b" />
     })
 
     const response = await fetch(
@@ -247,19 +230,13 @@ export default function Sidebar(
     
     if (data.error) {
       props.setError(data.errorMessage);
-      toast({
-        description: <div className="flex flex-row gap-2 items-center justify-start">
-          <ListX strokeWidth={1.25} className="w-6 h-6 text-rose-500"/>
-          Project tests failed
-        </div>,
+      toast.error("Project tests failed", {
+        icon: <ListX strokeWidth={1.25} className="w-6 h-6 text-rose-500"/>
       })
     } else {
       props.setError(data.testResults);
-      toast({
-        description: <div className="flex flex-row gap-2 items-center justify-start">
-          <ListChecks strokeWidth={1.25} className="w-6 h-6 text-teal-500"/>
-          Project tests successful
-        </div>,
+      toast.success("Project tests passed", {
+        icon: <ListChecks strokeWidth={1.25} className="w-6 h-6 text-teal-500"/>
       })
     }
   }
@@ -272,18 +249,15 @@ export default function Sidebar(
       project: props.selectedProjectName
     });
 
-    toast({
-      description: <div className="flex flex-row gap-2 items-center justify-start">
-        <WhisperSpinner size={15} color="#14b8a6" backColor="#f59e0b" />
-        Deploying...
-      </div>,
-    })
-
     console.log(compiledModulesAndDependencies)
 
     if (compiledModulesAndDependencies.modules.length === 0) {
       return;
     }
+
+    toast.info("Deploying...", {
+      icon: <WhisperSpinner size={15} color="#14b8a6" backColor="#f59e0b" />
+    })
 
     const txb = new TransactionBlock();
     
@@ -299,12 +273,11 @@ export default function Sidebar(
 
       console.log(publishTxn);
 
-      toast({
-        description: <div className="flex flex-row gap-2 items-center justify-start">
-          <PackageCheck strokeWidth={1.25} className="w-6 h-6 text-teal-500" />
-          Package deployed successfully
-          <a href={`https://suiexplorer.com/txblock/${publishTxn.digest}`} target="_blank"><ExternalLink className="w-4 h-4"/></a>
-        </div>,
+      toast.success("Package deployed successfully", {
+        // description: <div className="flex flex-row gap-2 items-center justify-start">
+        //   <a href={`https://suiexplorer.com/txblock/${publishTxn.digest}`} target="_blank"><ExternalLink className="w-4 h-4"/></a>
+        // </div>,
+        icon: <PackageCheck strokeWidth={1.25} className="w-6 h-6 text-teal-500" />
       })
 
       console.log(publishTxn.objectChanges)
@@ -333,11 +306,8 @@ export default function Sidebar(
       
     } catch (error) {
       console.log(error);
-      toast({
-        description: <div className="flex flex-row gap-2 items-center justify-start">
-          <PackageX strokeWidth={1.25} className="w-6 h-6 text-rose-500" />
-          Project deployment failed
-        </div>,
+      toast.error("Project deployment failed", {
+        icon: <PackageX strokeWidth={1.25} className="w-6 h-6 text-rose-500" />
       })
     }
   }
