@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useToast } from "@/components/ui/use-toast"
 import { TransactionBlock } from "@mysten/sui.js/transactions"
 
 import {normalizeStructTag} from '@mysten/sui.js/utils'
@@ -22,8 +21,6 @@ export default function FunctionCard(
     addTransactionDigest: (digestId: string, objects: {type: string, modified: string, objectId: string}[]) => void
   }
 ) {
-
-  const { toast } = useToast()
 
   const wallet = useWallet();
 

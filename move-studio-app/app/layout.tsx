@@ -5,7 +5,7 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 
 import { WalletProvider } from "@suiet/wallet-kit";
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/sonner"
 import { Analytics } from '@vercel/analytics/react';
 
 
@@ -23,7 +23,7 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="dark">
               {children}
               <Analytics />
-              <Toaster />
+              <Toaster richColors closeButton/>
           </ThemeProvider>
         </WalletProvider>
       </body>
