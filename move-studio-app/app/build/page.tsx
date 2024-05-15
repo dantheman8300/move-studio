@@ -84,12 +84,10 @@ import UploadProjectCard from "./uploadProjectCard";
 const demoCode = `module demoPackage::party {
 
   // Libraries being used
-  use sui::object::{Self, UID};
   use sui::transfer;
-  use sui::tx_context::TxContext;
 
   // Object that can be deployed
-  struct Balloon has key {
+  public struct Balloon has key {
     id: UID,
     popped: bool
   }
@@ -207,6 +205,7 @@ export default function BuildPage () {
         content: `[package]
 name = "${'demoPackage'}"
 version = "0.0.1"
+edition = "2024.beta"
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "testnet" }
