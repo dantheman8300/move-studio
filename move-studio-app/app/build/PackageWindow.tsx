@@ -18,8 +18,8 @@ import StructCard from "./StructCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 
-
-
+import { getFullnodeUrl, SuiClient } from '@mysten/sui.js/client';
+ 
 export default function PackageWindow(
   props: {
     package: {name: string, digestId: string}, 
@@ -45,20 +45,20 @@ export default function PackageWindow(
   }
 
   const getPackageDetails = async (packageToFetch: {name: string, digestId: string}) => {
-    const response = await fetch(
-      process.env.API_LINK ? `${process.env.API_LINK}/package-details` : 'http://localhost:80/package-details',
-      {
-        method: 'POST', 
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({packageId: packageToFetch.digestId, rpc: wallet.chain?.rpcUrl || ''})
-      }
-    );
 
-    const data = await response.json();
+    // create a client connected to devnet
+    const client = new SuiClient({ url: wallet.chain?.rpcUrl || '' });
 
-    return {name: packageToFetch.name, data: data}
+    console.log('client', client)
+
+    // get the package details
+    const res = await client.getNormalizedMoveModulesByPackage({
+      package: packageToFetch.digestId,
+    })
+
+    console.log('package res', res)
+
+    return {name: packageToFetch.name, data: res}
   }
 
   if (packageDetails == null) {
