@@ -85,6 +85,7 @@ import { Badge } from "@/components/ui/badge";
 
 import { track } from '@vercel/analytics';
 import { error } from "console";
+import { isValidSuiObjectId } from "@mysten/sui.js/utils";
 
 export default function Sidebar(
   props: {
@@ -325,7 +326,8 @@ export default function Sidebar(
   }
 
   const addObject = async () => {
-    if (addedObject == '') {
+
+    if (isValidSuiObjectId(addedObject) === false) {
       alert('Invalid object id');
       return;
     }
@@ -503,7 +505,7 @@ export default function Sidebar(
                       <Label className="antialiased text-slate-200 font-mono">Load Object</Label>
                       <div className="flex flex-row items-center justify-center gap-1">
                         <Input className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-teal-500 font-mono caret-teal-500" type="text" placeholder="0x000..000" value={addedObject} onChange={(e) => {setAddedObject(e.target.value)}}/>
-                        <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={addObject}>
+                        <Button variant="secondary" size='sm' className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]" onClick={addObject} disabled={!isValidSuiObjectId(addedObject)}>
                           <PackagePlus strokeWidth={1.25} className="w-4 h-4 text-teal-300"/>
                         </Button>
                       </div>

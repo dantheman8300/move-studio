@@ -74,6 +74,13 @@ export default function ObjectCard(
 
     console.log('object res', res)
 
+    if (res.error) {
+      console.error('error', res.error)
+      props.removeObject(props.objectId)
+      alert('Error fetching object details')
+      return null
+    }
+
     return res
 
   }

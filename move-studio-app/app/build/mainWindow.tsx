@@ -80,7 +80,9 @@ export default function MainWindow(
           } else if (tab.type === 'package') {
             return (
               <TabsContent key={index} value={tab.digestId} className="mt-0 w-full h-full">
-                <PackageWindow package={{name: tab.name, digestId: tab.digestId}} addTransactionDigest={addTransactionDigest} />
+                <PackageWindow package={{name: tab.name, digestId: tab.digestId}} removeMe={() => {
+                  removeTab(tab.type, tab.digestId);
+                }} addTransactionDigest={addTransactionDigest} />
               </TabsContent>
             )
           }

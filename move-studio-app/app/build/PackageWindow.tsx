@@ -22,6 +22,7 @@ import { getFullnodeUrl, SuiClient } from '@mysten/sui.js/client';
  
 export default function PackageWindow(
   props: {
+    removeMe: () => void,
     package: {name: string, digestId: string}, 
     addTransactionDigest: (digestId: string, objects: {type: string, modified: string, objectId: string}[]) => void,
   }
@@ -51,14 +52,22 @@ export default function PackageWindow(
 
     console.log('client', client)
 
-    // get the package details
-    const res = await client.getNormalizedMoveModulesByPackage({
-      package: packageToFetch.digestId,
-    })
+    try {
+      // get the package details
+      const res = await client.getNormalizedMoveModulesByPackage({
+        package: packageToFetch.digestId,
+      });
+      console.log('package res', res)
 
-    console.log('package res', res)
+      return {name: packageToFetch.name, data: res}
+    } catch (e) {
+      console.log('error', e)
+      alert('Error fetching package details')
+      props.removeMe()
+      return null;
+    }
 
-    return {name: packageToFetch.name, data: res}
+    
   }
 
   if (packageDetails == null) {
