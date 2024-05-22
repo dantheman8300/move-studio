@@ -11,7 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
     "@monaco-editor/react": "^4.5.2",
-    "@mysten/sui.js": "^0.43.3",
+    "@mysten/sui.js": "^0.54.1",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
