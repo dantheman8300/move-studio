@@ -50,7 +50,7 @@ export default function ObjectCard(
     console.log('wallet', wallet.chain?.name)
     fetchObjectDetails().then((data) => {
       console.log('data', data)
-      setObjectDetails(data);
+      setObjectDetails(data as any);
       setLoading(false);
     });
   }, [props.objectId])
@@ -93,7 +93,7 @@ export default function ObjectCard(
           setLoading(true);
           fetchObjectDetails().then((data) => {
             console.log('data', data)
-            setObjectDetails(data);
+            setObjectDetails(data as any);
             setLoading(false);
           })
         }} />
