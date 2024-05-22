@@ -34,7 +34,7 @@ export default function MainWindow(
 
 
   return (
-    <Tabs className="border rounded-xl w-full h-full overflow-hidden shadow shadow-teal-500/75">
+    <Tabs className="border rounded-xl w-full h-full overflow-hidden">
       <TabsList className="w-full h-10 rounded-none items-center justify-start px-6 border-b">
         {
           tabs.map((tab, i) => {

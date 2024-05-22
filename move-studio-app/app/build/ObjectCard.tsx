@@ -80,14 +80,14 @@ export default function ObjectCard(
 
   if (loading || objectDetails == null) {
     return (
-      <div className="border rounded-xl min-h-[350px] min-w-[300px] max-h-[350px] max-w-[300px] flex flex-col items-center justify-start py-2 px-4 shadow shadow-teal-500/75 w-full h-full flex flex-row items-center justify-center gap-1">
+      <div className="border rounded-xl min-h-[350px] min-w-[300px] max-h-[350px] max-w-[300px] flex flex-col items-center justify-start py-2 px-4 w-full h-full flex flex-row items-center justify-center gap-1">
         <GuardSpinner backColor="#f59e0b" />
       </div>
     )
   }
 
   return (
-    <div className="border rounded-xl min-h-[350px] min-w-[300px] max-h-[350px] max-w-[300px] flex flex-col items-center justify-start py-2 px-4 shadow shadow-teal-500/75">
+    <div className="border rounded-xl min-h-[350px] min-w-[300px] max-h-[350px] max-w-[300px] flex flex-col items-center justify-start py-2 px-4">
       <div className="w-full flex flex-row justify-end items-baseline gap-2">
         <RefreshCw className="w-4 h-4 hover:text-teal-500 hover:cursor-pointer active:scale-75 transition-transform" onClick={() => {
           setLoading(true);

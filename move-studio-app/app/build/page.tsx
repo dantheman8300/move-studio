@@ -451,7 +451,7 @@ ${'demoPackage'} = "0x0"
                   <div>
                     <PanelRightClose strokeWidth={1.25} className="w-4 h-4 hover:cursor-pointer" onClick={clearError} />
                   </div>
-                  <ScrollArea className="w-full h-fit max-h-[300px] border rounded-xl shadow shadow-teal-400/75 ps-4 py-2" style={{"lineHeight": .5}}>
+                  <ScrollArea className="w-full h-fit max-h-[300px] border rounded-xl ps-4 py-2" style={{"lineHeight": .5}}>
                     <Ansi className='whitespace-pre text-xs font-mono'>
                       {'\x1b[38;5;245m'.concat(error.replaceAll('[1m', '[38;5;245m').replaceAll('[38;5;9m', '[38;5;124m').replaceAll('[31m', '[38;5;124m').replaceAll('[34m', '[38;5;73m'))}
                     </Ansi>
@@ -466,7 +466,7 @@ ${'demoPackage'} = "0x0"
                       setObjectDigests([]);
                     }} />
                   </div>
-                  <div className="w-full h-full border rounded-xl shadow shadow-teal-400/75 flex flex-row items-center justify-start px-4 gap-4 overflow-x-auto">
+                  <div className="w-full h-full border rounded-xl flex flex-row items-center justify-start px-4 gap-4 overflow-x-auto">
                     {
                       objectDigests.map((objectDigest, index) => {
                         return (

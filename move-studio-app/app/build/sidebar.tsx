@@ -368,7 +368,7 @@ export default function Sidebar(
 
   return (
     <ScrollArea 
-      className="pl-2 pr-2 w-full flex flex-col items-center justify-start gap-1 border rounded-xl shadow shadow-teal-400/75"
+      className="pl-2 pr-2 w-full flex flex-col items-center justify-start gap-1 border rounded-xl"
       style={{
         height: 'calc(100vh - 82px)'
       }}
