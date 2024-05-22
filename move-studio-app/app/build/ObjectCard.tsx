@@ -13,6 +13,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ExternalLink, RefreshCw, X } from "lucide-react";
 import { GuardSpinner } from "react-spinners-kit";
+import { SuiClient } from "@mysten/sui.js/client";
 
 const urlNetwork: {[key: string]: string} = {
   'Sui Testnet': 'testnet',
@@ -55,18 +56,25 @@ export default function ObjectCard(
   }, [props.objectId])
 
   const fetchObjectDetails = async () => {
-    const response = await fetch(
-      process.env.API_LINK ? `${process.env.API_LINK}/object-details` : 'http://localhost:80/object-details',
-      {
-        method: 'POST', 
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({objectId: props.objectId, rpc: wallet.chain?.rpcUrl || ''})
-      }
-    );
 
-    return await response.json();
+    // create a client connected to devnet
+    const client = new SuiClient({ url: wallet.chain?.rpcUrl || '' });
+
+    console.log('client', client)
+
+    // get the object details
+    const res = await client.getObject({
+      id: props.objectId,
+      options: {
+        showOwner: true, 
+        showType: true,
+        showContent: true,
+      }
+    })
+
+    console.log('object res', res)
+
+    return res
 
   }
 
