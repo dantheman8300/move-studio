@@ -76,6 +76,9 @@ export default function FunctionCard(
       // execute the programmable transaction
       const resData = await wallet.signAndExecuteTransactionBlock({
         transactionBlock: tx,
+        options: {
+          showObjectChanges: true
+        }
       } as any);
       console.log('nft minted successfully!', resData);
 
