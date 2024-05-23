@@ -75,6 +75,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
 
   const [addedPackage, setAddedPackage] = useState("");
   const [addedObject, setAddedObject] = useState("");
+  const [ptbName, setPtbName] = useState("");
 
   const [commandOpen, setCommandOpen] = useState(false);
   useEffect(() => {
@@ -328,6 +329,13 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
     });
   };
 
+  const addPtb = async () => {
+    addTab("ptb", ptbName, ptbName);
+    track("ptb-added", {
+      ptb: ptbName,
+    });
+  };
+
   const renameProject = async () => {
     let projectName = prompt("Enter new project name");
     if (projectName) {
@@ -564,6 +572,42 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
                   </TooltipTrigger>
                   {/* <TooltipContent side="right" className="bg-teal-600 text-teal-950">
                     <p>Add a object</p>
+                  </TooltipContent> */}
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger className="ps-4 py-2">
+                    <div className="flex flex-col items-start gap-1.5">
+                      <Label className="antialiased text-slate-200 font-mono">
+                        Build PTB
+                      </Label>
+                      <div className="flex flex-row items-center justify-center gap-1">
+                        <Input
+                          className="w-full max-w-[175px] min-w-[50px] bg-slate-900 h-8 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-teal-500 font-mono caret-teal-500"
+                          type="text"
+                          placeholder="split_coin"
+                          value={ptbName}
+                          onChange={(e) => {
+                            setPtbName(e.target.value);
+                          }}
+                        />
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="w-full flex flex-row justify-center text-slate-300 text-sm font-mono max-w-[50px]"
+                          onClick={addPtb}
+                        >
+                          <DownloadCloud
+                            strokeWidth={1.25}
+                            className="w-4 h-4 text-teal-300"
+                          />
+                        </Button>
+                      </div>
+                    </div>
+                  </TooltipTrigger>
+                  {/* <TooltipContent side="right" className="bg-teal-600 text-teal-950">
+                    <p>Add an existing package</p>
                   </TooltipContent> */}
                 </Tooltip>
               </TooltipProvider>
