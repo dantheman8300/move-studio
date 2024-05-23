@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { MagicSpinner } from "react-spinners-kit";
 import { TypeAnimation } from "react-type-animation";
 import { BuildContext } from "@/Contexts/BuildProvider";
+import PtbEditor from "./ptbEditor";
 
 const quotes = [
   "First, solve the problem. Then, write the code.\n - John Johnson",
@@ -64,6 +65,23 @@ export default function MainWindow() {
                 />
               </TabsTrigger>
             );
+          } else if (tab.type === "ptb") {
+            return (
+              <TabsTrigger
+                key={i}
+                value={tab.name}
+                className="font-mono flex flex-row items-center justify-center gap-1"
+              >
+                {tab.name}
+                <Cross2Icon
+                  className="w-4 h-4 hover:text-red-500 hover:cursor-pointer active:scale-75 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    removeTab(tab.type, tab.name);
+                  }}
+                />
+              </TabsTrigger>
+            );
           }
         })}
       </TabsList>
@@ -92,6 +110,16 @@ export default function MainWindow() {
                     removeTab(tab.type, tab.digestId);
                   }}
                 />
+              </TabsContent>
+            );
+          } else if (tab.type === "ptb") {
+            return (
+              <TabsContent
+                key={index}
+                value={tab.name}
+                className="mt-0 w-full h-full"
+              >
+                <PtbEditor path={tab.name} />
               </TabsContent>
             );
           }
