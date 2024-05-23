@@ -211,6 +211,14 @@ export default function BuildProvider({
       if (activeTab === identifier) {
         setActiveTab("");
       }
+    } else if (type == "ptb") {
+      const newTabs = tabs.filter(
+        (tab) => !(tab.type === "ptb" && tab.name === identifier)
+      );
+      setTabs(newTabs);
+      if (activeTab === identifier) {
+        setActiveTab("");
+      }
     }
   };
 
