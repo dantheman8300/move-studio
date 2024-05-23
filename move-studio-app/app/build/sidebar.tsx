@@ -270,7 +270,12 @@ export default function Sidebar(
     txb.transferObjects([upgradeCap], txb.pure(wallet.address));
 
     try {
-      const publishTxn = await wallet.signAndExecuteTransactionBlock({ transactionBlock: txb as any });
+      const publishTxn = await wallet.signAndExecuteTransactionBlock({ 
+        transactionBlock: txb as any,
+        options: { 
+          showObjectChanges: true,
+        }
+      });
 
       console.log(publishTxn);
 
@@ -281,7 +286,7 @@ export default function Sidebar(
         icon: <PackageCheck strokeWidth={1.25} className="w-6 h-6 text-teal-500" />
       })
 
-      console.log(publishTxn.objectChanges)
+      console.log('publishTxn.objectChanges', publishTxn.objectChanges)
 
       const objects = [];
 
