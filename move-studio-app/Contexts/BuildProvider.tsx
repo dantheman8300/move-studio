@@ -46,6 +46,7 @@ export type BuildContextType = {
   tabs: (
     | { type: "code"; path: string; name: string }
     | { type: "package"; digestId: string; name: string }
+    | { type: "ptb"; name: string }
   )[];
   activeTab: string;
   transactionDigests: {
@@ -59,6 +60,7 @@ export type BuildContextType = {
     tabs: (
       | { type: "code"; path: string; name: string }
       | { type: "package"; digestId: string; name: string }
+      | { type: "ptb"; name: string }
     )[]
   ) => void;
   setActiveTab: (tab: string) => void;
@@ -116,6 +118,7 @@ export default function BuildProvider({
     (
       | { type: "code"; path: string; name: string }
       | { type: "package"; digestId: string; name: string }
+      | { type: "ptb"; name: string }
     )[]
   >([]);
   const [activeTab, setActiveTab] = useState<string>("");
@@ -173,6 +176,16 @@ export default function BuildProvider({
         setActiveTab(identifier);
       } else {
         setActiveTab(identifier);
+      }
+    } else if (type == "ptb") {
+      const isAlreadyTab = tabs.find(
+        (tab) => tab.type === "ptb" && tab.name === name
+      );
+      if (!isAlreadyTab) {
+        setTabs([...tabs, { type, name }]);
+        setActiveTab(name);
+      } else {
+        setActiveTab(name);
       }
     }
   };
