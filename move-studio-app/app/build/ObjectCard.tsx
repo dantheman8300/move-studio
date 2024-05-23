@@ -4,32 +4,32 @@ import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+} from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { SuiClient } from "@mysten/sui.js/client";
 import { ExternalLink, RefreshCw, X } from "lucide-react";
 import { GuardSpinner } from "react-spinners-kit";
-import { SuiClient } from "@mysten/sui.js/client";
 
-const urlNetwork: {[key: string]: string} = {
-  'Sui Testnet': 'testnet',
-  'Sui Mainnet': 'mainnet',
-  'Sui Devnet': 'devnet'
-}
+const urlNetwork: { [key: string]: string } = {
+  "Sui Testnet": "testnet",
+  "Sui Mainnet": "mainnet",
+  "Sui Devnet": "devnet",
+};
 
-
-export default function ObjectCard(
-  props: {
-    objectId: string, 
-    name: string, 
-    removeObject: (objectId: string) => void
-  }
-) {
-
+export default function ObjectCard(props: {
+  objectId: string;
+  name: string;
+  removeObject: (objectId: string) => void;
+}) {
   const wallet = useWallet();
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -37,83 +37,103 @@ export default function ObjectCard(
   const [objectDetails, setObjectDetails] = useState<{
     data: {
       content: {
-        type: string,
+        type: string;
         fields: {
-          [key: string]: any
-        }
-      }, 
-    }
+          [key: string]: any;
+        };
+      };
+    };
   } | null>(null);
 
   useEffect(() => {
     setLoading(true);
-    console.log('wallet', wallet.chain?.name)
+    console.log("wallet", wallet.chain?.name);
     fetchObjectDetails().then((data) => {
-      console.log('data', data)
+      console.log("data", data);
       setObjectDetails(data as any);
       setLoading(false);
     });
-  }, [props.objectId])
+  }, [props.objectId]);
 
   const fetchObjectDetails = async () => {
-
     // create a client connected to devnet
-    const client = new SuiClient({ url: wallet.chain?.rpcUrl || '' });
+    const client = new SuiClient({ url: wallet.chain?.rpcUrl || "" });
 
-    console.log('client', client)
+    console.log("client", client);
 
     // get the object details
     const res = await client.getObject({
       id: props.objectId,
       options: {
-        showOwner: true, 
+        showOwner: true,
         showType: true,
         showContent: true,
-      }
-    })
+      },
+    });
 
-    console.log('object res', res)
+    console.log("object res", res);
 
-    if (res.error || res.data!.type == 'package') {
-      console.error('error', res.error)
-      props.removeObject(props.objectId)
-      alert('Error fetching object details')
-      return null
+    if (res.error || res.data!.type == "package") {
+      console.error("error", res.error);
+      props.removeObject(props.objectId);
+      alert("Error fetching object details");
+      return null;
     }
 
-    return res
-
-  }
+    return res;
+  };
 
   if (loading || objectDetails == null) {
     return (
       <div className="border rounded-xl min-h-[350px] min-w-[300px] max-h-[350px] max-w-[300px] flex flex-col items-center justify-start py-2 px-4 w-full h-full flex flex-row items-center justify-center gap-1">
         <GuardSpinner backColor="#f59e0b" />
       </div>
-    )
+    );
   }
 
   return (
     <div className="border rounded-xl min-h-[350px] min-w-[300px] max-h-[350px] max-w-[300px] flex flex-col items-center justify-start py-2 px-4">
       <div className="w-full flex flex-row justify-end items-baseline gap-2">
-        <RefreshCw className="w-4 h-4 hover:text-teal-500 hover:cursor-pointer active:scale-75 transition-transform" onClick={() => {
-          setLoading(true);
-          fetchObjectDetails().then((data) => {
-            console.log('data', data)
-            setObjectDetails(data as any);
-            setLoading(false);
-          })
-        }} />
-        <a href={`https://suiexplorer.com/object/${props.objectId}?network=${urlNetwork[wallet.chain?.name || '']}`} target="_blank"><ExternalLink className="w-4 h-4 hover:text-amber-500 active:scale-75 transition-transform" /></a>
-        <X className="w-4 h-4 hover:text-rose-500 hover:cursor-pointer active:scale-75 transition-transform" onClick={() => {props.removeObject(props.objectId)}} />
+        <RefreshCw
+          className="w-4 h-4 hover:text-teal-500 hover:cursor-pointer active:scale-75 transition-transform"
+          onClick={() => {
+            setLoading(true);
+            fetchObjectDetails().then((data) => {
+              console.log("data", data);
+              setObjectDetails(data as any);
+              setLoading(false);
+            });
+          }}
+        />
+        <a
+          href={`https://suiexplorer.com/object/${props.objectId}?network=${
+            urlNetwork[wallet.chain?.name || ""]
+          }`}
+          target="_blank"
+        >
+          <ExternalLink className="w-4 h-4 hover:text-amber-500 active:scale-75 transition-transform" />
+        </a>
+        <X
+          className="w-4 h-4 hover:text-rose-500 hover:cursor-pointer active:scale-75 transition-transform"
+          onClick={() => {
+            props.removeObject(props.objectId);
+          }}
+        />
       </div>
-      <span className="font-mono text-xl">{
-        objectDetails.data.content.type.split(`${objectDetails.data.content.type.split('::')[0]}::${objectDetails.data.content.type.split('::')[1]}::`)
-      }</span>
+      <span className="font-mono text-xl">
+        {objectDetails.data.content.type.split(
+          `${objectDetails.data.content.type.split("::")[0]}::${
+            objectDetails.data.content.type.split("::")[1]
+          }::`
+        )}
+      </span>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
-            <span className="font-mono text-sm text-teal-800 hover:text-teal-500">{`${props.objectId.slice(0, 6)}...${props.objectId.slice(-4)}`}</span>
+            <span className="font-mono text-sm text-teal-800 hover:text-teal-500">{`${props.objectId.slice(
+              0,
+              6
+            )}...${props.objectId.slice(-4)}`}</span>
           </TooltipTrigger>
           <TooltipContent className="font-mono bg-amber-500 text-amber-950">
             <p>{props.objectId}</p>
@@ -122,57 +142,63 @@ export default function ObjectCard(
       </TooltipProvider>
       <div className="py-2 w-full">
         <div className="w-full flex flex-row items-center justify-between">
-          <span className="text-slate-300">
-            Type: 
-          </span>
+          <span className="text-slate-300">Type:</span>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
                 <span className="font-mono text-teal-800 hover:text-teal-500 truncate max-w-[100px]">
-                  {objectDetails.data.content.type.split(`${objectDetails.data.content.type.split('::')[0]}::${objectDetails.data.content.type.split('::')[1]}::`)}
+                  {objectDetails.data.content.type.split(
+                    `${objectDetails.data.content.type.split("::")[0]}::${
+                      objectDetails.data.content.type.split("::")[1]
+                    }::`
+                  )}
                 </span>
               </TooltipTrigger>
               <TooltipContent className="font-mono bg-amber-500 text-amber-950">
-                <p>{objectDetails.data.content.type.split(`${objectDetails.data.content.type.split('::')[0]}::${objectDetails.data.content.type.split('::')[1]}::`)}</p>
+                <p>
+                  {objectDetails.data.content.type.split(
+                    `${objectDetails.data.content.type.split("::")[0]}::${
+                      objectDetails.data.content.type.split("::")[1]
+                    }::`
+                  )}
+                </p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </div>
         <div className="w-full flex flex-row items-center justify-between">
-          <span className="text-slate-300">
-          Module: 
-          </span>
+          <span className="text-slate-300">Module:</span>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
                 <span className="font-mono text-teal-800 hover:text-teal-500 truncate max-w-[100px]">
-                  {objectDetails.data.content.type.split('::')[1]}
+                  {objectDetails.data.content.type.split("::")[1]}
                 </span>
               </TooltipTrigger>
               <TooltipContent className="font-mono bg-amber-500 text-amber-950">
-                <p>{objectDetails.data.content.type.split('::')[1]}</p>
+                <p>{objectDetails.data.content.type.split("::")[1]}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </div>
         <div className="w-full flex flex-row items-center justify-between">
-          <span className="text-slate-300">
-            Package:  
-          </span>
+          <span className="text-slate-300">Package:</span>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
                 <span className="font-mono text-teal-800 hover:text-teal-500">
-                  {
-                    `${objectDetails.data.content.type.split('::')[0]}`.length < 10 ?
-                    `${objectDetails.data.content.type.split('::')[0]}`
-                    : 
-                    `${objectDetails.data.content.type.split('::')[0].slice(0, 10)}...${objectDetails.data.content.type.split('::')[0].slice(-4)}`
-                  }
+                  {`${objectDetails.data.content.type.split("::")[0]}`.length <
+                  10
+                    ? `${objectDetails.data.content.type.split("::")[0]}`
+                    : `${objectDetails.data.content.type
+                        .split("::")[0]
+                        .slice(0, 10)}...${objectDetails.data.content.type
+                        .split("::")[0]
+                        .slice(-4)}`}
                 </span>
               </TooltipTrigger>
               <TooltipContent className="font-mono bg-amber-500 text-amber-950">
-                <p>{objectDetails.data.content.type.split('::')[0]}</p>
+                <p>{objectDetails.data.content.type.split("::")[0]}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -185,24 +211,30 @@ export default function ObjectCard(
             <TableHead className="text-center w-[175px] ps-4">Value</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody className="h-fit max-h-[200px] overflow-y-auto" >
-          {
-            Object.keys(objectDetails.data.content.fields).filter((attributeName) => attributeName != 'id').map((key, index) => {
-              console.log('key', key)
-              console.log('objectDetails.data.content.fields[key]', objectDetails.data.content.fields[key])
+        <TableBody className="h-fit max-h-[200px] overflow-y-auto">
+          {Object.keys(objectDetails.data.content.fields)
+            .filter((attributeName) => attributeName != "id")
+            .map((key, index) => {
+              console.log("key", key);
+              console.log(
+                "objectDetails.data.content.fields[key]",
+                objectDetails.data.content.fields[key]
+              );
               return (
                 <TableRow key={index}>
                   <TableCell className="text-center ">
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger className="max-w-[75px] truncate text-slate-300 hover:text-slate-200">{key}</TooltipTrigger>
+                        <TooltipTrigger className="max-w-[75px] truncate text-slate-300 hover:text-slate-200">
+                          {key}
+                        </TooltipTrigger>
                         <TooltipContent>
                           <p>{key}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </TableCell>
-                  
+
                   <TableCell className="font-mono text-center max-w-[150px] truncate ps-4 text-teal-800 hover:text-teal-500">
                     <TooltipProvider>
                       <Tooltip>
@@ -210,18 +242,23 @@ export default function ObjectCard(
                           {objectDetails.data.content.fields[key].toString()}
                         </TooltipTrigger>
                         <TooltipContent className="font-mono bg-amber-500 text-amber-950">
-                          <p className="whitespace-pre-wrap text-start">{JSON.stringify(objectDetails.data.content.fields[key], null, '\n')}</p>
+                          <p className="whitespace-pre-wrap text-start">
+                            {JSON.stringify(
+                              objectDetails.data.content.fields[key],
+                              null,
+                              "\n"
+                            )}
+                          </p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </TableCell>
                 </TableRow>
-              )
-            })
-          }
+              );
+            })}
         </TableBody>
       </Table>
       {/* {JSON.stringify(objectDetails)} */}
     </div>
-  )
+  );
 }

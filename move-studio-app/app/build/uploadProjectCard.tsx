@@ -1,14 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "../db/db";
-import { track } from "@vercel/analytics";
-import { useState } from "react";
 import { DialogClose } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { track } from "@vercel/analytics";
+import { useLiveQuery } from "dexie-react-hooks";
+import { useState } from "react";
 import { IFile } from "../db/ProjectsDB";
-import { Upload } from "lucide-react";
+import { db } from "../db/db";
 
 
 export default function UploadProjectCard() {
