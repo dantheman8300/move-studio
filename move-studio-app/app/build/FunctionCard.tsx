@@ -60,7 +60,7 @@ export default function FunctionCard(props: {
     setParameters(parametersEmpty);
   }, [props.data]);
 
-  const handleInputChange = (position: number) => (e: ChangeEvent<HTMLInputElement>) => {
+  const handleArgInputChange = (position: number) => (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setParameters([
       ...parameters.slice(0, position),
@@ -68,6 +68,16 @@ export default function FunctionCard(props: {
       ...parameters.slice(position + 1)
     ])
   }
+
+  const handleTypeInputChange = (position: number) => (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setTypeParameters([
+      ...typeParameters.slice(0, position),
+      value,
+      ...typeParameters.slice(position + 1)
+    ])
+  }
+
 
   const executeFunction = async () => {
     if (!wallet.connected) return;
@@ -143,11 +153,7 @@ export default function FunctionCard(props: {
                 id={`T${index}`}
                 placeholder={`T${index}`}
                 value={typeParameters[index]}
-                onChange={(e) => {
-                  const newTypeParameters = typeParameters;
-                  newTypeParameters[index] = e.target.value;
-                  setTypeParameters(newTypeParameters);
-                }}
+                onChange={handleTypeInputChange(index)}
               />
             </div>
           );
@@ -175,7 +181,7 @@ export default function FunctionCard(props: {
                         id={`arg${index}`}
                         placeholder={parameter as string}
                         value={parameters[index] || ""}
-                        onChange={handleInputChange(index)}
+                        onChange={handleArgInputChange(index)}
                       />
                     </TooltipTrigger>
                     <TooltipContent>
@@ -212,7 +218,7 @@ export default function FunctionCard(props: {
                           id={`arg${index}`}
                           placeholder={`ref - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`}
                           value={parameters[index] || ""}
-                          onChange={handleInputChange(index)}
+                          onChange={handleArgInputChange(index)}
                         />
                       </TooltipTrigger>
                       <TooltipContent>
@@ -250,7 +256,7 @@ export default function FunctionCard(props: {
                           id={`arg${index}`}
                           placeholder={`mutRef - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`}
                           value={parameters[index] || ""}
-                          onChange={handleInputChange(index)}
+                          onChange={handleArgInputChange(index)}
                         />
                       </TooltipTrigger>
                       <TooltipContent>
@@ -280,7 +286,7 @@ export default function FunctionCard(props: {
                         id={`arg${index}`}
                         placeholder={`${struct.address}::${struct.module}::${struct.name}`}
                         value={parameters[index] || ""}
-                        onChange={handleInputChange(index)}
+                        onChange={handleArgInputChange(index)}
                       />
                     </TooltipTrigger>
                     <TooltipContent>
