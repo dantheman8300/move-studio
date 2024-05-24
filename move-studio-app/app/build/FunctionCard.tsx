@@ -11,7 +11,7 @@ import {
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 
 import { useWallet } from "@suiet/wallet-kit";
-import { useContext, useEffect, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 
 import { BuildContext } from "@/Contexts/BuildProvider";
 import { track } from "@vercel/analytics";
@@ -38,21 +38,36 @@ export default function FunctionCard(props: {
 
     const parametersEmpty = props.data.parameters
       .filter((param: any) => {
+        console.log('param', param)
         if (
           param.MutableReference != undefined &&
           param.MutableReference.Struct != undefined &&
           `${param.MutableReference.Struct.address}::${param.MutableReference.Struct.module}::${param.MutableReference.Struct.name}` ===
             "0x2::tx_context::TxContext"
         ) {
+          console.log('tx_context')
           return false;
         }
+        console.log('not tx_context')
+        return true;
       })
       .map(() => {
         return "";
       });
 
+      console.log('parametersEmpty', parametersEmpty)
+
     setParameters(parametersEmpty);
   }, [props.data]);
+
+  const handleInputChange = (position: number) => (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setParameters([
+      ...parameters.slice(0, position),
+      value,
+      ...parameters.slice(position + 1)
+    ])
+  }
 
   const executeFunction = async () => {
     if (!wallet.connected) return;
@@ -141,7 +156,36 @@ export default function FunctionCard(props: {
       <div className="flex flex-col items-start w-full gap-3">
         {props.data.parameters.map((parameter: any, index: number) => {
           console.log(parameter);
-          if (parameter.Reference != undefined) {
+          // Check if the parameter is a string
+          if (typeof parameter === 'string' || parameter instanceof String) {
+            return (
+              <div
+                key={index}
+                className="grid w-full max-w-sm items-center gap-1.5 font-mono"
+              >
+                <Label className="text-slate-400" htmlFor={`arg${index}`}>
+                  Arg{index}
+                </Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Input
+                        className="bg-slate-900 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-teal-500 font-mono caret-teal-500"
+                        type="text"
+                        id={`arg${index}`}
+                        placeholder={parameter as string}
+                        value={parameters[index] || ""}
+                        onChange={handleInputChange(index)}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{parameter}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            );
+          } else if (parameter.Reference != undefined) {
             const type = parameter.Reference;
             if (type.Struct != undefined) {
               if (
@@ -167,12 +211,8 @@ export default function FunctionCard(props: {
                           type="text"
                           id={`arg${index}`}
                           placeholder={`ref - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`}
-                          value={parameters[index]}
-                          onChange={(e) => {
-                            const newParameters = parameters;
-                            newParameters[index] = e.target.value;
-                            setParameters(newParameters);
-                          }}
+                          value={parameters[index] || ""}
+                          onChange={handleInputChange(index)}
                         />
                       </TooltipTrigger>
                       <TooltipContent>
@@ -209,12 +249,8 @@ export default function FunctionCard(props: {
                           type="text"
                           id={`arg${index}`}
                           placeholder={`mutRef - ${type.Struct.address}::${type.Struct.module}::${type.Struct.name}`}
-                          value={parameters[index]}
-                          onChange={(e) => {
-                            const newParameters = parameters;
-                            newParameters[index] = e.target.value;
-                            setParameters(newParameters);
-                          }}
+                          value={parameters[index] || ""}
+                          onChange={handleInputChange(index)}
                         />
                       </TooltipTrigger>
                       <TooltipContent>
@@ -243,7 +279,7 @@ export default function FunctionCard(props: {
                         type="text"
                         id={`arg${index}`}
                         placeholder={`${struct.address}::${struct.module}::${struct.name}`}
-                        value={parameters[index]}
+                        value={parameters[index] || ""}
                         onChange={(e) => {
                           const newParameters = parameters;
                           newParameters[index] = e.target.value;
