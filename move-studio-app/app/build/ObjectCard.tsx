@@ -120,7 +120,7 @@ export default function ObjectCard(props: {
           }}
         />
       </div>
-      <span className="font-mono text-xl">
+      <span className="font-mono text-xl text-ellipsis overflow-hidden max-w-[200px]">
         {objectDetails.data.content.type.split(
           `${objectDetails.data.content.type.split("::")[0]}::${
             objectDetails.data.content.type.split("::")[1]
@@ -146,7 +146,7 @@ export default function ObjectCard(props: {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <span className="font-mono text-teal-800 hover:text-teal-500 truncate max-w-[100px]">
+                <span className="block font-mono text-teal-800 hover:text-teal-500 text-ellipsis overflow-hidden max-w-[200px]">
                   {objectDetails.data.content.type.split(
                     `${objectDetails.data.content.type.split("::")[0]}::${
                       objectDetails.data.content.type.split("::")[1]
@@ -171,7 +171,7 @@ export default function ObjectCard(props: {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <span className="font-mono text-teal-800 hover:text-teal-500 truncate max-w-[100px]">
+                <span className="font-mono text-teal-800 hover:text-teal-500 truncate max-w-[100px] block text-ellipsis overflow-hidden max-w-[200px]">
                   {objectDetails.data.content.type.split("::")[1]}
                 </span>
               </TooltipTrigger>
@@ -186,7 +186,7 @@ export default function ObjectCard(props: {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <span className="font-mono text-teal-800 hover:text-teal-500">
+                <span className="font-mono text-teal-800 hover:text-teal-500 block text-ellipsis overflow-hidden max-w-[200px]">
                   {`${objectDetails.data.content.type.split("::")[0]}`.length <
                   10
                     ? `${objectDetails.data.content.type.split("::")[0]}`
