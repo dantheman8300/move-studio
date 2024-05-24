@@ -239,7 +239,7 @@ export default function ObjectCard(props: {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger className="text-center max-w-[150px] truncate">
-                          {objectDetails.data.content.fields[key].toString()}
+                          {objectDetails.data.content.fields[key]?.toString() || "-"}
                         </TooltipTrigger>
                         <TooltipContent className="font-mono bg-amber-500 text-amber-950">
                           <p className="whitespace-pre-wrap text-start">
