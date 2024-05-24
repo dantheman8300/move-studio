@@ -280,11 +280,7 @@ export default function FunctionCard(props: {
                         id={`arg${index}`}
                         placeholder={`${struct.address}::${struct.module}::${struct.name}`}
                         value={parameters[index] || ""}
-                        onChange={(e) => {
-                          const newParameters = parameters;
-                          newParameters[index] = e.target.value;
-                          setParameters(newParameters);
-                        }}
+                        onChange={handleInputChange(index)}
                       />
                     </TooltipTrigger>
                     <TooltipContent>
