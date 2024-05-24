@@ -618,16 +618,14 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
                               return (
                                 <div
                                   key={index}
-                                  className="border rounded-xl p-2"
+                                  className="border rounded-xl p-2 max-w-[250px] w-full"
                                 >
                                   <Collapsible open={true}>
                                     <div className="flex flex-row items-center justify-between">
                                       <CollapsibleTrigger className="flex flex-row items-center justify-between">
-                                        <div className="text-base">
-                                          <span className="font-mono text-teal-500">
-                                            {objectName}
-                                          </span>
-                                        </div>
+                                        <span className="font-mono text-teal-500 text-ellipsis max-w-[200px] text-left overflow-hidden">
+                                          {objectName}
+                                        </span>
                                         {/* <ChevronDown className="w-4 h-4"/> */}
                                       </CollapsibleTrigger>
                                       <ChevronRightSquare
@@ -653,7 +651,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
                                           <span className="text-slate-300">
                                             Package:{" "}
                                           </span>
-                                          <span className="font-mono text-teal-800">
+                                          <span className="font-mono text-teal-800 text-ellipsis text-left overflow-hidden">
                                             {packageId.length < 20
                                               ? packageId
                                               : `${packageId.slice(
@@ -669,7 +667,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
                                           <span className="text-slate-300">
                                             Module:{" "}
                                           </span>
-                                          <span className="font-mono text-teal-800">
+                                          <span className="font-mono text-teal-800 text-ellipsis text-left overflow-hidden">
                                             {moduleName}
                                           </span>
                                         </div>
@@ -677,7 +675,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
                                           <span className="text-slate-300">
                                             Type:{" "}
                                           </span>
-                                          <span className="font-mono text-teal-800">
+                                          <span className="font-mono text-teal-800 text-ellipsis text-left overflow-hidden">
                                             {objectName}
                                           </span>
                                         </div>
