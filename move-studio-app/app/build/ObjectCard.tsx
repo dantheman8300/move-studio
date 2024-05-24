@@ -246,7 +246,7 @@ export default function ObjectCard(props: {
                             {JSON.stringify(
                               objectDetails.data.content.fields[key],
                               null,
-                              "\n"
+                              "\t"
                             )}
                           </p>
                         </TooltipContent>
