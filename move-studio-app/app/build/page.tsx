@@ -239,7 +239,7 @@ export default function BuildPage() {
                     />
                   </div>
                   <ScrollArea
-                    className="w-full h-fit max-h-[300px] border rounded-xl ps-4 py-2"
+                    className="w-full h-fit max-h-[300px] border rounded-xl ps-4 py-2 overflow-x-hidden overflow-y-auto"
                     style={{ lineHeight: 0.5 }}
                   >
                     <Ansi className="whitespace-pre text-xs font-mono">
