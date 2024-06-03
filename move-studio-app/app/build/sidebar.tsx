@@ -138,6 +138,17 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
     }
   };
 
+  const handleCompileProject = async () => {
+    toast.promise(compileProject, {
+      loading: "Compiling...",
+      success: "Project compiled successfully",
+      error: (error) => {
+        return error.message || "Project compilation failed";
+      },
+    }
+    )
+  };
+
   const compileProject = async (): Promise<{
     modules: string[];
     dependencies: string[];
@@ -151,40 +162,34 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
 
     props.setError("");
 
-    toast.info("Compiling...", {
-      icon: <WhisperSpinner size={15} color="#14b8a6" backColor="#f59e0b" />,
-    });
-
-    const response = await fetch(
-      process.env.API_LINK
-        ? `${process.env.API_LINK}/compile`
-        : "http://localhost:80/compile",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(currentProject),
-      }
-    );
+    let response;
+    try {
+      response = await fetch(
+        process.env.API_LINK
+          ? `${process.env.API_LINK}/compile`
+          : "http://localhost:80/compile",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(currentProject),
+        }
+      );
+    } catch (error) {
+      throw new Error("Server error occurred");
+    }
 
     const data = await response.json();
 
     if (data.error) {
       props.setError(data.errorMessage);
-      toast.error("Project compilation failed", {
-        icon: <PackageX strokeWidth={1.25} className="w-6 h-6 text-rose-500" />,
-      });
-      return { modules: [], dependencies: [], digest: [] };
+      
+      throw new Error("Project compilation failed");
     } else {
-      toast.success("Project compiled successfully", {
-        icon: (
-          <PackageCheck strokeWidth={1.25} className="w-6 h-6 text-teal-500" />
-        ),
-      });
       return data.compileResults;
     }
-  };
+  }
 
   const testProject = async () => {
     console.log("test project");
@@ -195,22 +200,23 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
 
     props.setError("");
 
-    toast.info("Testing...", {
-      icon: <WhisperSpinner size={15} color="#14b8a6" backColor="#f59e0b" />,
-    });
-
-    const response = await fetch(
-      process.env.API_LINK
-        ? `${process.env.API_LINK}/test`
-        : "http://localhost:80/test",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(currentProject),
-      }
-    );
+    let response;
+    try {
+      response = await fetch(
+        process.env.API_LINK
+          ? `${process.env.API_LINK}/test`
+          : "http://localhost:80/test",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(currentProject),
+        }
+      );
+    } catch (error) {
+      throw new Error("Server error occurred");
+    }
 
     const data = await response.json();
 
@@ -218,21 +224,32 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
 
     if (data.error) {
       props.setError(data.errorMessage);
-      toast.error("Project tests failed", {
-        icon: <ListX strokeWidth={1.25} className="w-6 h-6 text-rose-500" />,
-      });
+      
+      throw new Error("Project tests failed");
+
     } else {
       props.setError(data.testResults);
-      toast.success("Project tests passed", {
-        icon: (
-          <ListChecks strokeWidth={1.25} className="w-6 h-6 text-teal-500" />
-        ),
-      });
+
     }
   };
 
+  const handleTestProject = async () => {
+    toast.promise(testProject, {
+      loading: "Testing...",
+      success: "Project tests passed",
+      error: (error) => {
+        return error.message || "Project tests failed";
+      },
+    });
+  };
+
   const deployProject = async () => {
-    const compiledModulesAndDependencies = await compileProject();
+    let compiledModulesAndDependencies;
+    try {
+      compiledModulesAndDependencies = await compileProject();
+    } catch (error) {
+      throw new Error("Package compilation failed");
+    }
 
     track("project-deployed", {
       project: selectedProjectName,
@@ -241,12 +258,8 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
     console.log(compiledModulesAndDependencies);
 
     if (compiledModulesAndDependencies.modules.length === 0) {
-      return;
+      throw new Error('No modules to deploy');
     }
-
-    toast.info("Deploying...", {
-      icon: <WhisperSpinner size={15} color="#14b8a6" backColor="#f59e0b" />,
-    });
 
     const txb = new TransactionBlock();
 
@@ -266,15 +279,6 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
       });
 
       console.log(publishTxn);
-
-      toast.success("Package deployed successfully", {
-        // description: <div className="flex flex-row gap-2 items-center justify-start">
-        //   <a href={`https://suiexplorer.com/txblock/${publishTxn.digest}`} target="_blank"><ExternalLink className="w-4 h-4"/></a>
-        // </div>,
-        icon: (
-          <PackageCheck strokeWidth={1.25} className="w-6 h-6 text-teal-500" />
-        ),
-      });
 
       console.log("publishTxn.objectChanges", publishTxn.objectChanges);
 
@@ -297,10 +301,18 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
       addTransactionDigest(publishTxn.digest, objects);
     } catch (error) {
       console.log(error);
-      toast.error("Project deployment failed", {
-        icon: <PackageX strokeWidth={1.25} className="w-6 h-6 text-rose-500" />,
-      });
+      throw new Error("Project deployment failed");
     }
+  };
+
+  const handleDeployProject = async () => {
+    toast.promise(deployProject, {
+      loading: "Deploying...",
+      success: "Project deployed successfully",
+      error: (error) => {
+        return error.message || "Project deployment failed";
+      },
+    });
   };
 
   const addPackage = async () => {
@@ -459,7 +471,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
                 <Button
                   variant="ghost"
                   className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 active:scale-90 transition-transform"
-                  onClick={compileProject}
+                  onClick={handleCompileProject}
                 >
                   <ChevronRightSquare
                     strokeWidth={1.25}
@@ -472,7 +484,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
                 <Button
                   variant="ghost"
                   className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 active:scale-90 transition-transform"
-                  onClick={testProject}
+                  onClick={handleTestProject}
                 >
                   <FlaskConical
                     strokeWidth={1.25}
@@ -485,7 +497,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
                 <Button
                   variant="ghost"
                   className="flex flex-row w-full justify-start text-slate-200 text-sm font-mono hover:text-teal-500 active:scale-90 transition-transform"
-                  onClick={deployProject}
+                  onClick={handleDeployProject}
                 >
                   <Rocket
                     strokeWidth={1.25}
