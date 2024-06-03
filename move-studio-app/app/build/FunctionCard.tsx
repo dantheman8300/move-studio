@@ -96,7 +96,12 @@ export default function FunctionCard(props: {
     const tx = new TransactionBlock();
     tx.moveCall({
       target: `${props.address}::${props.moduleName}::${props.functionName}`,
-      arguments: parameters.map((param) => {
+      arguments: parameters.map((param, index) => {
+        console.log('param', param)
+        console.log('props.data.parameters[index]', props.data.parameters[index])
+        if (props.data.parameters[index] === "Bool") {
+          return tx.pure.bool(param.toLowerCase() === "true")
+        }
         return tx.pure(param);
       }),
       typeArguments: typeParameters,
@@ -291,6 +296,35 @@ export default function FunctionCard(props: {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>{`${struct.address}::${struct.module}::${struct.name}`}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            );
+          } else if (parameter.TypeParameter != undefined) {
+            const typeParam = parameter.TypeParameter;
+            return (
+              <div
+                key={index}
+                className="grid w-full max-w-sm items-center gap-1.5 font-mono"
+              >
+                <Label className="text-slate-400" htmlFor={`arg${index}`}>
+                  Arg{index}
+                </Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Input
+                        className="bg-slate-900 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-teal-500 font-mono caret-teal-500"
+                        type="text"
+                        id={`arg${index}`}
+                        placeholder={`T${typeParam}`}
+                        value={parameters[index] || ""}
+                        onChange={handleArgInputChange(index)}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{`T${typeParam}`}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
