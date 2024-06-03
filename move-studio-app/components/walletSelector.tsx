@@ -47,40 +47,6 @@ export default function WalletSelector(
     }
   }, [connected, account, props.isTxnInProgress]);
 
-  /*
-    Gets the balance of the given address. In case of an error, the balance is set to 0. The balance
-    is returned in floating point format.
-    @param address - The address to get the APT balance of.
-  */
-  const getBalance = async (address: string) => {
-    const body = {
-      function:
-        "0x1::coin::balance",
-      type_arguments: ["0x1::aptos_coin::AptosCoin"],
-      arguments: [address],
-    };
-
-    let res;
-    try {
-      res = await fetch(
-        `https://fullnode.testnet.aptoslabs.com/v1/view`,
-        {
-          method: 'POST',
-          body: JSON.stringify(body),
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      )
-    } catch (e) {
-      setBalance("0");
-      return;
-    }
-
-    setBalance((await res.json() / 100000000).toLocaleString());
-  };
-
   return (
     <div>
       {!connected && !connecting && (
