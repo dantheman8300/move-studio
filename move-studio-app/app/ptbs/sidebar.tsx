@@ -148,6 +148,9 @@ export default function Sidebar() {
         <div onDragStart={(event) => onDragStart(event, 'coinMergerNode')} draggable>
           Coin merger
         </div>
+        <div onDragStart={(event) => onDragStart(event, 'objectTransferNode')} draggable>
+          Object transfer
+        </div>
       </div>
     </aside>
   );

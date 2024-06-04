@@ -34,7 +34,7 @@ export default function CoinSplitterNode({ id } : { id: string}) {
         />
         <Handle type="target" position={Position.Top} id="coinSplitter" />
         {
-          amounts.map((amount, index) => {
+          amounts.map((amount: string, index) => {
 
             return (
               <div>

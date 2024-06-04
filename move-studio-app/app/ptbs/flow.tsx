@@ -22,6 +22,7 @@ import { useWallet } from '@suiet/wallet-kit';
 import CoinSplitterNode from './CoinSplitterNode';
 import GasCoinNode from './GasCoinNode';
 import CoinMergerNode from './CoinMergerNode';
+import ObjectTransferNode from './ObjectTransferNode';
 
 const flowKey = 'example-flow';
 
@@ -39,7 +40,8 @@ const nodeTypes = {
   objectNode: ObjectNode,
   coinSplitterNode: CoinSplitterNode,
   gasCoinNode: GasCoinNode,
-  coinMergerNode: CoinMergerNode
+  coinMergerNode: CoinMergerNode,
+  objectTransferNode: ObjectTransferNode,
 }
 
 let id = 0;
