@@ -139,6 +139,22 @@ function Flow() {
         }
 
         
+      } else if (type == 'objectNode') {
+        
+        newNode = {
+          id: getId(),
+          type: 'objectNode',
+          position,
+          data: {
+            label: 'Object node',
+            objectId: data.objectId,
+            owner: data.owner,
+            hasPublicTransfer: data.hasPublicTransfer,
+            type: data.type,
+            fields: data.fields,
+          },
+        };
+        
       } else {
         newNode = {
           id: getId(),

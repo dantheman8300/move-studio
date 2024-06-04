@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
+import { useState } from "react";
 import { Handle, Position } from "reactflow";
 
 
@@ -18,7 +19,10 @@ export default function FunctionNode(
   { data, isConnectable }: { data: FunctionNodeData; isConnectable: boolean }
 ) {
 
-  const height = 100 + data.parameters.length * 30 + data.typeParameters.length * 30;
+  const height = Math.max(100 + data.parameters.length * 50 + data.typeParameters.length * 50, data.return.length * 50 + 200);
+
+  const [typeParameterInputs, setTypeParameterInputs] = useState<string[]>(new Array(data.typeParameters.length).fill(''));
+  const [parameterInputs, setParameterInputs] = useState<string[]>(new Array(data.parameters.length).fill(''));
 
   return (
     <Card className={`border text-center`} style={{ height: height, width: 400 }} >
@@ -35,19 +39,36 @@ export default function FunctionNode(
             const abilitityString = typeParameter.abilities.join(', ')
 
             return (
-              <Handle 
-                id={`T${index}`}
-                type="target"
-                position={Position.Left}
-                isConnectableEnd={false}
-                isConnectableStart={false}
-                style={{ top: `${(index + 1) * 30 + 50}px` }}
-              >
-                <div className="absolute left-2 -top-3 flex flex-row items-center">
+              <div>
+                <Handle 
+                  id={`T${index}`}
+                  type="target"
+                  position={Position.Left}
+                  isConnectableEnd={false}
+                  isConnectableStart={false}
+                  style={{ top: `${(index + 1) * 50 + 50}px`}}
+                />
+                <div 
+                  className="absolute left-2 flex flex-row items-center"
+                  style={{ top: `${((index + 1) * 50 + 50 ) - 16}px`}}
+                >
                   <span>T{index}: </span>
-                  <input placeholder={abilitityString} />
+                  <Input 
+                    className="bg-slate-900 h-8 caret-teal-500"
+                    type="text"
+                    placeholder={abilitityString} 
+                    value={typeParameterInputs[index]} 
+                    onChange={
+                      (event) => {
+                        console.log('event', event.target.value)
+                        const newInputs = typeParameterInputs.slice();
+                        newInputs[index] = event.target.value;
+                        setTypeParameterInputs(newInputs);
+                      }
+                    } 
+                  />
                 </div>
-              </Handle>
+              </div>
             )
           })
         }
@@ -60,19 +81,25 @@ export default function FunctionNode(
               const type = `${parameter.Struct.address}::${parameter.Struct.module}::${parameter.Struct.name}`
 
               return (
-                <Handle 
-                  id={`Arg${index}`}
-                  type="target"
-                  position={Position.Left}
-                  isConnectableEnd={true}
-                  isConnectableStart={false}
-                  style={{ top: `${(data.typeParameters.length + index + 1) * 30 + 50}px` }}
-                >
-                  <div className="absolute left-2 -top-3 flex flex-row items-center">
+                <div>
+                  <Handle 
+                    id={`Arg${index}`}
+                    type="target"
+                    position={Position.Left}
+                    isConnectableEnd={true}
+                    isConnectableStart={false}
+                    style={{ top: `${(data.typeParameters.length + index + 1) * 50 + 50}px` }}
+                    onConnect={(params) => console.log('handle onConnect', params)}
+
+                  />
+                  <div 
+                    className="absolute left-2 -top-3 flex flex-row items-center"
+                    style={{ top: `${((data.typeParameters.length + index + 1) * 50 + 50 - 16)}px` }}
+                  >
                     <span>Arg{index}: </span>
                     <span>{type}</span>
                   </div>
-                </Handle>
+                </div>
               )
             } else if (parameter.MutableReference !== undefined) {
 
@@ -85,19 +112,25 @@ export default function FunctionNode(
                 }
                 
                 return (
-                  <Handle 
-                    id={`Arg${index}`}
-                    type="target"
-                    position={Position.Left}
-                    isConnectableEnd={true}
-                    isConnectableStart={false}
-                    style={{ top: `${(data.typeParameters.length + index + 1) * 30 + 50}px` }}
-                  >
-                    <div className="absolute left-2 -top-3 flex flex-row items-center">
+                  <div>
+                    <Handle 
+                      id={`Arg${index}`}
+                      type="target"
+                      position={Position.Left}
+                      isConnectableEnd={true}
+                      isConnectableStart={false}
+                      style={{ top: `${(data.typeParameters.length + index + 1) * 50 + 50}px` }}
+                    />
+                    <div 
+                      className="absolute left-2 flex flex-row items-center"
+                      style={{ top: `${((data.typeParameters.length + index + 1) * 50 + 50 - 16)}px` }}
+                    >
                       <span>Arg{index}: </span>
-                      <input placeholder={type} />
+                      <Input 
+                    className="bg-slate-900 h-8 caret-teal-500"
+                    type="text" placeholder={type} />
                     </div>
-                  </Handle>
+                  </div>
                 )
               } else {
                 return (
@@ -107,11 +140,63 @@ export default function FunctionNode(
                     position={Position.Left}
                     isConnectableEnd={true}
                     isConnectableStart={false}
-                    style={{ top: `${(data.typeParameters.length + index + 1) * 30 + 50}px` }}
+                    style={{ top: `${(data.typeParameters.length + index + 1) * 50 + 50}px` }}
                   >
                     <div className="absolute left-2 -top-3 flex flex-row items-center">
                       <span>Arg{index}: </span>
-                      <input placeholder={parameter.MutableReference} />
+                      <Input 
+                    className="bg-slate-900 h-8 caret-teal-500"
+                    type="text" placeholder={parameter.MutableReference} />
+                    </div>
+                  </Handle>
+                )
+              }
+            } else if (parameter.Reference !== undefined) {
+
+              if (parameter.Reference.Struct !== undefined) {
+
+                const type = `&mut ${parameter.Reference.Struct.address}::${parameter.Reference.Struct.module}::${parameter.Reference.Struct.name}`
+
+                if (type.endsWith(`::tx_context::TxContext`)) {
+                  return 
+                }
+                
+                return (
+                  <div>
+                    <Handle 
+                      id={`Arg${index}`}
+                      type="target"
+                      position={Position.Left}
+                      isConnectableEnd={true}
+                      isConnectableStart={false}
+                      style={{ top: `${(data.typeParameters.length + index + 1) * 50 + 50}px` }}
+                    />
+                    <div 
+                      className="absolute left-2 flex flex-row items-center"
+                      style={{ top: `${((data.typeParameters.length + index + 1) * 50 + 50 - 16)}px` }}
+                    >
+                      <span>Arg{index}: </span>
+                      <Input 
+                    className="bg-slate-900 h-8 caret-teal-500"
+                    type="text" placeholder={type} />
+                    </div>
+                  </div>
+                )
+              } else {
+                return (
+                  <Handle 
+                    id={`Arg${index}`}
+                    type="target"
+                    position={Position.Left}
+                    isConnectableEnd={true}
+                    isConnectableStart={false}
+                    style={{ top: `${(data.typeParameters.length + index + 1) * 50 + 50}px` }}
+                  >
+                    <div className="absolute left-2 -top-3 flex flex-row items-center">
+                      <span>Arg{index}: </span>
+                      <Input 
+                    className="bg-slate-900 h-8 caret-teal-500"
+                    type="text" placeholder={parameter.Reference} />
                     </div>
                   </Handle>
                 )
@@ -119,37 +204,49 @@ export default function FunctionNode(
             } else if (parameter.TypeParameter !== undefined) {
                 
               return (
-                <Handle 
-                  id={`Arg${index}`}
-                  type="target"
-                  position={Position.Left}
-                  isConnectableEnd={true}
-                  isConnectableStart={false}
-                  style={{ top: `${(data.typeParameters.length + index + 1) * 30 + 50}px` }}
-                >
-                  <div className="absolute left-2 -top-3 flex flex-row items-center">
+                <div>
+                  <Handle
+                    id={`Arg${index}`}
+                    type="target"
+                    position={Position.Left}
+                    isConnectableEnd={true}
+                    isConnectableStart={false}
+                    style={{ top: `${(data.typeParameters.length + index + 1) * 50 + 50}px` }}
+                  />
+                  <div 
+                    className="absolute left-2 -top-3 flex flex-row items-center"
+                    style={{ top: `${((data.typeParameters.length + index + 1) * 50 + 50 - 16)}px` }}
+                  >
                     <span>Arg{index}: </span>
-                    <span>T{parameter.TypeParameter}</span>
+                    <Input 
+                    className="bg-slate-900 h-8 caret-teal-500"
+                    type="text" placeholder={parameter.TypeParameter} />
                   </div>
-                </Handle>
+                </div>
               )
 
             } else {
               console.log('parameter', parameter)
               return (
-                <Handle 
-                  id={`Arg${index}`}
-                  type="target"
-                  position={Position.Left}
-                  isConnectableEnd={true}
-                  isConnectableStart={false}
-                  style={{ top: `${(data.typeParameters.length + index + 1) * 30 + 50}px` }}
-                >
-                  <div className="absolute left-2 -top-3 flex flex-row items-center">
+                <div>
+                  <Handle
+                    id={`Arg${index}`}  
+                    type="target"
+                    position={Position.Left}
+                    isConnectableEnd={true}
+                    isConnectableStart={false}
+                    style={{ top: `${(data.typeParameters.length + index + 1) * 50 + 50}px` }}
+                  />
+                  <div
+                    className="absolute left-2 -top-3 flex flex-row items-center"
+                    style={{ top: `${((data.typeParameters.length + index + 1) * 50 + 50 - 16)}px` }}
+                  >
                     <span>Arg{index}: </span>
-                    <input placeholder={parameter} />
+                    <Input 
+                    className="bg-slate-900 h-8 caret-teal-500"
+                    type="text" placeholder={parameter} />
                   </div>
-                </Handle>
+                </div>
               )
             }
             
@@ -162,17 +259,18 @@ export default function FunctionNode(
             if (ret.Struct !== undefined) {
               return (
                 <div>
-                <Handle 
-                  id={`R${index}`}
-                  type="source"
-                  position={Position.Right}
-                  isConnectableStart={true}
-                  isConnectableEnd={false}
-                >
-                  <span className="absolute right-2 -top-3">
-                    {ret.Struct.address}::{ret.Struct.module}::{ret.Struct.name}
-                  </span>
-                </Handle>
+                  <Handle 
+                    id={`R${index}`}
+                    type="source"
+                    position={Position.Right}
+                    isConnectableStart={true}
+                    isConnectableEnd={false}
+                    style={{ top: `${(index + 1) * 50 + height/3}px` }}
+                  >
+                    <span className="absolute right-2 -top-3">
+                      {ret.Struct.address}::{ret.Struct.module}::{ret.Struct.name}
+                    </span>
+                  </Handle>
                 </div>
               )
             }
