@@ -7,6 +7,7 @@ import { Inter } from 'next/font/google'
 import { WalletProvider } from "@suiet/wallet-kit";
 import { Toaster } from "@/components/ui/sonner"
 import { Analytics } from '@vercel/analytics/react';
+import BuildProvider from '@/Contexts/BuildProvider';
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -21,9 +22,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <WalletProvider>
           <ThemeProvider attribute="class" defaultTheme="dark">
+            <BuildProvider>
               {children}
               <Analytics />
               <Toaster richColors closeButton/>
+            </BuildProvider>
           </ThemeProvider>
         </WalletProvider>
       </body>
