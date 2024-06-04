@@ -1,9 +1,11 @@
-import Flow from "./flow";
+'use client';
+
+import Flow from "../ptbs/flow";
+
+export default function FlowWindow() {
 
 
-
-export default function Page() {
-  return (
+  return ( 
     <div className="h-screen w-full max-w-screen flex flex-col items-center dark:bg-slate-950 overflow-hidden border">
       <Flow />
     </div>
