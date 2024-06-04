@@ -15,6 +15,8 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import Sidebar from './sidebar';
+import FunctionNode from './FunctionNode';
+import ObjectNode from './ObjectNode';
 
 const flowKey = 'example-flow';
 
@@ -26,6 +28,11 @@ const initialNodes = [
     position: { x: 250, y: 5 },
   },
 ];
+
+const nodeTypes = {
+  functionNode: FunctionNode,
+  objectNode: ObjectNode,
+}
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -107,6 +114,7 @@ function Flow() {
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}

@@ -19,6 +19,12 @@ export default function Sidebar() {
       <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
         Output Node
       </div>
+      <div onDragStart={(event) => onDragStart(event, 'functionNode')} draggable>
+        Function Node
+      </div>
+      <div onDragStart={(event) => onDragStart(event, 'objectNode')} draggable>
+        Object Node
+      </div>
     </aside>
   );
 }
