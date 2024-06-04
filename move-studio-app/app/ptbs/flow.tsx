@@ -190,6 +190,10 @@ function Flow() {
         <Panel position="top-right">
           <button onClick={onSave}>save</button>
           <button onClick={onRestore}>restore</button>
+          <button onClick={() => {
+            console.log('nodes', nodes)
+            console.log('edges', edges)
+          }}>print</button>
         </Panel>
         <Background />
         <Controls />
