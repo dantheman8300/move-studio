@@ -98,7 +98,7 @@ export default function Sidebar() {
 
 
   return (  
-    <aside className="h-[500px] flex flex-row items-start justify-center">
+    <aside className="h-[500px] flex flex-row items-start justify-around w-full">
       <div>
         <input type="text" value={packageIdInput} onChange={(event) => setPackageIdInput(event.target.value)} />
         <button onClick={handlePackageLookup}>Look up</button>
@@ -137,6 +137,17 @@ export default function Sidebar() {
             </div>
           )
         }
+      </div>
+      <div>
+        <div onDragStart={(event) => onDragStart(event, 'coinSplitterNode')} draggable>
+          Coin splitter
+        </div>
+        <div onDragStart={(event) => onDragStart(event, 'gasCoinNode')} draggable>
+          Gas coin
+        </div>
+        <div onDragStart={(event) => onDragStart(event, 'coinMergerNode')} draggable>
+          Coin merger
+        </div>
       </div>
     </aside>
   );

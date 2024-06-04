@@ -19,6 +19,9 @@ import FunctionNode from './FunctionNode';
 import ObjectNode from './ObjectNode';
 import { SuiClient } from '@mysten/sui.js/client';
 import { useWallet } from '@suiet/wallet-kit';
+import CoinSplitterNode from './CoinSplitterNode';
+import GasCoinNode from './GasCoinNode';
+import CoinMergerNode from './CoinMergerNode';
 
 const flowKey = 'example-flow';
 
@@ -34,6 +37,9 @@ const initialNodes = [
 const nodeTypes = {
   functionNode: FunctionNode,
   objectNode: ObjectNode,
+  coinSplitterNode: CoinSplitterNode,
+  gasCoinNode: GasCoinNode,
+  coinMergerNode: CoinMergerNode
 }
 
 let id = 0;
