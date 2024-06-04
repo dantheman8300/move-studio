@@ -17,6 +17,8 @@ import 'reactflow/dist/style.css';
 import Sidebar from './sidebar';
 import FunctionNode from './FunctionNode';
 import ObjectNode from './ObjectNode';
+import { SuiClient } from '@mysten/sui.js/client';
+import { useWallet } from '@suiet/wallet-kit';
 
 const flowKey = 'example-flow';
 
@@ -42,6 +44,8 @@ function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
+
+  const wallet = useWallet();
 
   const onSave = useCallback(() => {
     if (reactFlowInstance) {
@@ -76,10 +80,12 @@ function Flow() {
   }, []);
 
   const onDrop = useCallback(
-    (event: { preventDefault: () => void; dataTransfer: { getData: (arg0: string) => any; }; clientX: any; clientY: any; }) => {
+    async (event: { preventDefault: () => void; dataTransfer: { getData: (arg0: string) => any; }; clientX: any; clientY: any; }) => {
       event.preventDefault();
 
       const type = event.dataTransfer.getData('application/reactflow');
+      const data = JSON.parse(event.dataTransfer.getData('data'));
+      console.log('data', data)
 
       // check if the dropped element is valid
       if (typeof type === 'undefined' || !type || !reactFlowInstance || !reactFlowWrapper.current ) {
@@ -97,14 +103,56 @@ function Flow() {
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       });
-      const newNode = {
-        id: getId(),
-        type,
-        position,
-        data: { label: `${type} node` },
-      };
 
-      setNodes((nds) => nds.concat(newNode));
+      let newNode = null;
+      if (type === 'functionNode') {
+
+        const client = new SuiClient({ url: wallet.chain?.rpcUrl || "" });
+
+        console.log("client", client);
+
+        try {
+          // // get the package details
+          // const res = await client.getNormalizedMoveModulesByPackage({
+          //   package: '0x2',
+          // });
+          // console.log("package res", res);
+
+          newNode = {
+            id: getId(),
+            type: 'functionNode',
+            position,
+            data: {
+              label: 'Function node',
+              packageAddress: data.packageAddress,
+              moduleName: data.moduleName,
+              functionName: data.functionName,
+              isEntry: data.isEntry,
+              visibility: data.visibility,
+              typeParameters: data.typeParameters,
+              parameters: data.parameters,
+              return: data.return,
+            },
+          };
+        } catch (e) {
+          console.error("error fetching package", e);
+        }
+
+        
+      } else {
+        newNode = {
+          id: getId(),
+          type,
+          position,
+          data: { label: `${type} node` },
+        };
+      }
+
+      if (!newNode) {
+        return;
+      }
+
+      setNodes((nds) => nds.concat(newNode as any));
     },
     [reactFlowInstance],
   );
