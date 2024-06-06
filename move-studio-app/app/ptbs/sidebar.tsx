@@ -98,7 +98,7 @@ export default function Sidebar() {
 
 
   return (  
-    <aside className="h-[500px] flex flex-row items-start justify-around w-full">
+    <aside className="h-[300px] flex flex-row items-start justify-around w-full">
       <div>
         <input type="text" value={packageIdInput} onChange={(event) => setPackageIdInput(event.target.value)} />
         <button onClick={handlePackageLookup}>Look up</button>

@@ -23,6 +23,7 @@ import CoinSplitterNode from './CoinSplitterNode';
 import GasCoinNode from './GasCoinNode';
 import CoinMergerNode from './CoinMergerNode';
 import ObjectTransferNode from './ObjectTransferNode';
+import { Button } from '@/components/ui/button';
 
 const flowKey = 'example-flow';
 
@@ -195,13 +196,13 @@ function Flow() {
         onDragOver={onDragOver}
         fitView
       >
-        <Panel position="top-right">
-          <button onClick={onSave}>save</button>
-          <button onClick={onRestore}>restore</button>
-          <button onClick={() => {
+        <Panel position="bottom-right" className='flex flex-row gap-1 items-center'>
+          <Button variant={'secondary'} size={'sm'} onClick={onSave}>save</Button>
+          <Button variant={'secondary'} size={'sm'} onClick={onRestore}>restore</Button>
+          <Button variant={'secondary'} size={'sm'} onClick={() => {
             console.log('nodes', nodes)
             console.log('edges', edges)
-          }}>print</button>
+          }}>print</Button>
         </Panel>
         <Background />
         <Controls />
