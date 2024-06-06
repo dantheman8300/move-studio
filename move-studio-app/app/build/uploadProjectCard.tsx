@@ -109,7 +109,7 @@ export default function UploadProjectCard() {
       <CardContent className="space-y-2">
         <div className="">
           {/* @ts-expect-error */}
-          <Input id="projectName" type="file" placeholder="Enter project name..." directory="" webkitdirectory="" onChange={(e) => {
+          <Input id="projectName" type="file" directory="" webkitdirectory="" className="hover:cursor-pointer hover:opacity-70 active:scale-90 transition-transform" onChange={(e) => {
             if (e.target.files) {
               setInputFiles(e.target.files)
             }
