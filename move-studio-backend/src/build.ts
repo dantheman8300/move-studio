@@ -25,6 +25,9 @@ type TestResult = {
 function createProjectInFileSystem(files: IFile[], path = '') {
 
   // Create root directory
+  if (fs.existsSync(path)) {
+    fs.rmdirSync(path);
+  }
   fs.mkdirSync(path);
 
   // Create files and folder
