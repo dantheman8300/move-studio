@@ -54,7 +54,7 @@ export default function BuildPage() {
     console.log("error", error);
   }, [error]);
 
-  const [sidebarWidth, setSidebarWidth] = useState<number>(200);
+  const [sidebarWidth, setSidebarWidth] = useState<number>(300);
   useEffect(() => {
     // retrieve sidebar width from local storage
     const sidebarWidth = localStorage.getItem("sidebarWidth");
