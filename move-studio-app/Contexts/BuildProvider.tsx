@@ -185,9 +185,7 @@ export default function BuildProvider({
           (tab.type === "code" && tab.path !== identifier)
       );
       setTabs(newTabs);
-      if (activeTab === identifier) {
-        setActiveTab("");
-      }
+      
     } else if (type == "package") {
       const newTabs = tabs.filter(
         (tab) =>
@@ -195,8 +193,19 @@ export default function BuildProvider({
           (tab.type === "package" && tab.digestId !== identifier)
       );
       setTabs(newTabs);
-      if (activeTab === identifier) {
+    }
+
+    if (activeTab === identifier) {
+      if (tabs.length === 1) {
         setActiveTab("");
+      } else {
+        const newTabs = tabs.filter(
+          (tab) =>
+            (tab.type === "code" && tab.path !== identifier) ||
+            (tab.type === "package" && tab.digestId !== identifier)
+        );
+        const lastTab = newTabs[newTabs.length - 1];
+        setActiveTab(lastTab.type === "code" ? lastTab.path : lastTab.digestId);
       }
     }
   };
