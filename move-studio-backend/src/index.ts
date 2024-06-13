@@ -35,53 +35,35 @@ app.get('/', (_req, res) => {
 app.post('/compile', async (req, res) => {
   const project = req.body;
 
-  // Call compile function
-  const compileResult = await compile(project);
+  try {
+    // Call compile function
+    const compileResult = await compile(project);
 
-  console.log('compileResult', compileResult)
+    console.log('compileResult', compileResult)
 
-  res.send(compileResult);
+    res.send(compileResult);
+  } catch (error: any) {
+    console.log('error', error)
+
+    res.errored
+  }
 });
 
 app.post('/test', async (req, res) => {
   const project = req.body;
 
-  // Call compile function
-  const testResult = await test(project);
+  try {
+    // Call compile function
+    const testResult = await test(project);
 
-  console.log('testResult', testResult)
+    console.log('testResult', testResult)
 
-  res.send(testResult);
-});
+    res.send(testResult);
+  } catch (error: any) {
+    console.log('error', error)
 
-app.post('/object-details', async (req, res) => {
-  const objectId = req.body.objectId;
-  const rpc = req.body.rpc;
-
-  // Call compile function
-  const objectDetails = await getObjectDetails(objectId, rpc);
-
-  res.send(objectDetails);
-});
-
-app.post('/package-details', async (req, res) => {
-  const packageId = req.body.packageId;
-  const rpc = req.body.rpc;
-
-  // Call compile function
-  const packageDetails = await getPackageDetails(packageId, rpc);
-
-  res.send(packageDetails);
-});
-
-app.post('/transaction-details', async (req, res) => {
-  const transactionDigest = req.body.transactionDigest;
-  const rpc = req.body.rpc;
-
-  // Call compile function
-  const transactionDetails = await getTransactionDetails(transactionDigest, rpc);
-
-  res.send(transactionDetails);
+    res.errored
+  }
 });
 
 app.listen(process.env.PORT || portHttp, () => {
