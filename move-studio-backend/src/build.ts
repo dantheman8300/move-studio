@@ -40,7 +40,9 @@ function createProjectInFileSystem(files: IFile[], path = '') {
         createProjectInFileSystem(file.children || [], folderPath);
       } else {
         const filePath = `${path}/${file.name}`;
-        fs.writeFileSync(filePath, file.content || '');
+        if (filePath.endsWith('.move') || filePath.endsWith('.toml')){
+          fs.writeFileSync(filePath, file.content || '');
+        }
       }
     }
   }
