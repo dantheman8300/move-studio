@@ -1,11 +1,10 @@
 import cors from 'cors';
 import express from 'express';
 import { compile, test } from './build';
-import { getObjectDetails, getPackageDetails, getTransactionDetails } from './object';
 
 const app = express();
-const portHttp = 80;
-const portHttps = 443;
+const portHttp = 71;
+const portHttps = 8443;
 
 // // USE FOR PRODUCTION
 // import https from 'https';
