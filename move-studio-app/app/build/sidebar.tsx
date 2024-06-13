@@ -104,6 +104,10 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
 
   const addFile = async () => {
     let fileName = prompt("Enter file name");
+    if (!fileName || fileName.split(".").length > 2 || !(fileName.endsWith(".move") || fileName.endsWith(".toml"))) {
+      alert("File name should end with .move or .toml");
+      return
+    }
     if (fileName) {
       let file: IFile = {
         type: "file",
@@ -122,6 +126,10 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
 
   const addFolder = async () => {
     let folderName = prompt("Enter folder name");
+    if (!folderName || folderName.split(".").length > 1) {
+      alert("Invalid folder name");
+      return
+    }
     if (folderName) {
       let folder: IFile = {
         type: "folder",

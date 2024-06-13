@@ -173,6 +173,10 @@ function FolderComponent(props: { path: string; name: string }) {
 
   const addFile = async () => {
     let fileName = prompt("Enter file name");
+    if (!fileName || fileName.split(".").length > 2 || !(fileName.endsWith(".move") || fileName.endsWith(".toml"))) {
+      alert("File name should end with .move or .toml");
+      return
+    }
     let forks = (props.path + "/" + props.name).split("/");
     console.log(forks);
     let projectName = forks.shift();
@@ -199,6 +203,10 @@ function FolderComponent(props: { path: string; name: string }) {
 
   const addFolder = async () => {
     let folderName = prompt("Enter folder name");
+    if (!folderName || folderName.split(".").length > 1) {
+      alert("Invalid folder name");
+      return
+    }
     let forks = (props.path + "/" + props.name).split("/");
     console.log(forks);
     let projectName = forks.shift();
@@ -248,6 +256,10 @@ function FolderComponent(props: { path: string; name: string }) {
 
   const renameFolder = async () => {
     let newName = prompt("Enter new name");
+    if (!newName || newName.split(".").length > 1) {
+      alert("Invalid folder name");
+      return
+    }
     let forks = (props.path + "/" + props.name).split("/");
     console.log(forks);
     let projectName = forks.shift();
