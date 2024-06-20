@@ -26,7 +26,7 @@ export default function Home() {
     <div className='w-screen min-h-screen h-full bg-slate-950'>
       <div className='fixed w-full backdrop-filter backdrop-blur-sm bg-opacity-30 border-b border-slate-500'>
         <div className="flex w-full flex-row justify-between items-center my-2 px-3 h-[50px] gap-2">
-          <TypographyH2>Move Studio</TypographyH2>
+          <span className='text-4xl font-medium tracking-tighter'>Move Studio</span>
           {/* <Twitter strokeWidth={1.25} className="w-8 h-8 mr-5 text-teal-500 hover:text-teal-300 cursor-pointer" /> */}
           <a href='https://twitter.com/MoveStudioIDE' target='_blank'><IconBrandX strokeWidth={1.25} className="w-8 h-8 mr-5 hover:text-teal-300 cursor-pointer" /></a>
         </div>

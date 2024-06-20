@@ -72,9 +72,9 @@ export default function BuildPage() {
       <div className="h-screen w-full max-w-screen flex flex-col items-center dark:bg-slate-950 overflow-hidden">
         <div className="flex w-full flex-row justify-between items-center my-2 px-3">
           <a href="/">
-            <TypographyH2 classname="hover:bg-gradient-to-r hover:from-yellow-300 hover:to-amber-500 hover:text-transparent hover:bg-clip-text transition-shadow hover:animate-pulse">
+            <span className="text-4xl font-medium tracking-tighter hover:bg-gradient-to-r hover:from-yellow-300 hover:to-amber-500 hover:text-transparent hover:bg-clip-text transition-shadow hover:animate-pulse ">
               Move Studio
-            </TypographyH2>
+            </span>
           </a>
           <div className="flex flex-row justify-around gap-2">
             {
