@@ -760,7 +760,7 @@ export default function CodeEditor(props: { path: string }) {
       if (!hasMoveBeenSet) {
         monaco.languages.register({ id: "sui-move" });
         monaco.languages.setMonarchTokensProvider("sui-move", {
-          keywords: ["module", "struct", "public", "const", "fun", "use", "has", "entry"],
+          keywords: ["module", "struct", "public", "const", "fun", "use", "has", "entry", "mut"],
           typeKeywords: ["bool", "address", "u8", "u64", "u128"],
 
           operators: [
