@@ -108,7 +108,6 @@ function FileComponent(props: { path: string; name: string }) {
       className="group px-1 w-full text-slate-200 antialiased h-8 font-mono flex flex-row justify-between hover:bg-accent hover:text-accent-foreground hover:text-teal-500 rounded items-center"
       onClick={(event) => {
         event?.preventDefault();
-        console.log(props.path + "/" + props.name);
         addTab("code", props.path + "/" + props.name, props.name);
       }}
     >
@@ -198,6 +197,7 @@ function FolderComponent(props: { path: string; name: string }) {
       };
       currentFolder.push(file);
       await db.projects.put(project);
+      addTab("code", props.path + "/" + props.name + "/" + fileName, fileName);
     }
   };
 
