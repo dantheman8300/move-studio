@@ -145,7 +145,7 @@ export default function BuildPage() {
                 <Tabs defaultValue="create">
                   <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="create">New</TabsTrigger>
-                    <TabsTrigger value="upload">System</TabsTrigger>
+                    <TabsTrigger value="upload">Upload</TabsTrigger>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
