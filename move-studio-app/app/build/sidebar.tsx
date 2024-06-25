@@ -175,7 +175,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
       response = await fetch(
         process.env.API_LINK
           ? `${process.env.API_LINK}/compile`
-          : "http://localhost:80/compile",
+          : "http://localhost:71/compile",
         {
           method: "POST",
           headers: {
@@ -213,7 +213,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
       response = await fetch(
         process.env.API_LINK
           ? `${process.env.API_LINK}/test`
-          : "http://localhost:80/test",
+          : "http://localhost:71/test",
         {
           method: "POST",
           headers: {
