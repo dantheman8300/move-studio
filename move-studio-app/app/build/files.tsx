@@ -80,7 +80,7 @@ export default function Files(props: { projectName: string }) {
 }
 
 function FileComponent(props: { path: string; name: string }) {
-  const { addTab } = useContext(BuildContext);
+  const { addTab, removeTab } = useContext(BuildContext);
 
   const removeFile = async () => {
     let forks = (props.path + "/" + props.name).split("/");
@@ -101,6 +101,9 @@ function FileComponent(props: { path: string; name: string }) {
     console.log("current folder", currentFolder);
     console.log("project", project);
     await db.projects.put(project);
+
+    // Remove the tab if it is open
+    removeTab('code', props.path + "/" + props.name);
   };
 
   return (
