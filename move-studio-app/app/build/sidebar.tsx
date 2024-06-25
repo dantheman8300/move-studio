@@ -252,6 +252,10 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
   };
 
   const deployProject = async () => {
+    if (!wallet || !wallet.account) {
+      throw new Error("Connect wallet to deploy package!");
+    }
+
     let compiledModulesAndDependencies;
     try {
       compiledModulesAndDependencies = await compileProject();
