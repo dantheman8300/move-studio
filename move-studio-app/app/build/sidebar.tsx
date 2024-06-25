@@ -266,7 +266,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
     console.log(compiledModulesAndDependencies);
 
     if (compiledModulesAndDependencies.modules.length === 0) {
-      throw new Error('No modules to deploy');
+      throw new Error('No modules to deploy. sources directory is empty.');
     }
 
     const txb = new TransactionBlock();
