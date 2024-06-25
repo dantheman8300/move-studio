@@ -64,6 +64,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
     addTab,
     addToDigests,
     addTransactionDigest,
+    setSelectedProjectName,
   } = useContext(BuildContext);
 
   const wallet = useWallet();
@@ -360,7 +361,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
         oldProjectName: selectedProjectName,
         newProjectName: projectName,
       });
-      window.location.reload();
+      setSelectedProjectName(projectName);
     }
   };
 
