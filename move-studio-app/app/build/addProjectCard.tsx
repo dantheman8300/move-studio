@@ -39,6 +39,7 @@ export default function AddProjectCard() {
           content: `[package]
 name = "${projectName}"
 version = "0.0.1"
+edition = "2024.beta"
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "testnet" }
