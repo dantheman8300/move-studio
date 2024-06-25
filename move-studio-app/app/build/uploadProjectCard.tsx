@@ -4,14 +4,19 @@ import { DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { track } from "@vercel/analytics";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { IFile } from "../db/ProjectsDB";
 import { db } from "../db/db";
+import { BuildContext } from "@/Contexts/BuildProvider";
 
 
 export default function UploadProjectCard() {
 
   const projectList = useLiveQuery(() => db.projects.toArray()) || [];
+
+  const { 
+    setSelectedProjectName
+  } = useContext(BuildContext);
 
 
   const [inputFiles, setInputFiles] = useState<FileList | null>(null);
@@ -96,6 +101,8 @@ export default function UploadProjectCard() {
     track('project-created', {
       project: projectName
     });
+
+    setSelectedProjectName(projectName);
   }
   
   return (

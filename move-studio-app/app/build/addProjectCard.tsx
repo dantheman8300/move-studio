@@ -11,11 +11,16 @@ import { DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { track } from "@vercel/analytics";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { db } from "../db/db";
+import { BuildContext } from "@/Contexts/BuildProvider";
 
 export default function AddProjectCard() {
   const projectList = useLiveQuery(() => db.projects.toArray()) || [];
+
+  const {
+    setSelectedProjectName
+  } = useContext(BuildContext);
 
   const [projectName, setProjectName] = useState("");
 
@@ -47,6 +52,8 @@ ${projectName} = "0x0"
     track("project-created", {
       project: projectName,
     });
+
+    setSelectedProjectName(projectName);
   };
 
   return (
