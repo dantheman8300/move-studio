@@ -82,7 +82,7 @@ ${projectName} = "0x0"
           <Button className="w-full" disabled>
             Project already exists
           </Button>
-        ) : projectName.length > 0 && /^[a-zA-Z0-9]+$/.test(projectName) ? (
+        ) : projectName.length > 0 && /^[a-zA-Z0-9_]+$/.test(projectName) ? ( 
           <DialogClose asChild>
             <Button className="w-full" onClick={addProject}>
               Add project
