@@ -768,22 +768,32 @@ export default function CodeEditor(props: { path: string }) {
             ['{', '}'],
             ['[', ']'],
             ['(', ')'],
+            ['<', '>'],
           ],
           autoClosingPairs: [
             { open: '{', close: '}' },
             { open: '[', close: ']' },
             { open: '(', close: ')' },
+            { open: '<', close: '>' },
             { open: '"', close: '"' },
+            { open: '`', close: '`' },
           ],
           surroundingPairs: [
             { open: '{', close: '}' },
             { open: '[', close: ']' },
             { open: '(', close: ')' },
+            { open: '<', close: '>' },
             { open: '"', close: '"' },
+            { open: '`', close: '`' },
           ],
         });
         monaco.languages.setMonarchTokensProvider("sui-move", {
-          keywords: ["module", "struct", "public", "const", "fun", "use", "has", "entry", "mut", "let", "false", "true", "while", "loop", 'if'],
+          keywords: [
+            'module', 'struct', 'public', 'const', 'fun', 'use', 'has', 'entry', 'mut',
+            'let', 'false', 'true', 'while', 'loop', 'if', 'else', 'return', 'abort',
+            'break', 'continue', 'move', 'copy', 'as', 'script', 'acquires', 'native',
+            'spec', 'friend', 'phantom'
+          ],
           typeKeywords: ["bool", "address", "u8", "u64", "u128"],
 
           operators: [
