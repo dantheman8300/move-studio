@@ -1,13 +1,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Handle, Position, useUpdateNodeInternals } from "reactflow";
+import { GraphContext } from "./GraphProvider";
+import { PTBNode, SplitCoinsOperation } from "./ptb-types";
 
 
 export default function CoinSplitterNode({ id } : { id: string}) {
 
   const updateNodeInternals = useUpdateNodeInternals();
   const [amounts, setAmounts] = useState<string[]>([]);
+
+  const { graph } = useContext(GraphContext);
 
 
   return (
@@ -30,6 +34,14 @@ export default function CoinSplitterNode({ id } : { id: string}) {
             console.log("e.target.value.split(",")", e.target.value.split(","))
             setAmounts(e.target.value.split(","))
             updateNodeInternals(id)
+            
+            const node = graph?.getNode(id) as PTBNode;
+            console.log("node", node)
+            const operation = node?.operation as SplitCoinsOperation;
+
+            operation.amounts = e.target.value.split(",")
+
+            console.log("operation.amounts", operation.amounts)
           }}
         />
         <Handle type="target" position={Position.Top} id="coinSplitter" />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef,  } from 'react';
+import { useState, useCallback, useRef, useContext,  } from 'react';
 import ReactFlow, {
   Controls,
   Background,
@@ -24,17 +24,14 @@ import GasCoinNode from './GasCoinNode';
 import CoinMergerNode from './CoinMergerNode';
 import ObjectTransferNode from './ObjectTransferNode';
 import { Button } from '@/components/ui/button';
+import { MergeCoinsOperation, PTBGraph, PTBNode, TransferObjectsOperation } from './ptb-types';
+import { GraphContext } from './GraphProvider';
+import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { Transaction } from "@mysten/sui/transactions";
+
 
 const flowKey = 'example-flow';
 
-const initialNodes = [
-  {
-    id: '1',
-    type: 'input',
-    data: { label: 'input node' },
-    position: { x: 250, y: 5 },
-  },
-];
 
 const nodeTypes = {
   functionNode: FunctionNode,
@@ -50,9 +47,11 @@ const getId = () => `dndnode_${id++}`;
 
 function Flow() {
   const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
+
+  const { graph } = useContext(GraphContext)
 
   const wallet = useWallet();
 
@@ -79,7 +78,47 @@ function Flow() {
   }, [setNodes, setViewport]);
 
   const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
+    (params: Edge | Connection) => {
+      setEdges((eds) => addEdge(params, eds));
+
+      if (!graph) {
+        return;
+      }
+
+      console.log('edge', params)
+
+      const fromNode = graph.getNode(params.source!) as PTBNode;
+      const toNode = graph.getNode(params.target!) as PTBNode;
+
+      console.log('fromNode', fromNode)
+      console.log('toNode', toNode)
+      console.log('toNode.operation.type', toNode.operation.type)
+
+      if (toNode.operation.type == 'mergeCoins') {
+        const operation = toNode.operation as MergeCoinsOperation;
+
+        operation.sourceCoins.push({ kind: 'objectOutput', node: fromNode.id, index: parseInt(params.sourceHandle!.slice(-1)) });
+      } else if (toNode.operation.type == 'transferObjects') {
+
+        console.log('transferObjects')
+
+        const operation = toNode.operation as TransferObjectsOperation;
+
+        operation.objects.push(
+          {
+            kind: 'objectOutput',
+            node: fromNode.id,
+            index: parseInt(params.sourceHandle!.slice(-1)),
+          }
+        );
+
+        console.log('operation', operation)
+
+      } else {
+        console.log('unknown operation')
+      }
+
+    },
     [],
   );
 
@@ -95,6 +134,7 @@ function Flow() {
       const type = event.dataTransfer.getData('application/reactflow');
       const data = JSON.parse(event.dataTransfer.getData('data'));
       console.log('data', data)
+      console.log('type', type)
 
       // check if the dropped element is valid
       if (typeof type === 'undefined' || !type || !reactFlowInstance || !reactFlowWrapper.current ) {
@@ -115,6 +155,8 @@ function Flow() {
 
       let newNode = null;
       if (type === 'functionNode') {
+
+
 
         const client = new SuiClient({ url: wallet.chain?.rpcUrl || "" });
 
@@ -164,6 +206,84 @@ function Flow() {
           },
         };
         
+      } else if (type == "coinSplitterNode") {
+        console.log('coinSplitterNode')
+
+        if (!graph) {
+          return;
+        }
+
+        const id = getId();
+
+        const splitNode: PTBNode = new PTBNode({
+          id,
+          type: 'splitCoins',
+          coin: { kind: 'gasCoin' },
+          amounts: [],
+        });
+
+        graph.addNode(splitNode);
+
+        console.log('graph', graph.printGraph())
+
+        newNode = {
+          id,
+          type,
+          position,
+          data: { label: `${type} node` },
+        };
+      } else if (type == "coinMergerNode") {
+        console.log('coinMergerNode')
+
+        if (!graph) {
+          return;
+        }
+
+        const id = getId();
+
+        const mergeNode: PTBNode = new PTBNode({
+          id,
+          type: 'mergeCoins',
+          destinationCoin: null,
+          sourceCoins: []
+        });
+
+        graph.addNode(mergeNode);
+
+        console.log('graph', graph.printGraph())
+
+        newNode = {
+          id,
+          type,
+          position,
+          data: { label: `${type} node` },
+        };
+      } else if (type == "objectTransferNode") {
+        console.log('objectTransferNode')
+
+        if (!graph) {
+          return;
+        }
+
+        const id = getId();
+
+        const mergeNode: PTBNode = new PTBNode({
+          id,
+          type: 'transferObjects',
+          objects: [], 
+          address: '',
+        });
+
+        graph.addNode(mergeNode);
+
+        console.log('graph', graph.printGraph())
+
+        newNode = {
+          id,
+          type,
+          position,
+          data: { label: `${type} node` },
+        };
       } else {
         newNode = {
           id: getId(),
@@ -202,7 +322,31 @@ function Flow() {
           <Button variant={'secondary'} size={'sm'} onClick={() => {
             console.log('nodes', nodes)
             console.log('edges', edges)
+            console.log('graph', graph?.printGraph())
           }}>print</Button>
+          <Button variant={'secondary'} size={'sm'} onClick={() => {
+            console.log('ptb', graph?.toPTBScript())
+          }}>ptb</Button>
+          <Button variant={'secondary'} size={'sm'} onClick={async () => {
+            console.log('run')
+
+            const ptbScript = graph?.toPTBScript();
+
+            if (!ptbScript) {
+              return;
+            }
+
+            const tx = new Transaction();
+
+            eval(ptbScript);
+
+            const res = await wallet.signAndExecuteTransaction({
+              transaction: tx,
+            })
+
+            console.log('res', res)
+
+          }}>run</Button>
         </Panel>
         <Background />
         <Controls />

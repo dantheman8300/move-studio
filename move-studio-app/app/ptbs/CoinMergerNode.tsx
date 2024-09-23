@@ -1,15 +1,19 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Handle, Position } from "reactflow";
+import { GraphContext } from "./GraphProvider";
+import { id } from "date-fns/locale";
+import { PTBNode, MergeCoinsOperation } from "./ptb-types";
 
 
-export default function CoinMergerNode() {
+export default function CoinMergerNode({ id } : { id: string}) {
 
   const [mergedCoin, setMergedCoin] = useState<string>('');
   const [useGasCoin, setUseGasCoin] = useState<boolean>(false);
 
+  const { graph } = useContext(GraphContext);
 
   return (
     <Card>
@@ -37,7 +41,21 @@ export default function CoinMergerNode() {
               id="gascoin"
               checked={useGasCoin}
               onClick={() => {
+
+                const node = graph?.getNode(id) as PTBNode;
+                const operation = node?.operation as MergeCoinsOperation;
+
+                if (!useGasCoin) {
+                  operation.destinationCoin = { kind: 'gasCoin' }
+                } else {
+                  operation.destinationCoin = null
+                }
+            
+                console.log("operation.destinationCoin", operation.destinationCoin)
+
                 setUseGasCoin(!useGasCoin)
+
+            
               }}
             />
             <label
