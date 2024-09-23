@@ -547,7 +547,7 @@ export class PTBGraph {
       return this.parsePureValueToCode(input);
     } else if (input.kind === 'objectInput') {
       // Variable name for object input
-      const varName = `obj_${input.id}`;
+      const varName = `tx.object(${input.id})`;
       return varName;
     } else if (input.kind === 'objectOutput') {
       const varName = this.variableNames.get(input.node);

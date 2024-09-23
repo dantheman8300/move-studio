@@ -100,20 +100,33 @@ function Flow() {
         operation.sourceCoins.push({ kind: 'objectOutput', node: fromNode.id, index: parseInt(params.sourceHandle!.slice(-1)) });
       } else if (toNode.operation.type == 'transferObjects') {
 
-        console.log('transferObjects')
+        if (!fromNode) {
+          console.log('params.source', params.source)
 
-        const operation = toNode.operation as TransferObjectsOperation;
+          const operation = toNode.operation as TransferObjectsOperation;
 
-        operation.objects.push(
-          {
-            kind: 'objectOutput',
-            node: fromNode.id,
-            index: parseInt(params.sourceHandle!.slice(-1)),
-          }
-        );
+          operation.objects.push(
+            {
+              kind: 'objectInput',
+              id: params.sourceHandle!
+            }
+          );
 
-        console.log('operation', operation)
+        } else {
+          console.log('transferObjects')
 
+          const operation = toNode.operation as TransferObjectsOperation;
+
+          operation.objects.push(
+            {
+              kind: 'objectOutput',
+              node: fromNode.id,
+              index: parseInt(params.sourceHandle!.slice(-1)),
+            }
+          );
+
+          console.log('operation', operation)
+        }
       } else {
         console.log('unknown operation')
       }
