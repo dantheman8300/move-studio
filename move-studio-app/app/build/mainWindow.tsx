@@ -6,7 +6,6 @@ import { useContext } from "react";
 import { MagicSpinner } from "react-spinners-kit";
 import { TypeAnimation } from "react-type-animation";
 import { BuildContext } from "@/Contexts/BuildProvider";
-import FlowWindow from "./FlowWindow";
 
 const quotes = [
   "First, solve the problem. Then, write the code.\n - John Johnson",
@@ -98,31 +97,30 @@ export default function MainWindow() {
           }
         })}
         {tabs.length == 0 && (
-          <FlowWindow />
-          // <div className="flex flex-col items-center justify-center w-full h-full">
-          //   <MagicSpinner color="#f59e0b" size={60} />
-          //   <span className="font-mono text-white text-xl antialiased">
-          //     Move Studio IDE
-          //   </span>
-          //   <span className="font-mono text-teal-600 w-[300px] text-center whitespace-pre-line break-words">
-          //     <TypeAnimation
-          //       sequence={[
-          //         ...interleave(
-          //           quotes.sort(() => 0.5 - Math.random()),
-          //           2000
-          //         ),
-          //         "That's all folks!",
-          //         5000,
-          //         "Seriously, that's all folks!",
-          //         5000,
-          //         "Ok, I'm done now.",
-          //       ]}
-          //       wrapper="span"
-          //       cursor={true}
-          //       speed={25}
-          //     />
-          //   </span>
-          // </div>
+          <div className="flex flex-col items-center justify-center w-full h-full">
+            <MagicSpinner color="#f59e0b" size={60} />
+            <span className="font-mono text-white text-xl antialiased">
+              Move Studio IDE
+            </span>
+            <span className="font-mono text-teal-600 w-[300px] text-center whitespace-pre-line break-words">
+              <TypeAnimation
+                sequence={[
+                  ...interleave(
+                    quotes.sort(() => 0.5 - Math.random()),
+                    2000
+                  ),
+                  "That's all folks!",
+                  5000,
+                  "Seriously, that's all folks!",
+                  5000,
+                  "Ok, I'm done now.",
+                ]}
+                wrapper="span"
+                cursor={true}
+                speed={25}
+              />
+            </span>
+          </div>
         )}
       </div>
     </Tabs>
