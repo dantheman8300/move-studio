@@ -46,20 +46,31 @@ export default function PackageWindow(props: {
 
     console.log("client", client);
 
-    try {
-      // get the package details
-      const res = await client.getNormalizedMoveModulesByPackage({
-        package: packageToFetch.digestId,
-      });
-      console.log("package res", res);
-
-      return { name: packageToFetch.name, data: res };
-    } catch (e) {
-      console.log("error", e);
-      alert("Error fetching package details");
-      props.removeMe();
-      return null;
+    let retries = 0;
+    while (retries < 3) {
+      try {
+        // get the package details
+        const res = await client.getNormalizedMoveModulesByPackage({
+          package: packageToFetch.digestId,
+        });
+        console.log("package res", res);
+  
+        return { name: packageToFetch.name, data: res };
+      } catch (e) {
+        if (retries == 2) {
+          console.log("error", e);
+          alert("Error fetching package details");
+          props.removeMe();
+          return null;
+        } else {
+          console.log('retrying in 1s')
+          retries++;
+          await new Promise(f => setTimeout(f, 1000));
+        }
+      }
     }
+
+    
   };
 
   if (packageDetails == null) {

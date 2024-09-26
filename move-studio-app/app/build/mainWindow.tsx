@@ -24,10 +24,12 @@ const interleave = (arr: any, thing: any) =>
   [].concat(...arr.map((n: any) => [n, thing])).slice(0, -1);
 
 export default function MainWindow() {
-  const { tabs, removeTab } = useContext(BuildContext);
+  const { tabs, removeTab, activeTab, setActiveTab } = useContext(BuildContext);
 
   return (
-    <Tabs className="border rounded-xl w-full h-full overflow-hidden">
+    <Tabs value={activeTab} onValueChange={(value) => {
+      setActiveTab(value);
+    }} className="border rounded-xl w-full h-full overflow-hidden">
       <TabsList className="w-full h-10 rounded-none items-center justify-start px-6 border-b">
         {tabs.map((tab, i) => {
           if (tab.type === "code") {
@@ -98,7 +100,7 @@ export default function MainWindow() {
         })}
         {tabs.length == 0 && (
           <div className="flex flex-col items-center justify-center w-full h-full">
-            <MagicSpinner color="#f59e0b" size={60} />
+            {/* <MagicSpinner color="#f59e0b" size={60} /> */}
             <span className="font-mono text-white text-xl antialiased">
               Move Studio IDE
             </span>

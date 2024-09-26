@@ -11,11 +11,16 @@ import { DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { track } from "@vercel/analytics";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { db } from "../db/db";
+import { BuildContext } from "@/Contexts/BuildProvider";
 
 export default function AddProjectCard() {
   const projectList = useLiveQuery(() => db.projects.toArray()) || [];
+
+  const {
+    setSelectedProjectName
+  } = useContext(BuildContext);
 
   const [projectName, setProjectName] = useState("");
 
@@ -34,6 +39,7 @@ export default function AddProjectCard() {
           content: `[package]
 name = "${projectName}"
 version = "0.0.1"
+edition = "2024.beta"
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "testnet" }
@@ -47,6 +53,8 @@ ${projectName} = "0x0"
     track("project-created", {
       project: projectName,
     });
+
+    setSelectedProjectName(projectName);
   };
 
   return (
@@ -74,7 +82,7 @@ ${projectName} = "0x0"
           <Button className="w-full" disabled>
             Project already exists
           </Button>
-        ) : projectName.length > 0 && /^[a-zA-Z0-9]+$/.test(projectName) ? (
+        ) : projectName.length > 0 && /^[a-zA-Z0-9_]+$/.test(projectName) ? ( 
           <DialogClose asChild>
             <Button className="w-full" onClick={addProject}>
               Add project

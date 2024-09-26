@@ -8,6 +8,7 @@ import { WalletProvider } from "@suiet/wallet-kit";
 import { Toaster } from "@/components/ui/sonner"
 import { Analytics } from '@vercel/analytics/react';
 import BuildProvider from '@/Contexts/BuildProvider';
+import { CSPostHogProvider } from '@/Contexts/PosthogProvider';
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -20,15 +21,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <WalletProvider>
-          <ThemeProvider attribute="class" defaultTheme="dark">
-            <BuildProvider>
-              {children}
-              <Analytics />
-              <Toaster richColors closeButton/>
-            </BuildProvider>
-          </ThemeProvider>
-        </WalletProvider>
+        <CSPostHogProvider>
+          <WalletProvider>
+            <ThemeProvider attribute="class" defaultTheme="dark">
+              <BuildProvider>
+                {children}
+                <Analytics />
+                <Toaster richColors closeButton/>
+              </BuildProvider>
+            </ThemeProvider>
+          </WalletProvider>
+        </CSPostHogProvider>
       </body>
     </html>
   )

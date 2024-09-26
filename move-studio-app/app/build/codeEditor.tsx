@@ -759,9 +759,42 @@ export default function CodeEditor(props: { path: string }) {
 
       if (!hasMoveBeenSet) {
         monaco.languages.register({ id: "sui-move" });
+        monaco.languages.setLanguageConfiguration('sui-move', {
+          comments: {
+            lineComment: '//',
+            blockComment: ['/*', '*/'],
+          },
+          brackets: [
+            ['{', '}'],
+            ['[', ']'],
+            ['(', ')'],
+            ['<', '>'],
+          ],
+          autoClosingPairs: [
+            { open: '{', close: '}' },
+            { open: '[', close: ']' },
+            { open: '(', close: ')' },
+            { open: '<', close: '>' },
+            { open: '"', close: '"' },
+            { open: '`', close: '`' },
+          ],
+          surroundingPairs: [
+            { open: '{', close: '}' },
+            { open: '[', close: ']' },
+            { open: '(', close: ')' },
+            { open: '<', close: '>' },
+            { open: '"', close: '"' },
+            { open: '`', close: '`' },
+          ],
+        });
         monaco.languages.setMonarchTokensProvider("sui-move", {
-          keywords: ["module", "struct", "fun", "use", "has"],
-          typeKeywords: ["boolean", "address", "u8", "u64", "u128"],
+          keywords: [
+            'module', 'struct', 'public', 'const', 'fun', 'use', 'has', 'entry', 'mut',
+            'let', 'false', 'true', 'while', 'loop', 'if', 'else', 'return', 'abort',
+            'break', 'continue', 'move', 'copy', 'as', 'script', 'acquires', 'native',
+            'spec', 'friend', 'phantom'
+          ],
+          typeKeywords: ["bool", "address", "u8", "u64", "u128"],
 
           operators: [
             "=",

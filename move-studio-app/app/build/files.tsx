@@ -80,7 +80,7 @@ export default function Files(props: { projectName: string }) {
 }
 
 function FileComponent(props: { path: string; name: string }) {
-  const { addTab } = useContext(BuildContext);
+  const { addTab, removeTab } = useContext(BuildContext);
 
   const removeFile = async () => {
     let forks = (props.path + "/" + props.name).split("/");
@@ -101,62 +101,45 @@ function FileComponent(props: { path: string; name: string }) {
     console.log("current folder", currentFolder);
     console.log("project", project);
     await db.projects.put(project);
+
+    // Remove the tab if it is open
+    removeTab('code', props.path + "/" + props.name);
   };
 
   return (
-    <ContextMenu>
-      <ContextMenuTrigger>
-        <div
-          className="px-1 w-full text-slate-200 antialiased h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground hover:text-teal-500 rounded items-center"
+    <div
+      className="group px-1 w-full text-slate-200 antialiased h-8 font-mono flex flex-row justify-between hover:bg-accent hover:text-accent-foreground hover:text-teal-500 rounded items-center"
+      onClick={(event) => {
+        event?.preventDefault();
+        addTab("code", props.path + "/" + props.name, props.name);
+      }}
+    >
+      <div className="flex flex-row justify-start">
+        {props.name.endsWith(".move") ? (
+          <FileBox
+            strokeWidth={1.25}
+            className="mr-2 w-4 h-4 text-teal-500"
+          />
+        ) : props.name.endsWith(".toml") ? (
+          <FileCog
+            strokeWidth={1.25}
+            className="mr-2 w-4 h-4 text-teal-500"
+          />
+        ) : (
+          <File strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500" />
+        )}
+        {props.name}
+      </div>
+      <div className="hidden group-hover:flex flex-row items-center">
+        <Trash2
+          className="w-[16px] h-[16px] text-white hover:text-teal-500 hover:cursor-pointer"
           onClick={(event) => {
-            event?.preventDefault();
-            console.log(props.path + "/" + props.name);
-            addTab("code", props.path + "/" + props.name, props.name);
+            event.stopPropagation();
+            removeFile();
           }}
-        >
-          {props.name.endsWith(".move") ? (
-            <FileBox
-              strokeWidth={1.25}
-              className="mr-2 w-4 h-4 text-teal-500"
-            />
-          ) : props.name.endsWith(".toml") ? (
-            <FileCog
-              strokeWidth={1.25}
-              className="mr-2 w-4 h-4 text-teal-500"
-            />
-          ) : (
-            <File strokeWidth={1.25} className="mr-2 w-4 h-4 text-teal-500" />
-          )}
-          {props.name}
-        </div>
-      </ContextMenuTrigger>
-      <ContextMenuContent className="bg-slate-900">
-        <ContextMenuItem>
-          <Pencil className="mr-2 w-4 h-4" /> Rename
-        </ContextMenuItem>
-        <Separator />
-        <ContextMenuItem
-          onClick={(event) => {
-            event?.preventDefault();
-            console.log(props.path + "/" + props.name);
-            addTab("code", props.path + "/" + props.name, props.name);
-          }}
-        >
-          <Eye className="mr-2 w-4 h-4" /> Open
-        </ContextMenuItem>
-        <Separator />
-        <ContextMenuItem>
-          <CopyPlus className="mr-2 w-4 h-4" /> Duplicate
-        </ContextMenuItem>
-        <ContextMenuItem>
-          <Download className="mr-2 w-4 h-4" /> Move
-        </ContextMenuItem>
-        <Separator />
-        <ContextMenuItem onClick={removeFile}>
-          <Trash2 className="mr-2 w-4 h-4" /> Delete
-        </ContextMenuItem>
-      </ContextMenuContent>
-    </ContextMenu>
+        />
+      </div>
+    </div>
   );
 }
 
@@ -192,6 +175,10 @@ function FolderComponent(props: { path: string; name: string }) {
 
   const addFile = async () => {
     let fileName = prompt("Enter file name");
+    if (!fileName || fileName.split(".").length > 2 || !(fileName.endsWith(".move") || fileName.endsWith(".toml"))) {
+      alert("File name should end with .move or .toml");
+      return
+    }
     let forks = (props.path + "/" + props.name).split("/");
     console.log(forks);
     let projectName = forks.shift();
@@ -213,11 +200,16 @@ function FolderComponent(props: { path: string; name: string }) {
       };
       currentFolder.push(file);
       await db.projects.put(project);
+      addTab("code", props.path + "/" + props.name + "/" + fileName, fileName);
     }
   };
 
   const addFolder = async () => {
     let folderName = prompt("Enter folder name");
+    if (!folderName || folderName.split(".").length > 1) {
+      alert("Invalid folder name");
+      return
+    }
     let forks = (props.path + "/" + props.name).split("/");
     console.log(forks);
     let projectName = forks.shift();
@@ -267,6 +259,10 @@ function FolderComponent(props: { path: string; name: string }) {
 
   const renameFolder = async () => {
     let newName = prompt("Enter new name");
+    if (!newName || newName.split(".").length > 1) {
+      alert("Invalid folder name");
+      return
+    }
     let forks = (props.path + "/" + props.name).split("/");
     console.log(forks);
     let projectName = forks.shift();
@@ -291,49 +287,58 @@ function FolderComponent(props: { path: string; name: string }) {
 
   return (
     <div>
-      <ContextMenu>
-        <ContextMenuTrigger>
-          <div
-            className="px-1 w-full text-slate-200 antialiased h-8 font-mono flex flex-row justify-start hover:bg-accent hover:text-accent-foreground hover:text-teal-500 rounded items-center"
+      <div
+        className="group px-1 w-full text-slate-200 antialiased h-8 font-mono flex flex-row justify-between hover:bg-accent hover:text-accent-foreground hover:text-teal-500 rounded items-center"
+        onClick={(event) => {
+          event?.preventDefault();
+          setIsOpen(!isOpen);
+        }}
+      >
+        <div className="flex flex-row justify-start items-center">
+          {isOpen ? (
+            <FolderOpen
+              strokeWidth={1.25}
+              className="mr-2 w-4 h-4 text-teal-500"
+            />
+          ) : (
+            <FolderClosed
+              strokeWidth={1.25}
+              className="mr-2 w-4 h-4 text-teal-500"
+            />
+          )}
+          {props.name}
+        </div>
+        <div className="hidden group-hover:flex flex-row items-center gap-1">
+          <Pencil 
+            className="w-[16px] h-[16px] text-white hover:text-teal-500 hover:cursor-pointer" 
             onClick={(event) => {
-              event?.preventDefault();
-              setIsOpen(!isOpen);
+              event.stopPropagation();
+              renameFolder();
             }}
-          >
-            {isOpen ? (
-              <FolderOpen
-                strokeWidth={1.25}
-                className="mr-2 w-4 h-4 text-teal-500"
-              />
-            ) : (
-              <FolderClosed
-                strokeWidth={1.25}
-                className="mr-2 w-4 h-4 text-teal-500"
-              />
-            )}
-            {props.name}
-          </div>
-        </ContextMenuTrigger>
-        <ContextMenuContent className="bg-slate-900">
-          <ContextMenuItem onClick={renameFolder}>
-            <Pencil className="mr-2 w-4 h-4" /> Rename
-          </ContextMenuItem>
-          <Separator />
-          <ContextMenuItem onClick={addFile}>
-            <FilePlus className="mr-2 w-4 h-4" /> Add file
-          </ContextMenuItem>
-          <ContextMenuItem onClick={addFolder}>
-            <FolderPlus className="mr-2 w-4 h-4" /> Add folder
-          </ContextMenuItem>
-          {/* <ContextMenuItem>
-            <FoldVertical className="mr-2 w-4 h-4"/> Collaspe child folders 
-          </ContextMenuItem> */}
-          <Separator />
-          <ContextMenuItem onClick={deleteFolder}>
-            <Trash2 className="mr-2 w-4 h-4" /> Delete
-          </ContextMenuItem>
-        </ContextMenuContent>
-      </ContextMenu>
+          />
+          <FilePlus 
+            className="w-[16px] h-[16px] text-white hover:text-teal-500 hover:cursor-pointer" 
+            onClick={(event) => {
+              event.stopPropagation();
+              addFile();
+            }}
+          />
+          <FolderPlus 
+            className="w-[16px] h-[16px] text-white hover:text-teal-500 hover:cursor-pointer" 
+            onClick={(event) => {
+              event.stopPropagation();
+              addFolder();
+            }}
+          />
+          <Trash2 
+            className="w-[16px] h-[16px] text-white hover:text-teal-500 hover:cursor-pointer" 
+            onClick={(event) => {
+              event.stopPropagation();
+              deleteFolder();
+            }}
+          />
+        </div>
+      </div>
       {files && files.length > 0 && isOpen && (
         <div className="pl-2 w-full font-mono flex flex-row justify-start gap-2 items-center">
           <Separator

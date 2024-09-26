@@ -64,6 +64,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
     addTab,
     addToDigests,
     addTransactionDigest,
+    setSelectedProjectName,
   } = useContext(BuildContext);
 
   const wallet = useWallet();
@@ -104,6 +105,10 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
 
   const addFile = async () => {
     let fileName = prompt("Enter file name");
+    if (!fileName || fileName.split(".").length > 2 || !(fileName.endsWith(".move") || fileName.endsWith(".toml"))) {
+      alert("File name should end with .move or .toml");
+      return
+    }
     if (fileName) {
       let file: IFile = {
         type: "file",
@@ -122,6 +127,10 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
 
   const addFolder = async () => {
     let folderName = prompt("Enter folder name");
+    if (!folderName || folderName.split(".").length > 1) {
+      alert("Invalid folder name");
+      return
+    }
     if (folderName) {
       let folder: IFile = {
         type: "folder",
@@ -167,7 +176,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
       response = await fetch(
         process.env.API_LINK
           ? `${process.env.API_LINK}/compile`
-          : "http://localhost:80/compile",
+          : "http://localhost:71/compile",
         {
           method: "POST",
           headers: {
@@ -205,7 +214,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
       response = await fetch(
         process.env.API_LINK
           ? `${process.env.API_LINK}/test`
-          : "http://localhost:80/test",
+          : "http://localhost:71/test",
         {
           method: "POST",
           headers: {
@@ -244,6 +253,10 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
   };
 
   const deployProject = async () => {
+    if (!wallet || !wallet.account) {
+      throw new Error("Connect wallet to deploy package!");
+    }
+
     let compiledModulesAndDependencies;
     try {
       compiledModulesAndDependencies = await compileProject();
@@ -258,7 +271,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
     console.log(compiledModulesAndDependencies);
 
     if (compiledModulesAndDependencies.modules.length === 0) {
-      throw new Error('No modules to deploy');
+      throw new Error('No modules to deploy. sources directory is empty.');
     }
 
     const txb = new TransactionBlock();
@@ -348,7 +361,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
         oldProjectName: selectedProjectName,
         newProjectName: projectName,
       });
-      window.location.reload();
+      setSelectedProjectName(projectName);
     }
   };
 
