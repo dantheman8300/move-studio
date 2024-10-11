@@ -8,13 +8,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { TransactionBlock } from "@mysten/sui.js/transactions";
 
-import { useWallet } from "@suiet/wallet-kit";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 
 import { BuildContext } from "@/Contexts/BuildProvider";
 import { track } from "@vercel/analytics";
+import { useCurrentWallet, useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
+import { Transaction } from "@mysten/sui/transactions";
 
 export default function FunctionCard(props: {
   data: any;
@@ -24,7 +24,10 @@ export default function FunctionCard(props: {
 }) {
   const { addTransactionDigest } = useContext(BuildContext);
 
-  const wallet = useWallet();
+  const suiClient = useSuiClient();
+	const { isConnected } = useCurrentWallet();
+  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+
 
   const [typeParameters, setTypeParameters] = useState<any[]>([]);
   const [parameters, setParameters] = useState<any[]>([]);
@@ -80,7 +83,7 @@ export default function FunctionCard(props: {
 
 
   const executeFunction = async () => {
-    if (!wallet.connected) return;
+    if (!isConnected) return;
 
     console.log("typeParameters", typeParameters);
     console.log("parameters", parameters);
@@ -93,7 +96,7 @@ export default function FunctionCard(props: {
       parameters_count: parameters.length,
     });
 
-    const tx = new TransactionBlock();
+    const tx = new Transaction();
     tx.moveCall({
       target: `${props.address}::${props.moduleName}::${props.functionName}`,
       arguments: parameters.map((param, index) => {
@@ -109,30 +112,47 @@ export default function FunctionCard(props: {
 
     try {
       // execute the programmable transaction
-      const resData = await wallet.signAndExecuteTransactionBlock({
-        transactionBlock: tx,
-        options: {
-          showObjectChanges: true,
-        },
-      } as any);
-      console.log("nft minted successfully!", resData);
+      signAndExecuteTransaction(
+        {
+          transaction: tx,
+          
+        }, 
+        {
+          onSuccess: ({ digest }) => {
+            suiClient
+              .waitForTransaction({
+                digest: digest,
+                options: {
+                  showEffects: true,
+                  showObjectChanges: true,
+                },
+              })
+              .then((tx) => {
+                const objectId = tx.effects?.created?.[0]?.reference?.objectId;
+  
+                console.log("nft minted successfully!", tx);
 
-      const objects = [];
+                const objects = [];
 
-      for (let objectChange of resData.objectChanges || []) {
-        if (objectChange.type === "published") {
-        } else {
-          console.log("object change", objectChange);
-          objects.push({
-            type: objectChange.objectType,
-            modified: objectChange.type,
-            objectId: objectChange.objectId,
-            // owner: objectChange.owner
-          });
+                for (let objectChange of tx.objectChanges || []) {
+                  if (objectChange.type === "published") {
+                  } else {
+                    console.log("object change", objectChange);
+                    objects.push({
+                      type: objectChange.objectType,
+                      modified: objectChange.type,
+                      objectId: objectChange.objectId,
+                      // owner: objectChange.owner
+                    });
+                  }
+                }
+
+                addTransactionDigest(tx.digest, objects);
+              });
+          },
         }
-      }
-
-      addTransactionDigest(resData.digest, objects);
+      );
+      
       // alert('Congrats! your nft is minted!')
     } catch (e) {
       console.error("nft mint failed", e);

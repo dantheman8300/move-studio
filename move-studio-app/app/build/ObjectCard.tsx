@@ -1,4 +1,3 @@
-import { useWallet } from "@suiet/wallet-kit";
 import { useEffect, useState } from "react";
 
 import {
@@ -15,9 +14,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { SuiClient } from "@mysten/sui.js/client";
 import { ExternalLink, RefreshCw, X } from "lucide-react";
 import { GuardSpinner } from "react-spinners-kit";
+import { useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
 
 const urlNetwork: { [key: string]: string } = {
   "Sui Testnet": "testnet",
@@ -30,7 +29,10 @@ export default function ObjectCard(props: {
   name: string;
   removeObject: (objectId: string) => void;
 }) {
-  const wallet = useWallet();
+  const suiClient = useSuiClient();
+  const ctx = useSuiClientContext();
+  console.log('ctx.network', ctx.network)
+
 
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -47,7 +49,6 @@ export default function ObjectCard(props: {
 
   useEffect(() => {
     setLoading(true);
-    console.log("wallet", wallet.chain?.name);
     fetchObjectDetails().then((data) => {
       console.log("data", data);
       setObjectDetails(data as any);
@@ -56,13 +57,9 @@ export default function ObjectCard(props: {
   }, [props.objectId]);
 
   const fetchObjectDetails = async () => {
-    // create a client connected to devnet
-    const client = new SuiClient({ url: wallet.chain?.rpcUrl || "" });
-
-    console.log("client", client);
 
     // get the object details
-    const res = await client.getObject({
+    const res = await suiClient.getObject({
       id: props.objectId,
       options: {
         showOwner: true,
@@ -107,7 +104,7 @@ export default function ObjectCard(props: {
         />
         <a
           href={`https://suiexplorer.com/object/${props.objectId}?network=${
-            urlNetwork[wallet.chain?.name || ""]
+            ctx.network
           }`}
           target="_blank"
         >

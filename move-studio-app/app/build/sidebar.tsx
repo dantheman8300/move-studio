@@ -30,6 +30,7 @@ import {
   Rocket,
   Trash2,
 } from "lucide-react";
+import { isValidSuiObjectId } from "@mysten/sui/utils";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -44,8 +45,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { TransactionBlock } from "@mysten/sui.js/transactions";
-import { useWallet } from "@suiet/wallet-kit";
 import { useLiveQuery } from "dexie-react-hooks";
 import { WhisperSpinner } from "react-spinners-kit";
 import { toast } from "sonner";
@@ -54,8 +53,9 @@ import { db } from "../db/db";
 import Files from "./files";
 
 import { BuildContext } from "@/Contexts/BuildProvider";
-import { isValidSuiObjectId } from "@mysten/sui.js/utils";
 import { track } from "@vercel/analytics";
+import { Transaction } from "@mysten/sui/transactions";
+import { useCurrentAccount, useCurrentWallet, useSignAndExecuteTransaction, useSuiClient, useSuiClientContext } from "@mysten/dapp-kit";
 
 export default function Sidebar(props: { setError: (error: string) => void }) {
   const {
@@ -67,7 +67,13 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
     setSelectedProjectName,
   } = useContext(BuildContext);
 
-  const wallet = useWallet();
+  const suiClient = useSuiClient();
+	const { isConnected } = useCurrentWallet();
+  const account = useCurrentAccount();
+  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const ctx = useSuiClientContext();
+
+  console.log('ctx.network', ctx.network)
 
   const currentProject = useLiveQuery(
     () => db.projects.get(selectedProjectName),
@@ -253,7 +259,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
   };
 
   const deployProject = async () => {
-    if (!wallet || !wallet.account) {
+    if (!isConnected || account == undefined) {
       throw new Error("Connect wallet to deploy package!");
     }
 
@@ -274,44 +280,59 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
       throw new Error('No modules to deploy. sources directory is empty.');
     }
 
-    const txb = new TransactionBlock();
+    const txb = new Transaction();
 
     const [upgradeCap] = txb.publish({
       modules: compiledModulesAndDependencies.modules,
       dependencies: compiledModulesAndDependencies.dependencies,
     });
 
-    txb.transferObjects([upgradeCap], txb.pure(wallet.address));
+    txb.transferObjects([upgradeCap], txb.pure(account.publicKey));
 
     try {
-      const publishTxn = await wallet.signAndExecuteTransactionBlock({
-        transactionBlock: txb as any,
-        options: {
-          showObjectChanges: true,
-        },
-      });
+      signAndExecuteTransaction(
+        {
+          transaction: txb,
+          // chain: ctx.network,
+        }, 
+        {
+          onSuccess: ({ digest }) => {
+            suiClient
+              .waitForTransaction({
+                digest: digest,
+                options: {
+                  showObjectChanges: true,
+                },
+              })
+              .then((tx) => {
+                console.log(tx);
 
-      console.log(publishTxn);
+                console.log("tx.objectChanges", tx.objectChanges);
 
-      console.log("publishTxn.objectChanges", publishTxn.objectChanges);
+                const objects = [];
 
-      const objects = [];
+                for (let objectChange of tx.objectChanges || []) {
+                  if (objectChange.type === "published") {
+                    addTab("package", objectChange.packageId, selectedProjectName);
+                  } else {
+                    console.log("object change", objectChange);
+                    objects.push({
+                      type: objectChange.objectType,
+                      modified: objectChange.type,
+                      objectId: objectChange.objectId,
+                      // owner: objectChange.owner
+                    });
+                  }
+                }
 
-      for (let objectChange of publishTxn.objectChanges || []) {
-        if (objectChange.type === "published") {
-          addTab("package", objectChange.packageId, selectedProjectName);
-        } else {
-          console.log("object change", objectChange);
-          objects.push({
-            type: objectChange.objectType,
-            modified: objectChange.type,
-            objectId: objectChange.objectId,
-            // owner: objectChange.owner
-          });
+                addTransactionDigest(tx.digest, objects);
+              })
+
+          },
         }
-      }
-
-      addTransactionDigest(publishTxn.digest, objects);
+      );
+  
+      
     } catch (error) {
       console.log(error);
       throw new Error("Project deployment failed");
@@ -604,6 +625,7 @@ export default function Sidebar(props: { setError: (error: string) => void }) {
             <AccordionContent>
               <ScrollArea className="h-min max-h-[200px] w-full max-w-[300px] flex flex-col items-center justify-start gap-2">
                 {transactionDigests.map((digest, index) => {
+                  console.log('digest', digest)
                   return (
                     <Popover key={index}>
                       <PopoverTrigger asChild className="w-full max-w-[300px]">

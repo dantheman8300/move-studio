@@ -12,11 +12,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useConnectWallet, useCurrentAccount, useCurrentWallet, useDisconnectWallet, useSuiClientContext, useWallets } from "@mysten/dapp-kit";
+import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
 
-import {useWallet} from '@suiet/wallet-kit';
 
 /* 
   Component that displays a button to connect a wallet. If the wallet is connected, it displays the 
@@ -32,24 +34,16 @@ export default function WalletSelector(
   }
 ) {
 
-  // wallet state variables 
-  const { select, account, connected, disconnect, configuredWallets, connecting } = useWallet();
-  // State to hold the current account's APT balance. In string - floating point format.
-  const [balance, setBalance] = useState<string | undefined>(undefined);
-
-  /* 
-    Gets the balance of the connected account whenever the connected, account, and isTxnInProgress
-    variables change.
-  */
-  useEffect(() => {
-    if (connected && account) {
-      // getBalance(account.address);
-    }
-  }, [connected, account, props.isTxnInProgress]);
+  const { isConnected, isConnecting } = useCurrentWallet();
+  const account = useCurrentAccount();
+  const { mutate: disconnect } = useDisconnectWallet();
+  const wallets = useWallets();
+  const { mutate: connect } = useConnectWallet();
+  const ctx = useSuiClientContext();
 
   return (
     <div>
-      {!connected && !connecting && (
+      {!isConnected && !isConnecting && (
         <Dialog>
           <DialogTrigger asChild>
             <Button>Connect Wallet</Button>
@@ -58,37 +52,25 @@ export default function WalletSelector(
             <DialogHeader>
               <DialogTitle>Connect your wallet</DialogTitle>
               {
-                configuredWallets.map((wallet) => {
-                  if (wallet.installed) {
-                    return (
-                      <div
-                        key={wallet.name}
-                        className="flex w-fulls items-center justify-between rounded-xl p-2"
+                wallets.map((wallet) => {
+                  return (
+                    <div
+                      key={wallet.name}
+                      className="flex w-fulls items-center justify-between rounded-xl p-2"
+                    >
+                      <h1>{wallet.name}</h1>
+                      <Button
+                        variant="secondary"
+                        onClick={() => {
+                          connect({
+                            wallet
+                          })
+                        }}
                       >
-                        <h1>{wallet.name}</h1>
-                        <Button
-                          variant="secondary"
-                          onClick={() => select(wallet.name)}
-                        >
-                          Connect
-                        </Button>
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div
-                        key={wallet.name}
-                        className="flex w-fulls items-center justify-between rounded-xl p-2"
-                      >
-                        <h1>{wallet.name}</h1>
-                        <a href={wallet.downloadUrl.browserExtension || ''} target="_blank">
-                          <Button variant="secondary">
-                            Install
-                          </Button>
-                        </a>
-                      </div>
-                    );
-                  }
+                        Connect
+                      </Button>
+                    </div>
+                  );
                 })
               }
             </DialogHeader>
@@ -96,7 +78,7 @@ export default function WalletSelector(
         </Dialog>
       )}
       {
-        connecting && 
+        isConnecting && 
         (
           <Button variant="secondary" disabled>
             Loading...
@@ -104,16 +86,26 @@ export default function WalletSelector(
         )
       }
       {
-        connected && account && 
+        isConnected && 
         (
           <div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className="font-mono">
-                {account.address.slice(0, 5)}...{account.address.slice(-4)}
+                {account!.address.slice(0, 6)}... | {ctx.network}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => ctx.selectNetwork("mainnet")}>
+                  Mainnet
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => ctx.selectNetwork("testnet")}>
+                  Testnet
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => ctx.selectNetwork("devnet")}>
+                  Devnet
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => disconnect()}>
                   Disconnect
                 </DropdownMenuItem>

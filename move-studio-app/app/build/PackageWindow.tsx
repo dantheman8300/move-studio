@@ -7,19 +7,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useWallet } from "@suiet/wallet-kit";
 import { useEffect, useState } from "react";
 import { GuardSpinner } from "react-spinners-kit";
 import FunctionCard from "./FunctionCard";
 import StructCard from "./StructCard";
-
-import { SuiClient } from "@mysten/sui.js/client";
+import { useSuiClient } from "@mysten/dapp-kit";
+import { Clipboard } from "lucide-react";
 
 export default function PackageWindow(props: {
   removeMe: () => void;
   package: { name: string; digestId: string };
 }) {
-  const wallet = useWallet();
+  const suiClient = useSuiClient();
 
   const [searchedModule, setSearchedModule] = useState<string>("");
   const [searchedStruct, setSearchedStruct] = useState<string>("");
@@ -41,20 +40,15 @@ export default function PackageWindow(props: {
     name: string;
     digestId: string;
   }) => {
-    // create a client connected to devnet
-    const client = new SuiClient({ url: wallet.chain?.rpcUrl || "" });
-
-    console.log("client", client);
-
     let retries = 0;
     while (retries < 3) {
       try {
         // get the package details
-        const res = await client.getNormalizedMoveModulesByPackage({
+        const res = await suiClient.getNormalizedMoveModulesByPackage({
           package: packageToFetch.digestId,
         });
         console.log("package res", res);
-  
+
         return { name: packageToFetch.name, data: res };
       } catch (e) {
         if (retries == 2) {
@@ -63,14 +57,12 @@ export default function PackageWindow(props: {
           props.removeMe();
           return null;
         } else {
-          console.log('retrying in 1s')
+          console.log("retrying in 1s");
           retries++;
-          await new Promise(f => setTimeout(f, 1000));
+          await new Promise((f) => setTimeout(f, 1000));
         }
       }
     }
-
-    
   };
 
   if (packageDetails == null) {
@@ -83,193 +75,210 @@ export default function PackageWindow(props: {
   }
 
   return (
-    <div className="w-full h-full flex flex-row items-start justify-around p-2 gap-2">
-      <div className="flex flex-col items-center justify-start gap-2">
-        <Input
-          className="bg-slate-900 h-8 caret-teal-500"
-          type="text"
-          placeholder="Search modules..."
-          onChange={(e) => {
-            setSearchedModule(e.target.value);
-          }}
-          value={searchedModule}
-        />
-        <ScrollArea className="h-full max-h-[400px] w-fit max-w-[260px] rounded-md border p-1 overflow-y-auto">
-          {Object.values(packageDetails.data).filter((module: any) => {
-            return (module.name as string)
-              .toLowerCase()
-              .includes(searchedModule.toLowerCase());
-          }).length == 0 && (
-            <div className="w-full h-full flex flex-row items-center justify-center">
-              <span className="font-mono py-2 antialiased">
-                No modules found
-              </span>
-            </div>
-          )}
-          {Object.values(packageDetails.data)
-            .filter((module: any) => {
+    <div className="flex flex-col items-start">
+      <div className="flex flex-row items-center gap-2 ps-4">
+        <span className="uppercase font-mono">{packageDetails.name}</span> -{" "}
+        <span className="font-mono flex flex-row items-center gap-2">
+          {props.package.digestId.slice(0, 9)}...{" "}
+          <Clipboard
+            className="w-4 h-4 hover:text-amber-500 hover:cursor-pointer active:scale-75 transition-transform"
+            onClick={() => {
+              navigator.clipboard.writeText(props.package.digestId);
+            }}
+            size={15}
+          />{" "}
+        </span>
+      </div>
+      <div className="w-full h-full flex flex-row items-start justify-around p-2 gap-2">
+        <div className="flex flex-col items-center justify-start gap-2">
+          <Input
+            className="bg-slate-900 h-8 caret-teal-500"
+            type="text"
+            placeholder="Search modules..."
+            onChange={(e) => {
+              setSearchedModule(e.target.value);
+            }}
+            value={searchedModule}
+          />
+          <ScrollArea className="h-full max-h-[400px] w-fit max-w-[260px] rounded-md border p-1 overflow-y-auto">
+            {Object.values(packageDetails.data).filter((module: any) => {
               return (module.name as string)
                 .toLowerCase()
                 .includes(searchedModule.toLowerCase());
-            })
-            .map((module: any, index) => {
-              return (
-                <div
-                  key={index}
-                  className="flex w-fit max-w-[250px] flex-row items-start justify-start gap-2"
-                >
-                  <Button
-                    className={
-                      "font-mono w-fit h-8 flex flex-row justify-start antialiased hover:text-teal-500 bg-slate-950 hover:bg-slate-950 active:scale-y-75 transition-transform" +
-                      (selectedModule == module.name
-                        ? " text-teal-500"
-                        : " text-white")
-                    }
-                    variant="ghost"
-                    onClick={() => {
-                      setSelectedModule(module.name);
-                    }}
+            }).length == 0 && (
+              <div className="w-full h-full flex flex-row items-center justify-center">
+                <span className="font-mono py-2 antialiased">
+                  No modules found
+                </span>
+              </div>
+            )}
+            {Object.values(packageDetails.data)
+              .filter((module: any) => {
+                return (module.name as string)
+                  .toLowerCase()
+                  .includes(searchedModule.toLowerCase());
+              })
+              .map((module: any, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="flex w-fit max-w-[250px] flex-row items-start justify-start gap-2"
                   >
-                    {module.name}
-                  </Button>
-                </div>
-              );
-            })}
-        </ScrollArea>
-      </div>
-      <div className="flex flex-col items-center justify-start h-full w-full max-w-[350px]">
-        <Input
-          className="w-full max-w-80 bg-slate-900 h-8 caret-teal-500"
-          type="text"
-          placeholder="Search structs..."
-          onChange={(e) => {
-            setSearchedStruct(e.target.value);
-          }}
-          value={searchedStruct}
-        />
-        {selectedModule != "" && (
-          <Accordion
-            type="multiple"
-            className="w-full max-w-80 h-full max-h-[400px] overflow-y-auto"
-          >
-            {packageDetails.data[selectedModule] != null &&
-              Object.keys(packageDetails.data[selectedModule].structs).filter(
-                (structName: string) => {
-                  return structName
-                    .toLowerCase()
-                    .includes(searchedStruct.toLowerCase());
-                }
-              ).length == 0 && (
-                <div className="flex flex-row items-center justify-center w-full h-full">
-                  <span className="font-mono text-white text-xl pt-4 antialiased">
-                    No structs found
-                  </span>
-                </div>
-              )}
-            {packageDetails.data[selectedModule] != null &&
-              Object.keys(packageDetails.data[selectedModule].structs)
-                .filter((structName: string) => {
-                  return structName
-                    .toLowerCase()
-                    .includes(searchedStruct.toLowerCase());
-                })
-                .map((structName: any, index: number) => {
-                  const structData =
-                    packageDetails.data[selectedModule].structs[structName];
-                  return (
-                    <AccordionItem
-                      key={index}
-                      value={index.toString()}
-                      className="my-2 px-2 w-full border rounded-lg overflow-hidden"
+                    <Button
+                      className={
+                        "font-mono w-fit h-8 flex flex-row justify-start antialiased hover:text-teal-500 bg-slate-950 hover:bg-slate-950 active:scale-y-75 transition-transform" +
+                        (selectedModule == module.name
+                          ? " text-teal-500"
+                          : " text-white")
+                      }
+                      variant="ghost"
+                      onClick={() => {
+                        setSelectedModule(module.name);
+                      }}
                     >
-                      <AccordionTrigger className="w-full font-mono antialiased text-slate-200">
-                        {structName}
-                      </AccordionTrigger>
-                      <AccordionContent className="w-full">
-                        <StructCard data={structData} />
-                      </AccordionContent>
-                    </AccordionItem>
-                  );
-                })}
-          </Accordion>
-        )}
-      </div>
-      <div className="flex flex-col items-center justify-start h-full overflow-y-auto w-full max-w-[350px]">
-        <Input
-          className="bg-slate-900 h-8 w-full max-w-80 caret-teal-500"
-          type="text"
-          placeholder="Search modules..."
-          onChange={(e) => {
-            setSearchedFunction(e.target.value);
-          }}
-          value={searchedFunction}
-        />
-        {selectedModule != "" && (
-          <Accordion
-            type="multiple"
-            className="w-full max-w-80 h-full max-h-[400px] h-fit overflow-y-auto"
-          >
-            {packageDetails.data[selectedModule] != null &&
-              (Object.values(
-                packageDetails.data[selectedModule].exposedFunctions
-              ).filter((functionData: any) => functionData.isEntry).length ==
-                0 ||
-                Object.keys(
-                  packageDetails.data[selectedModule].exposedFunctions
-                ).filter((functionName: string) => {
-                  return functionName
-                    .toLowerCase()
-                    .includes(searchedFunction.toLowerCase());
-                }).length == 0) && (
-                <div className="flex flex-row items-center justify-center w-full h-full">
-                  <span className="font-mono text-white text-xl pt-4 antialiased">
-                    No entry functions found
-                  </span>
-                </div>
-              )}
-            {packageDetails.data[selectedModule] != null &&
-              Object.values(
-                packageDetails.data[selectedModule].exposedFunctions
-              ).filter((functionData: any) => functionData.isEntry).length >
-                0 &&
-              Object.keys(packageDetails.data[selectedModule].exposedFunctions)
-                .filter((functionName: string) => {
-                  return functionName
-                    .toLowerCase()
-                    .includes(searchedFunction.toLowerCase());
-                })
-                .map((functionName: any, index: number) => {
-                  const functionData =
-                    packageDetails.data[selectedModule].exposedFunctions[
-                      functionName
-                    ];
-                  console.log("functionData", functionData);
-                  if (functionData.isEntry) {
+                      {module.name}
+                    </Button>
+                  </div>
+                );
+              })}
+          </ScrollArea>
+        </div>
+        <div className="flex flex-col items-center justify-start h-full w-full max-w-[350px]">
+          <Input
+            className="w-full max-w-80 bg-slate-900 h-8 caret-teal-500"
+            type="text"
+            placeholder="Search structs..."
+            onChange={(e) => {
+              setSearchedStruct(e.target.value);
+            }}
+            value={searchedStruct}
+          />
+          {selectedModule != "" && (
+            <Accordion
+              type="multiple"
+              className="w-full max-w-80 h-full max-h-[400px] overflow-y-auto"
+            >
+              {packageDetails.data[selectedModule] != null &&
+                Object.keys(packageDetails.data[selectedModule].structs).filter(
+                  (structName: string) => {
+                    return structName
+                      .toLowerCase()
+                      .includes(searchedStruct.toLowerCase());
+                  }
+                ).length == 0 && (
+                  <div className="flex flex-row items-center justify-center w-full h-full">
+                    <span className="font-mono text-white text-xl pt-4 antialiased">
+                      No structs found
+                    </span>
+                  </div>
+                )}
+              {packageDetails.data[selectedModule] != null &&
+                Object.keys(packageDetails.data[selectedModule].structs)
+                  .filter((structName: string) => {
+                    return structName
+                      .toLowerCase()
+                      .includes(searchedStruct.toLowerCase());
+                  })
+                  .map((structName: any, index: number) => {
+                    const structData =
+                      packageDetails.data[selectedModule].structs[structName];
                     return (
                       <AccordionItem
                         key={index}
                         value={index.toString()}
-                        className="my-2 px-2 w-full border rounded-lg overflow-hidden font-mono"
+                        className="my-2 px-2 w-full border rounded-lg overflow-hidden"
                       >
-                        <AccordionTrigger className="w-full antialiased text-slate-200">
-                          {functionName}
+                        <AccordionTrigger className="w-full font-mono antialiased text-slate-200">
+                          {structName}
                         </AccordionTrigger>
                         <AccordionContent className="w-full">
-                          <FunctionCard
-                            data={functionData}
-                            address={
-                              packageDetails.data[selectedModule].address
-                            }
-                            moduleName={selectedModule}
-                            functionName={functionName}
-                          />
+                          <StructCard data={structData} />
                         </AccordionContent>
                       </AccordionItem>
                     );
-                  }
-                })}
-          </Accordion>
-        )}
+                  })}
+            </Accordion>
+          )}
+        </div>
+        <div className="flex flex-col items-center justify-start h-full overflow-y-auto w-full max-w-[350px]">
+          <Input
+            className="bg-slate-900 h-8 w-full max-w-80 caret-teal-500"
+            type="text"
+            placeholder="Search modules..."
+            onChange={(e) => {
+              setSearchedFunction(e.target.value);
+            }}
+            value={searchedFunction}
+          />
+          {selectedModule != "" && (
+            <Accordion
+              type="multiple"
+              className="w-full max-w-80 h-full max-h-[400px] h-fit overflow-y-auto"
+            >
+              {packageDetails.data[selectedModule] != null &&
+                (Object.values(
+                  packageDetails.data[selectedModule].exposedFunctions
+                ).filter((functionData: any) => functionData.isEntry).length ==
+                  0 ||
+                  Object.keys(
+                    packageDetails.data[selectedModule].exposedFunctions
+                  ).filter((functionName: string) => {
+                    return functionName
+                      .toLowerCase()
+                      .includes(searchedFunction.toLowerCase());
+                  }).length == 0) && (
+                  <div className="flex flex-row items-center justify-center w-full h-full">
+                    <span className="font-mono text-white text-xl pt-4 antialiased">
+                      No entry functions found
+                    </span>
+                  </div>
+                )}
+              {packageDetails.data[selectedModule] != null &&
+                Object.values(
+                  packageDetails.data[selectedModule].exposedFunctions
+                ).filter((functionData: any) => functionData.isEntry).length >
+                  0 &&
+                Object.keys(
+                  packageDetails.data[selectedModule].exposedFunctions
+                )
+                  .filter((functionName: string) => {
+                    return functionName
+                      .toLowerCase()
+                      .includes(searchedFunction.toLowerCase());
+                  })
+                  .map((functionName: any, index: number) => {
+                    const functionData =
+                      packageDetails.data[selectedModule].exposedFunctions[
+                        functionName
+                      ];
+                    console.log("functionData", functionData);
+                    if (functionData.isEntry) {
+                      return (
+                        <AccordionItem
+                          key={index}
+                          value={index.toString()}
+                          className="my-2 px-2 w-full border rounded-lg overflow-hidden font-mono"
+                        >
+                          <AccordionTrigger className="w-full antialiased text-slate-200">
+                            {functionName}
+                          </AccordionTrigger>
+                          <AccordionContent className="w-full">
+                            <FunctionCard
+                              data={functionData}
+                              address={
+                                packageDetails.data[selectedModule].address
+                              }
+                              moduleName={selectedModule}
+                              functionName={functionName}
+                            />
+                          </AccordionContent>
+                        </AccordionItem>
+                      );
+                    }
+                  })}
+            </Accordion>
+          )}
+        </div>
       </div>
     </div>
   );
