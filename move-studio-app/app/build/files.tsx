@@ -175,7 +175,7 @@ function FolderComponent(props: { path: string; name: string }) {
 
   const addFile = async () => {
     let fileName = prompt("Enter file name");
-    if (!fileName || fileName.split(".").length > 2 || !(fileName.endsWith(".move") || fileName.endsWith(".toml"))) {
+    if (!fileName || fileName.split(".").length > 2 || !(fileName.endsWith(".move") || fileName.endsWith(".toml") || fileName.endsWith(".ptb"))) {
       alert("File name should end with .move or .toml");
       return
     }

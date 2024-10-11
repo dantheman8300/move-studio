@@ -6,6 +6,8 @@ import { useContext } from "react";
 import { MagicSpinner } from "react-spinners-kit";
 import { TypeAnimation } from "react-type-animation";
 import { BuildContext } from "@/Contexts/BuildProvider";
+import Flow from "../ptbs/flow";
+import GraphProvider from "../ptbs/GraphProvider";
 
 const quotes = [
   "First, solve the problem. Then, write the code.\n - John Johnson",
@@ -72,6 +74,19 @@ export default function MainWindow() {
       <div className="h-full flex flex-col items-center justify-start">
         {tabs.map((tab, index) => {
           if (tab.type === "code") {
+            if (tab.name.endsWith(".ptb")) {
+              return (
+                <TabsContent
+                  key={index}
+                  value={tab.path}
+                  className="mt-0 w-full h-full"
+                >
+                  <GraphProvider>
+                    <Flow path={tab.path} />
+                  </GraphProvider>
+                </TabsContent>
+              );
+            }
             return (
               <TabsContent
                 key={index}

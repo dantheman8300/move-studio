@@ -1,5 +1,9 @@
 'use client';
-
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
 import { useState, useCallback, useRef, useContext,  } from 'react';
 import ReactFlow, {
   Controls,
@@ -24,10 +28,12 @@ import GasCoinNode from './GasCoinNode';
 import CoinMergerNode from './CoinMergerNode';
 import ObjectTransferNode from './ObjectTransferNode';
 import { Button } from '@/components/ui/button';
-import { MergeCoinsOperation, PTBGraph, PTBNode, TransferObjectsOperation } from './ptb-types';
+import { MergeCoinsOperation, PTBGraph, PTBNode, SplitCoinsOperation, TransferObjectsOperation } from './ptb-types';
 import { GraphContext } from './GraphProvider';
-import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { Transaction } from "@mysten/sui/transactions";
+import { BuildContext } from "@/Contexts/BuildProvider";
+import CodeEditor from "../build/codeEditor";
+import useCodeLiveQuery from "@/hooks/useCodeLiveQuery";
 
 
 const flowKey = 'example-flow';
@@ -45,22 +51,33 @@ const nodeTypes = {
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
-function Flow() {
+function Flow({
+  path
+}: {
+  path: string;
+}) {
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
 
-  const { graph } = useContext(GraphContext)
+  const { writeFile } = useContext(BuildContext);
+  const { graph } = useContext(GraphContext);
+  // const code = useCodeLiveQuery({ path });
 
   const wallet = useWallet();
 
-  const onSave = useCallback(() => {
-    if (reactFlowInstance) {
-      const flow = reactFlowInstance.toObject();
-      localStorage.setItem(flowKey, JSON.stringify(flow));
+  const onSave = () => {
+    
+    const ptbScript = graph?.toPTBScript();
+
+    if (!ptbScript) {
+      alert('No PTB script to save')
+      return;
     }
-  }, [reactFlowInstance]);
+
+    writeFile(path, ptbScript)
+  }
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
@@ -126,6 +143,21 @@ function Flow() {
           );
 
           console.log('operation', operation)
+        }
+      } else if (toNode.operation.type == 'splitCoins') {
+        const operation = toNode.operation as SplitCoinsOperation;
+
+        if (!fromNode) {
+          console.log('params.source', params.source)
+
+          if (params.sourceHandle == 'gascoin') {
+            operation.coin = { kind: 'gasCoin' };
+          } else {
+            operation.coin = {
+              kind: 'objectInput',
+              id: params.sourceHandle!
+            };
+          }
         }
       } else {
         console.log('unknown operation')
@@ -231,7 +263,7 @@ function Flow() {
         const splitNode: PTBNode = new PTBNode({
           id,
           type: 'splitCoins',
-          coin: { kind: 'gasCoin' },
+          coin: null,
           amounts: [],
         });
 
@@ -316,56 +348,72 @@ function Flow() {
   );
 
   return (
-    <div style={{ height: '100%', width: '100%' }} className='flex flex-col items-center'  ref={reactFlowWrapper}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onInit={setReactFlowInstance}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        fitView
-      >
-        <Panel position="bottom-right" className='flex flex-row gap-1 items-center'>
-          <Button variant={'secondary'} size={'sm'} onClick={onSave}>save</Button>
-          <Button variant={'secondary'} size={'sm'} onClick={onRestore}>restore</Button>
-          <Button variant={'secondary'} size={'sm'} onClick={() => {
-            console.log('nodes', nodes)
-            console.log('edges', edges)
-            console.log('graph', graph?.printGraph())
-          }}>print</Button>
-          <Button variant={'secondary'} size={'sm'} onClick={() => {
-            console.log('ptb', graph?.toPTBScript())
-          }}>ptb</Button>
-          <Button variant={'secondary'} size={'sm'} onClick={async () => {
-            console.log('run')
+    <ResizablePanelGroup direction="vertical">
+      <ResizablePanel>
+        <div style={{ height: '100%', width: '100%' }} className='flex flex-col items-center'  ref={reactFlowWrapper}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onInit={setReactFlowInstance}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            fitView
+          >
+            {/* <Panel position="bottom-left">
+              <div className="w-[400px] h-[175px] border bg-slate-950 rounded-sm overflow-scroll">
+                {
+                  code &&
+                  <span className="font-mono whitespace-pre">
+                    {code}
+                  </span>
+                }
+              </div>
+            </Panel> */}
+            <Panel position="bottom-right" className='flex flex-row gap-1 items-center'>
+              <Button variant={'secondary'} size={'sm'} onClick={onSave}>save</Button>
+              <Button variant={'secondary'} size={'sm'} onClick={onRestore}>restore</Button>
+              <Button variant={'secondary'} size={'sm'} onClick={() => {
+                console.log('nodes', nodes)
+                console.log('edges', edges)
+                console.log('graph', graph?.printGraph())
+              }}>print</Button>
+              <Button variant={'secondary'} size={'sm'} onClick={() => {
+                console.log('ptb', graph?.toPTBScript())
+              }}>ptb</Button>
+              <Button variant={'secondary'} size={'sm'} onClick={async () => {
+                console.log('run')
 
-            const ptbScript = graph?.toPTBScript();
+                const ptbScript = graph?.toPTBScript();
 
-            if (!ptbScript) {
-              return;
-            }
+                if (!ptbScript) {
+                  return;
+                }
 
-            const tx = new Transaction();
+                const tx = new Transaction();
 
-            eval(ptbScript);
+                eval(ptbScript);
 
-            const res = await wallet.signAndExecuteTransaction({
-              transaction: tx,
-            })
+                const res = await wallet.signAndExecuteTransaction({
+                  transaction: tx,
+                })
 
-            console.log('res', res)
+                console.log('res', res)
 
-          }}>run</Button>
-        </Panel>
-        <Background />
-        <Controls />
-      </ReactFlow>
-      <Sidebar />
-    </div>
+              }}>run</Button>
+            </Panel>
+            <Background />
+          </ReactFlow>
+        </div>
+      </ResizablePanel>
+      <ResizableHandle />
+      <ResizablePanel>
+        <Sidebar />
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 }
 

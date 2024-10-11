@@ -77,6 +77,7 @@ export type BuildContextType = {
     digestId: string,
     objects: { type: string; modified: string; objectId: string }[]
   ) => void;
+  writeFile: (path: string, content: string) => void;
 };
 
 export const BuildContext = createContext<BuildContextType>({
@@ -97,6 +98,7 @@ export const BuildContext = createContext<BuildContextType>({
   removeTab: () => {},
   addToDigests: () => {},
   addTransactionDigest: () => {},
+  writeFile: () => {},
 });
 
 export default function BuildProvider({
@@ -231,6 +233,27 @@ export default function BuildProvider({
     setTransactionDigests([{ digestId, objects }, ...transactionDigests]);
   };
 
+  const writeFile = async (path: string, content: string) => {
+    if (path != "") {
+      const forks = path.split("/");
+      const project = await db.projects.get(forks.shift() || "");
+      let files = project?.files || [];
+      while (forks.length > 1) {
+        let fork = forks.shift();
+        const searchedDir = files.find((file) => file.name === fork);
+        if (searchedDir == undefined) {
+          break;
+        }
+        files = searchedDir.children || [];
+      }
+      const file = files.find((file) => file.name === forks[0]);
+      if (file != undefined) {
+        file.content = content || "";
+        await db.projects.put(project || ({} as IProject));
+      }
+    }
+  }
+
   const addDemoProject = async () => {
     await db.projects.add({
       name: "demoPackage",
@@ -287,6 +310,7 @@ ${"demoPackage"} = "0x0"
         removeTab,
         addToDigests,
         addTransactionDigest,
+        writeFile,
       }}
     >
       {children}

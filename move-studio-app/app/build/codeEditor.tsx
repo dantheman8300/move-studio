@@ -1,8 +1,8 @@
 import Editor, { useMonaco } from "@monaco-editor/react";
-import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect } from "react";
 import { IProject } from "../db/ProjectsDB";
 import { db } from "../db/db";
+import useCodeLiveQuery from "@/hooks/useCodeLiveQuery";
 
 const demoCode = `module demoPackage::party {
 
@@ -727,23 +727,7 @@ const themes = {
 };
 
 export default function CodeEditor(props: { path: string }) {
-  const code = useLiveQuery(async () => {
-    if (props.path != "") {
-      const forks = props.path.split("/");
-      const project = await db.projects.get(forks.shift() || "");
-      let files = project?.files || [];
-      while (forks.length > 1) {
-        let fork = forks.shift();
-        const searchedDir = files.find((file) => file.name === fork);
-        if (searchedDir == undefined) {
-          break;
-        }
-        files = searchedDir.children || [];
-      }
-      const file = files.find((file) => file.name === forks[0]);
-      return file?.content || "";
-    }
-  }, [props.path]);
+  const code = useCodeLiveQuery({path: props.path})
 
   const monaco = useMonaco();
 
