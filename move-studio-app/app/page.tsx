@@ -24,7 +24,7 @@ export default function Home() {
 
   return (
     <div className='w-screen min-h-screen h-full bg-slate-950'>
-      <div className='fixed w-full backdrop-filter backdrop-blur-sm bg-opacity-30 border-b border-slate-500'>
+      <div className='fixed w-full z-20 backdrop-filter backdrop-blur-sm bg-opacity-30 border-b border-slate-500'>
         <div className="flex w-full flex-row justify-between items-center my-2 px-3 h-[50px] gap-2">
           <span className='text-4xl font-medium tracking-tighter'>Move Studio</span>
           {/* <Twitter strokeWidth={1.25} className="w-8 h-8 mr-5 text-teal-500 hover:text-teal-300 cursor-pointer" /> */}
@@ -41,7 +41,7 @@ export default function Home() {
         </div>
         {/* <Image src={CodeEditorImage} alt='' width={200} height={200} /> */}
         <a href='/build'>
-          <Button className='animate-pulse hover:animate-none h-12 px-4 text-lg mt-10 shadow shadow-[3px_3px_20px_-5px_rgb(16,185,129,0.8),0px_-5px_20px_-5px_rgb(99,102,241,0.5),0_5px_20px_-5px_rgb(245,158,11,0.5)]' onClick={() => { track('start_building_button') }}>
+          <Button className='animate-pulse z-10 hover:animate-none h-12 px-4 text-lg mt-10 shadow shadow-[3px_3px_20px_-5px_rgb(16,185,129,0.8),0px_-5px_20px_-5px_rgb(99,102,241,0.5),0_5px_20px_-5px_rgb(245,158,11,0.5)]' onClick={() => { track('start_building_button') }}>
             Start building
           </Button>
         </a>
